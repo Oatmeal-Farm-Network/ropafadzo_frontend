@@ -1,0 +1,226 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+body {
+  background-color: #f7f2e8;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: top center;
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Force site background on every page root.
+   Tailwind utilities (bg-gray-50, bg-white, etc.) live in @layer utilities;
+   unlayered rules written after the @import always win the cascade,
+   so this neutralises any per-page override without touching 150+ files.
+   Interior cards/panels that need white use inline style={{ background }} which
+   beats any class-based rule regardless. */
+.min-h-screen {
+  background-color: #f7f2e8;
+}
+
+h1 {
+  font-family: 'Lora', 'Times New Roman', serif;
+  font-size: 24px;
+  color: #232f3a;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+h2, h3 {
+  font-family: 'Lora', 'Times New Roman', serif;
+  color: #819360;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+a {
+  text-decoration: none;
+  color: #819360;
+  transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+  color: #333333;
+}
+
+/* Home-page news card image. On md+ screens, hold the image at 200px tall
+   and let its width follow the natural aspect ratio (rather than being
+   stretched into the 40% card column and cropped). max-width caps absurdly
+   wide images so they can't crowd out the article text. !important defeats
+   the inline Tailwind w-2/5 / aspect-auto utilities. */
+@media (min-width: 768px) {
+  .home-news-img {
+    width: auto !important;
+    height: 200px !important;
+    max-width: 50% !important;
+    aspect-ratio: auto !important;
+    align-self: center;
+  }
+  .home-news-img > img {
+    width: auto !important;
+    height: 100% !important;
+  }
+}
+
+p.body:last-child {
+    margin-bottom: 0;
+}
+
+.home-hero-cta,
+.home-hero-cta:hover {
+  color: #ffffff !important;
+  text-decoration: none;
+}
+
+.nav-link {
+  font-family: 'Montserrat', sans-serif;
+  color: white;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+  color: #EFAE15;
+}
+
+ A.regsubmit2 {
+    background-color: #819360;
+    font-weight: bold;
+    padding: 10px 32px;
+    text-align: center;
+      font-family: 'Lora', 'Times New Roman', serif;
+    font-size: 14px;
+    color: white;
+    border-radius: 10px;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+  }
+
+  .regsubmit2 {
+    background-color: #819360;
+    font-weight: bold;
+    padding: 10px 32px;
+    text-align: center;
+     font-family: 'Lora', 'Times New Roman', serif;
+    font-size: 14px;
+    color: white;
+    border-radius: 10px;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+  }
+
+.regsubmit2:hover {
+  background-color: #5A6D4E;
+}
+
+
+@layer components {
+  .regsubmit2 {
+    background-color: #819360;
+    font-weight: bold;
+    padding: 10px 32px;
+    text-align: center;
+     font-family: 'Lora', 'Times New Roman', serif;
+    font-size: 14px;
+    color: white;
+    border-radius: 10px;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+  }
+
+  .roundedtopandbottomgrey {
+    border: 1px solid #a1a1a1;
+    padding: 15px;
+    box-shadow: 5px 5px 10px #638562;
+    background: white;
+    border-radius: 15px;
+  }
+
+  .bg-ofn-red { background-color: #A32715; color: white; }
+  .bg-ofn-green { background-color: darkgreen; color: white; }
+  .bg-ofn-blue { background-color: #3393B8; color: white; }
+  .bg-ofn-gold { background-color: #EFAE15; color: black; }
+}
+
+@media (min-width: 992px) {
+  .nav-right {
+    margin-left: auto !important;
+  }
+}
+
+.footer {
+    padding-top: 2.5rem;
+    padding-bottom: 1rem;
+}
+
+/* Headings in the footer */
+.footer  {
+    color: #e0e0e0;
+    font-size: 0.95em;
+    margin-bottom: 0.75rem;
+    white-space: nowrap;
+	align-items: center;
+}
+
+/* Styles for the individual links in columns (medium/large screens) */
+.footer-link-small {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    display: block;
+    font-size: 0.8em;
+    padding: 0.15rem 0;
+    transition: color 0.2s ease-in-out;
+    white-space: nowrap; /* Keep links on one line */
+    overflow: hidden;    /* Hide overflowing text */
+    text-overflow: ellipsis; /* Add ellipsis for hidden text */
+}
+
+.footer-link-small:hover {
+    color: #507033; /* Your brand green on hover */
+    text-decoration: underline;
+}
+
+/* For lists in columns, to reduce spacing between list items */
+.footer-compact-list li {
+    margin-bottom: 0;
+}
+
+/* Adjust column widths for different screen sizes for the main footer columns */
+/* Note: col-lg-3 for 4 columns on large, col-md-3/6 for medium, col-sm-6 for small */
+.footer .row > div[class*="col-"] {
+    margin-bottom: 1rem; /* Reduced margin for columns themselves */
+}
+
+/* Style for the copyright text */
+.footer small {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.75em;
+}
+
+/* --- Styles for the Footer Dropdown Buttons (Small Screens) --- */
+.footer-dropdown-btn {
+    background-color: #507033 !important; /* Your brand green */
+    border-color: #507033 !important;
+    color: white !important;
+    font-size: 0.85em; /* Slightly larger than list links, but compact */
+    margin-bottom: 0.5rem; /* Space below the button */
+    padding: 0.5rem 0.75rem; /* Standard button padding */
+}
+
+.footer-dropdown-btn:hover,
+.footer-dropdown-btn:focus {
+    background-color: #3D6B34 !important; /* Darker green on hover/focus */
+    border-color: #3D6B34 !important;
+    box-shadow: 0 0 0 0.25rem rgba(80, 112, 51, 0.5) !important; /* Greenish shadow */
+}

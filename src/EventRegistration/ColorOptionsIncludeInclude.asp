@@ -1,0 +1,1 @@
+<option style="color:<%=Fontcolor%>; background-color: <%=BGC%>;" value="<%=BGC%>" ><%=BGC%></option>

@@ -1,0 +1,94 @@
+name: Deploy Frontend Staging
+
+# Staging-only CD. Do NOT deploy production from this workflow.
+# Triggers on pushes to GCP/frontend-staging.
+on:
+  push:
+    branches: ['GCP/frontend-staging']
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - '**/*.md'
+  workflow_dispatch:
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.STAGING_GCP_PROJECT_ID }}
+  REGION: us-central1
+  IMAGE_URI_PREFIX: us-central1-docker.pkg.dev/oatmeal-farm-staging/oatmeal-farm-registry/frontend
+  CLOUD_RUN_SERVICE: oatmeal-frontend-staging
+  RUNTIME_SERVICE_ACCOUNT: frontend-sa@oatmeal-farm-staging.iam.gserviceaccount.com
+  # Baked into the Vite build — override via GitHub Actions variables if URLs change
+  VITE_API_URL: ${{ vars.STAGING_BACKEND_URL || 'https://oatmeal-backend-staging-1087130530284.us-central1.run.app' }}
+  VITE_SAIGE_API_URL: ${{ vars.STAGING_SAIGE_URL || 'https://oatmeal-saige-staging-lrviw4iujq-uc.a.run.app' }}
+  VITE_CROP_API_URL: ${{ vars.STAGING_CROP_API_URL || 'https://oatmeal-backend-staging-1087130530284.us-central1.run.app/cm' }}
+  VITE_NEWS_API_URL: ${{ vars.STAGING_NEWS_API_URL || 'https://oatmeal-backend-staging-1087130530284.us-central1.run.app' }}
+  VITE_CONTACT_RECIPIENT_EMAIL: ${{ vars.STAGING_CONTACT_EMAIL || 'change-this-contact@oatmeal-ai.com' }}
+  VITE_OTF_API_URL: ${{ vars.STAGING_OTF_API_URL || '' }}
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    environment: staging
+    permissions:
+      contents: read
+      id-token: write   # required for Workload Identity Federation
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set short commit SHA
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      # Same secret names as backend staging CD (must exist in this GitHub repo)
+      - name: Authenticate to Google Cloud (Staging)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.STAGING_GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.STAGING_GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg "VITE_API_URL=${{ env.VITE_API_URL }}" \
+            --build-arg "VITE_SAIGE_API_URL=${{ env.VITE_SAIGE_API_URL }}" \
+            --build-arg "VITE_CROP_API_URL=${{ env.VITE_CROP_API_URL }}" \
+            --build-arg "VITE_NEWS_API_URL=${{ env.VITE_NEWS_API_URL }}" \
+            --build-arg "VITE_CONTACT_RECIPIENT_EMAIL=${{ env.VITE_CONTACT_RECIPIENT_EMAIL }}" \
+            --build-arg "VITE_OTF_API_URL=${{ env.VITE_OTF_API_URL }}" \
+            -t "${{ env.IMAGE_URI_PREFIX }}:${{ steps.vars.outputs.sha_short }}" \
+            .
+
+      - name: Push Docker image
+        run: |
+          docker push "${{ env.IMAGE_URI_PREFIX }}:${{ steps.vars.outputs.sha_short }}"
+
+      - name: Deploy to Cloud Run (staging)
+        run: |
+          gcloud run deploy ${{ env.CLOUD_RUN_SERVICE }} \
+            --image "${{ env.IMAGE_URI_PREFIX }}:${{ steps.vars.outputs.sha_short }}" \
+            --project ${{ env.GCP_PROJECT_ID }} \
+            --region ${{ env.REGION }} \
+            --platform managed \
+            --service-account "${{ env.RUNTIME_SERVICE_ACCOUNT }}" \
+            --allow-unauthenticated \
+            --port 8080 \
+            --memory 512Mi \
+            --cpu 1 \
+            --min-instances 0 \
+            --max-instances 10 \
+            --quiet
+
+      - name: Print deployed URL
+        run: |
+          gcloud run services describe ${{ env.CLOUD_RUN_SERVICE }} \
+            --project ${{ env.GCP_PROJECT_ID }} \
+            --region ${{ env.REGION }} \
+            --format="value(status.url)"

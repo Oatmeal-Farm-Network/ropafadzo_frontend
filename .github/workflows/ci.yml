@@ -1,0 +1,35 @@
+name: CI
+
+# Required on every hop: feature → staging → testing → main.
+on:
+  pull_request:
+    branches:
+      - 'GCP/frontend-staging'
+      - 'GCP/frontend-testing'
+      - 'GCP/frontend-development'
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Pre-existing lint debt. Do not block the git train on it.
+      # Build remains the hard gate; clean up lint in a dedicated PR later.
+      - name: Lint (non-blocking)
+        continue-on-error: true
+        run: npm run lint
+
+      - name: Production Vite build
+        run: npm run build

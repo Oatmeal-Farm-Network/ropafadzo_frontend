@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#4A5C43" />
+    <link rel="icon" type="image/png" href="/images/OFNFavico.png" />
+    <link rel="apple-touch-icon" href="/images/OFNFavico.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+<link rel="alternate" hreflang="en" href="https://oatmealfarmnetwork.com/" />
+    <link rel="alternate" hreflang="tl" href="https://oatmealfarmnetwork.com/" />
+    <link rel="alternate" hreflang="x-default" href="https://oatmealfarmnetwork.com/" />
+
+    <!-- Lora — referenced throughout the app via cascade rules in index.css.
+         Without this <link> the family falls back to Times New Roman. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="OFN" />
+
+    <!-- Default SEO — per-page PageMeta overrides these after React hydrates -->
+    <title>Oatmeal Farm Network | AI-Powered Farm &amp; Food Network</title>
+    <meta name="description" content="Connect farms, buyers, and food businesses with AI-powered tools. Browse livestock, plants, ingredients, and local food markets on Oatmeal Farm Network." />
+    <meta name="keywords" content="Oatmeal Farm Network, livestock marketplace, farm to table, plant database, livestock database, ingredient directory, agricultural directory, farm AI, precision agriculture, AgTech" />
+    <meta name="author" content="Oatmeal Farm Network" />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
+    <meta name="googlebot" content="index,follow" />
+
+    <!-- Open Graph -->
+    <meta property="og:type"         content="website" />
+    <meta property="og:site_name"    content="Oatmeal Farm Network" />
+    <meta property="og:title"        content="Oatmeal Farm Network | AI-Powered Farm &amp; Food Network" />
+    <meta property="og:description"  content="Connect farms, buyers, and food businesses with AI-powered tools. Browse livestock, plants, ingredients, and local food markets." />
+    <meta property="og:image"        content="https://oatmealfarmnetwork.com/images/Oatmeal-Farm-Network-og-default.jpg" />
+    <meta property="og:image:alt"    content="Oatmeal Farm Network — AI-Powered Farm &amp; Food Network" />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type"   content="image/jpeg" />
+    <meta property="og:url"          content="" />
+    <meta property="og:locale"           content="en_US" />
+    <meta property="og:locale:alternate" content="tl_PH" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="Oatmeal Farm Network | AI-Powered Farm &amp; Food Network" />
+    <meta name="twitter:description" content="Connect farms, buyers, and food businesses with AI-powered tools. Browse livestock, plants, ingredients, and local food markets." />
+    <meta name="twitter:image"       content="https://oatmealfarmnetwork.com/images/Oatmeal-Farm-Network-og-default.jpg" />
+
+    <link rel="canonical" href="https://oatmealfarmnetwork.com" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+
+    <!-- Google Analytics 4 — page_view events fired on each SPA route change via ScrollToTop in main.jsx -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0S5BCFCL91"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-0S5BCFCL91', { send_page_view: false });
+    </script>
+
+    <!-- Organization structured data (site-wide) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Oatmeal Farm Network",
+      "alternateName": "OFN",
+      "url": "https://oatmealfarmnetwork.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://oatmealfarmnetwork.com/images/OFN-Logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "description": "Oatmeal Farm Network connects farms, ranches, and food businesses through AI-powered tools, livestock and plant databases, and local food marketplaces.",
+      "areaServed": "US",
+      "knowsAbout": ["agriculture", "farm to table", "livestock", "precision agriculture", "artisan food production", "restaurant sourcing"],
+      "sameAs": [
+        "https://oatmeal-ai.com"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "url": "https://oatmealfarmnetwork.com/contact-us"
+      }
+    }
+    </script>
+
+    <!-- AI Software Suite structured data -->
+    <script type="application/ld+json">
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Saige",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "url": "https://oatmealfarmnetwork.com/platform/saige",
+        "description": "AI agricultural assistant for farmers and ranchers — crops, livestock, soil, weather, markets, and precision-ag field analysis.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "provider": { "@type": "Organization", "name": "Oatmeal Farm Network" }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Pairsley",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "url": "https://oatmealfarmnetwork.com/platform/pairsley",
+        "description": "AI consultant for chefs and restaurant operators — local sourcing, menu costing, specials writing, and farm connections.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "provider": { "@type": "Organization", "name": "Oatmeal Farm Network" }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Rosemarie",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "url": "https://oatmealfarmnetwork.com/platform/rosemarie",
+        "description": "AI consultant for artisan food producers — recipe management, batch tracking, ingredient sourcing, and production operations.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "provider": { "@type": "Organization", "name": "Oatmeal Farm Network" }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Thaiyme",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "url": "https://oatmealfarmnetwork.com/platform/thaiyme",
+        "description": "AI business-operations consultant — accounting analysis, event management, sponsorship tracking, lead retrieval, and field reporting.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "provider": { "@type": "Organization", "name": "Oatmeal Farm Network" }
+      }
+    ]
+    </script>
+
+    <!-- NewsMediaOrganization structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NewsMediaOrganization",
+      "name": "Oatmeal Farm Network",
+      "url": "https://oatmealfarmnetwork.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://oatmealfarmnetwork.com/images/OFN-Logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "description": "Oatmeal Farm Network publishes agricultural news covering markets, weather, policy, AgTech, and livestock for farmers, ranchers, and food producers.",
+      "publishingPrinciples": "https://oatmealfarmnetwork.com/about",
+      "masthead": "https://oatmealfarmnetwork.com/app/news",
+      "sameAs": ["https://oatmeal-ai.com"]
+    }
+    </script>
+
+    <!-- WebSite + SearchAction structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Oatmeal Farm Network",
+      "url": "https://oatmealfarmnetwork.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://oatmealfarmnetwork.com/marketplaces/livestock?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

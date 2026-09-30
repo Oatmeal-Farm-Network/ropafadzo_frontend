@@ -1,0 +1,123 @@
+name: Deploy Frontend Testing
+
+# GCP/frontend-testing → oatmeal-frontend-testing in oatmeal-farm-staging.
+# TESTING_* secrets/vars are optional; fall back to staging WIF, registry, and API URLs
+# until a dedicated testing stack exists. Never use animated-flare-421518.
+on:
+  # RETIRED_NO_PUSH: testing CD replaced by deploy-development
+  workflow_dispatch:
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.TESTING_GCP_PROJECT_ID || secrets.STAGING_GCP_PROJECT_ID || 'oatmeal-farm-staging' }}
+  REGION: ${{ vars.TESTING_REGION || vars.STAGING_REGION || 'us-central1' }}
+  IMAGE_URI_PREFIX: ${{ vars.TESTING_REGION || vars.STAGING_REGION || 'us-central1' }}-docker.pkg.dev/${{ secrets.TESTING_GCP_PROJECT_ID || secrets.STAGING_GCP_PROJECT_ID || 'oatmeal-farm-staging' }}/${{ vars.TESTING_ARTIFACT_REGISTRY_REPOSITORY || vars.STAGING_ARTIFACT_REGISTRY_REPOSITORY || 'oatmeal-farm-registry' }}/frontend
+  CLOUD_RUN_SERVICE: oatmeal-frontend-testing
+  RUNTIME_SERVICE_ACCOUNT: ${{ vars.TESTING_FRONTEND_RUNTIME_SA || vars.STAGING_FRONTEND_RUNTIME_SA || 'frontend-sa@oatmeal-farm-staging.iam.gserviceaccount.com' }}
+  VITE_API_URL: ${{ vars.TESTING_BACKEND_URL || vars.STAGING_BACKEND_URL || 'https://oatmeal-backend-staging-1087130530284.us-central1.run.app' }}
+  VITE_SAIGE_API_URL: ${{ vars.TESTING_SAIGE_URL || vars.STAGING_SAIGE_URL || 'https://oatmeal-saige-staging-lrviw4iujq-uc.a.run.app' }}
+  VITE_CROP_API_URL: ${{ vars.TESTING_CROP_API_URL || vars.STAGING_CROP_API_URL || 'https://oatmeal-backend-staging-1087130530284.us-central1.run.app/cm' }}
+  VITE_NEWS_API_URL: ${{ vars.TESTING_NEWS_API_URL || vars.STAGING_NEWS_API_URL || 'https://oatmeal-backend-staging-1087130530284.us-central1.run.app' }}
+  VITE_CONTACT_RECIPIENT_EMAIL: ${{ vars.TESTING_CONTACT_EMAIL || vars.STAGING_CONTACT_EMAIL || 'change-this-contact@oatmeal-ai.com' }}
+  VITE_OTF_API_URL: ${{ vars.TESTING_OTF_API_URL || vars.STAGING_OTF_API_URL || '' }}
+
+jobs:
+  check-testing-wif:
+    runs-on: ubuntu-latest
+    outputs:
+      configured: ${{ steps.check.outputs.configured }}
+    steps:
+      - name: Check testing or staging WIF
+        id: check
+        shell: bash
+        run: |
+          provider="${{ secrets.TESTING_GCP_WORKLOAD_IDENTITY_PROVIDER }}${{ secrets.STAGING_GCP_WORKLOAD_IDENTITY_PROVIDER }}"
+          sa="${{ secrets.TESTING_GCP_SERVICE_ACCOUNT }}${{ secrets.STAGING_GCP_SERVICE_ACCOUNT }}"
+          if [ -n "$provider" ] && [ -n "$sa" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No TESTING_* or STAGING_* WIF secrets. Skipping testing deploy."
+          fi
+
+  deploy-testing:
+    needs: check-testing-wif
+    if: needs.check-testing-wif.outputs.configured == 'true'
+    runs-on: ubuntu-latest
+    environment: testing
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Guard testing project
+        shell: bash
+        run: |
+          project="${GCP_PROJECT_ID}"
+          if [ "$project" = "animated-flare-421518" ]; then
+            echo "::error::TESTING_GCP_PROJECT_ID must be oatmeal-farm-staging. Never animated-flare-421518 (Oatmeal AI)."
+            exit 1
+          fi
+          echo "Testing deploy project=${project} service=${CLOUD_RUN_SERVICE}"
+          echo "Auth uses TESTING_GCP_* if set, otherwise STAGING_GCP_* WIF."
+
+      - name: Set short commit SHA
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Authenticate to Google Cloud (Testing)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.TESTING_GCP_WORKLOAD_IDENTITY_PROVIDER || secrets.STAGING_GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.TESTING_GCP_SERVICE_ACCOUNT || secrets.STAGING_GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg "VITE_API_URL=${{ env.VITE_API_URL }}" \
+            --build-arg "VITE_SAIGE_API_URL=${{ env.VITE_SAIGE_API_URL }}" \
+            --build-arg "VITE_CROP_API_URL=${{ env.VITE_CROP_API_URL }}" \
+            --build-arg "VITE_NEWS_API_URL=${{ env.VITE_NEWS_API_URL }}" \
+            --build-arg "VITE_CONTACT_RECIPIENT_EMAIL=${{ env.VITE_CONTACT_RECIPIENT_EMAIL }}" \
+            --build-arg "VITE_OTF_API_URL=${{ env.VITE_OTF_API_URL }}" \
+            -t "${{ env.IMAGE_URI_PREFIX }}:${{ steps.vars.outputs.sha_short }}" \
+            .
+
+      - name: Push Docker image
+        run: |
+          docker push "${{ env.IMAGE_URI_PREFIX }}:${{ steps.vars.outputs.sha_short }}"
+
+      - name: Deploy to Cloud Run (testing)
+        run: |
+          extra=()
+          if [ -n "${RUNTIME_SERVICE_ACCOUNT}" ]; then
+            extra+=(--service-account "${RUNTIME_SERVICE_ACCOUNT}")
+          fi
+          gcloud run deploy "${CLOUD_RUN_SERVICE}" \
+            --image "${IMAGE_URI_PREFIX}:${{ steps.vars.outputs.sha_short }}" \
+            --project "${GCP_PROJECT_ID}" \
+            --region "${REGION}" \
+            --platform managed \
+            --allow-unauthenticated \
+            --port 8080 \
+            --memory 512Mi \
+            --cpu 1 \
+            --min-instances 0 \
+            --max-instances 10 \
+            "${extra[@]}" \
+            --quiet
+
+      - name: Print deployed URL
+        run: |
+          gcloud run services describe "${CLOUD_RUN_SERVICE}" \
+            --project "${GCP_PROJECT_ID}" \
+            --region "${REGION}" \
+            --format="value(status.url)"

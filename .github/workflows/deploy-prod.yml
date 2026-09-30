@@ -1,0 +1,124 @@
+name: Deploy Frontend Production
+
+# main → oatmealfarmnetwork in animated-flare-421518 (Oatmeal AI).
+# Skips cleanly when prod WIF secrets are unset. Never uses staging WIF or project.
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - '**/*.md'
+  workflow_dispatch:
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.PROD_GCP_PROJECT_ID || 'animated-flare-421518' }}
+  REGION: ${{ vars.PROD_REGION || 'us-central1' }}
+  IMAGE_URI_PREFIX: us-central1-docker.pkg.dev/animated-flare-421518/${{ vars.PROD_ARTIFACT_REGISTRY_REPOSITORY || 'cloud-run-source-deploy' }}/oatmealfarmnetwork
+  CLOUD_RUN_SERVICE: oatmealfarmnetwork
+  RUNTIME_SERVICE_ACCOUNT: ${{ vars.PROD_FRONTEND_RUNTIME_SA }}
+  VITE_API_URL: ${{ vars.PROD_BACKEND_URL || 'https://oatmealfarmnewtorkbackend-mt7mh6zhoa-uc.a.run.app' }}
+  VITE_SAIGE_API_URL: ${{ vars.PROD_SAIGE_URL || 'https://saige-backend-mt7mh6zhoa-uc.a.run.app' }}
+  VITE_CROP_API_URL: ${{ vars.PROD_CROP_API_URL || 'https://oatmealfarmnetworkcropmonitorbackend-git-mt7mh6zhoa-uc.a.run.app' }}
+  VITE_NEWS_API_URL: ${{ vars.PROD_NEWS_API_URL || 'https://oatmeal-ai.com' }}
+  VITE_CONTACT_RECIPIENT_EMAIL: ${{ vars.PROD_CONTACT_EMAIL }}
+  VITE_OTF_API_URL: ${{ vars.PROD_OTF_API_URL || '' }}
+
+jobs:
+  check-prod-wif:
+    runs-on: ubuntu-latest
+    outputs:
+      configured: ${{ steps.check.outputs.configured }}
+    steps:
+      - name: Check prod WIF secrets
+        id: check
+        shell: bash
+        run: |
+          provider="${{ secrets.PROD_GCP_WORKLOAD_IDENTITY_PROVIDER }}${{ secrets.PROD_GCP_WIF_PROVIDER }}"
+          sa="${{ secrets.PROD_GCP_SERVICE_ACCOUNT }}"
+          if [ -n "$provider" ] && [ -n "$sa" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Prod WIF is not configured (PROD_GCP_WORKLOAD_IDENTITY_PROVIDER / PROD_GCP_SERVICE_ACCOUNT). Skipping production deploy."
+          fi
+
+  deploy-prod:
+    needs: check-prod-wif
+    if: needs.check-prod-wif.outputs.configured == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Require Oatmeal AI project
+        shell: bash
+        run: |
+          if [ "${{ env.GCP_PROJECT_ID }}" != "animated-flare-421518" ]; then
+            echo "::error::OFN prod must use animated-flare-421518 (Oatmeal AI)."
+            exit 1
+          fi
+
+      - name: Set short commit SHA
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Authenticate to Google Cloud (Production)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.PROD_GCP_WORKLOAD_IDENTITY_PROVIDER || secrets.PROD_GCP_WIF_PROVIDER }}
+          service_account: ${{ secrets.PROD_GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg "VITE_API_URL=${{ env.VITE_API_URL }}" \
+            --build-arg "VITE_SAIGE_API_URL=${{ env.VITE_SAIGE_API_URL }}" \
+            --build-arg "VITE_CROP_API_URL=${{ env.VITE_CROP_API_URL }}" \
+            --build-arg "VITE_NEWS_API_URL=${{ env.VITE_NEWS_API_URL }}" \
+            --build-arg "VITE_CONTACT_RECIPIENT_EMAIL=${{ env.VITE_CONTACT_RECIPIENT_EMAIL }}" \
+            --build-arg "VITE_OTF_API_URL=${{ env.VITE_OTF_API_URL }}" \
+            -t "${{ env.IMAGE_URI_PREFIX }}:${{ steps.vars.outputs.sha_short }}" \
+            .
+
+      - name: Push Docker image
+        run: |
+          docker push "${{ env.IMAGE_URI_PREFIX }}:${{ steps.vars.outputs.sha_short }}"
+
+      - name: Deploy to oatmealfarmnetwork
+        run: |
+          extra=()
+          if [ -n "${RUNTIME_SERVICE_ACCOUNT}" ]; then
+            extra+=(--service-account "${RUNTIME_SERVICE_ACCOUNT}")
+          fi
+          gcloud run deploy "${CLOUD_RUN_SERVICE}" \
+            --image "${IMAGE_URI_PREFIX}:${{ steps.vars.outputs.sha_short }}" \
+            --project "${GCP_PROJECT_ID}" \
+            --region "${REGION}" \
+            --platform managed \
+            --allow-unauthenticated \
+            --port 8080 \
+            --memory 512Mi \
+            --cpu 1 \
+            --min-instances 0 \
+            --max-instances 10 \
+            "${extra[@]}" \
+            --quiet
+
+      - name: Print deployed URL
+        run: |
+          gcloud run services describe "${CLOUD_RUN_SERVICE}" \
+            --project "${GCP_PROJECT_ID}" \
+            --region "${REGION}" \
+            --format="value(status.url)"

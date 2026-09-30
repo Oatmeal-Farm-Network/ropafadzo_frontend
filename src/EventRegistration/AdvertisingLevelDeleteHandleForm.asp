@@ -1,0 +1,37 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+ <title>Delete an Listing</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+
+</HEAD>
+
+<BODY  border = "0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"  cellpadding=0 cellspacing=0  bgcolor = "white">
+
+<!--#Include file="GlobalVariables.asp"--> 
+<%  
+AdvertisingLevelID = request.querystring("AdvertisingLevelID")
+AdvertisingLevelName= request.querystring("AdvertisingLevelName")
+AdvertisingLevelPrice= request.querystring("AdvertisingLevelPrice")
+EventID = request.querystring("EventID")
+
+Query =  "Delete * From AdvertisingLevels where AdvertisingLevelID = " & AdvertisingLevelID & ";" 
+Conn.Execute(Query) 
+
+if len(AdvertisingLevelPrice) > 0 then	
+Query =  "Delete * From ExtraOptions where ExtraOptionsName= '" & AdvertisingLevelName & "' and ExtraOptionsPrice= " & AdvertisingLevelPrice & " and  EventID = " & EventID & ";" 
+else
+Query =  "Delete * From ExtraOptions where ExtraOptionsName= '" & AdvertisingLevelName & "' and  EventID = " & EventID & ";" 
+
+end if
+response.Write("query=" & query)
+Conn.Execute(Query) 
+	
+set Conn = Nothing
+
+response.redirect("AdvertisingHome.asp?EventID=" & EventID )
+%>
+
+</Body>
+</HTML>

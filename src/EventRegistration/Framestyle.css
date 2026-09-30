@@ -1,0 +1,24 @@
+﻿body{
+	background-color : white;
+}
+
+.small {font-family : verdana, Arial, Helvetica, sans-serif;
+	font-size : 9px;
+	line-height : 11px;
+	color : black;
+	font-weight: normal;
+}
+
+A.small {font-family : verdana, Arial, Helvetica, sans-serif;
+	font-size : 9px;
+	line-height : 11px;
+	color : #336699;
+	font-weight: 400;
+	text-decoration :none;
+}
+A.small:Hover {
+	color : black;
+	text-decoration : none;
+}
+
+

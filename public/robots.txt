@@ -1,0 +1,54 @@
+# robots.txt for https://oatmealfarmnetwork.com
+# Public marketplace + databases; auth-gated app surfaces are disallowed
+
+# robots.txt for https://oatmealfarmnetwork.com
+# Public content is open; auth-gated app surfaces are disallowed.
+
+User-agent: *
+Allow: /
+Allow: /platform/
+Allow: /app/news
+Allow: /newsroom
+Allow: /blog
+Allow: /events
+Allow: /directory
+Allow: /marketplaces/
+Allow: /knowledgebases
+Allow: /plant-knowledgebase
+Allow: /livestock
+Allow: /ingredient-knowledgebase
+Allow: /services/directory
+Disallow: /account
+Disallow: /accounts
+Disallow: /dashboard
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /cart
+Disallow: /orders
+Disallow: /seller/
+Disallow: /website/builder
+Disallow: /accounting
+Disallow: /animals
+Disallow: /oatsense
+Disallow: /precision-ag/
+Disallow: /produce/inventory
+Disallow: /produce/processed-food
+Disallow: /produce/meat
+Disallow: /services/add
+Disallow: /services/edit
+Disallow: /services/suggest-category
+Disallow: /events/manage
+Disallow: /events/my-registrations
+Disallow: /blog/manage
+Disallow: /blog/authors/manage
+Disallow: /api/
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+Sitemap: https://oatmealfarmnetwork.com/sitemap.xml
+Sitemap: https://oatmealfarmnewtorkbackend-802455386518.us-central1.run.app/sitemap.xml

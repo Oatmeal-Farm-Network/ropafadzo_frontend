@@ -1,0 +1,11 @@
+<SCRIPT LANGUAGE=VBScript RUNAT=Server>
+
+Sub Session_OnStart 
+Session("access")=False
+Session.Timeout=1440
+End Sub
+
+Sub Session_OnEnd 
+Session("access")=False
+End Sub 
+</SCRIPT>

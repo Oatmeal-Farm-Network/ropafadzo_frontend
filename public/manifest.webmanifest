@@ -1,0 +1,38 @@
+{
+  "name": "Oatmeal Farm Network",
+  "short_name": "OFN",
+  "description": "AI-powered farm, livestock, and food-network tools from Oatmeal Farm Network.",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f7f7f2",
+  "theme_color": "#14532d",
+  "lang": "en-US",
+  "icons": [
+    {
+      "src": "/images/OFNFavico.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/OFNFavico.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/OFN-Logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    { "name": "Saige",           "url": "/saige",                         "icons": [{ "src": "/images/AI-agent-logo-saige.svg", "sizes": "any" }] },
+    { "name": "Pest scan",       "url": "/saige/pest-detection" },
+    { "name": "Soil test",       "url": "/saige/soil-challenges" },
+    { "name": "Farm alerts",     "url": "/saige/push" }
+  ]
+}

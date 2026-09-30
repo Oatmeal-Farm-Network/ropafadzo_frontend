@@ -1,0 +1,23 @@
+steps:
+  # Build Docker image with VITE_API_URL
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/animated-flare-421518/cloud-run-source-deploy/oatmealfarmnetwork-git'
+      - '--build-arg'
+      - 'VITE_API_URL=https://oatmealfarmnewtorkbackend-802455386518.us-central1.run.app'
+      - '.'
+
+
+  # Push image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/animated-flare-421518/cloud-run-source-deploy/oatmealfarmnetwork-git'
+
+  # Deploy step removed — deploy manually to Cloud Run service oatmealfarmnetwork
+  # in animated-flare-421518 (Oatmeal AI). Do not create oatmeal-frontend-prod.
+
+images:
+  - 'us-central1-docker.pkg.dev/animated-flare-421518/cloud-run-source-deploy/oatmealfarmnetwork-git'

@@ -1,0 +1,6542 @@
+<% SetLocale("en-us") %>
+<html>
+<head> 
+<%  PageName = "FiberMania - Register" %>
+<%  PageLink = "FiberManiaRegisteration.asp" 
+EventID=14%>
+<!--#Include virtual="GlobalVariablesEvent.asp"-->
+<title>FiberMania Registration</title>
+
+<meta name="author" content="The Andresen Group">
+<link rel="stylesheet" type="text/css" href="SOJAA.css">
+<% 
+
+PageTitle = "Register for FiberMania" %>
+</head>
+
+<BODY border="0"  cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" >
+<table border="1" bordercolor = "black"  bgcolor ="#FDF4DD" cellspacing="0" cellpadding="0" align = "center" width = "800"><tr><td>
+<iframe src="http://www.sojaa.com/SojaaiFrameHeader.asp" frameborder =0 width = "803" height = "249" scrolling = "no" bgcolor ="#FDF4DD"></iframe> 
+
+
+<% 
+AdministrationPath = "/Administration"
+WebSiteName = "Andresen Events"
+PhysicalPath = "e:\inetpub\wwwroot\Internet-host\johnandmom\andresenevents.com\www\"
+Slogan = ""
+BorderColor = "#ebebeb"
+Style = "Style.css"
+Showsearch = True
+
+'**************************************************************
+ ' Hard Coded Variables
+'**************************************************************
+Slogan = ""
+BorderColor = "#ebebeb"
+URL = "http://www.AndresenEvents.com"
+DatabasePath = "../DB/AndresenEvents.mdb"
+
+'**************************************************************
+ ' Hard Coded Variables
+'**************************************************************
+DSN_Name = "MasterDB"
+
+
+'**************************************************************
+ ' Define Conn Object
+'**************************************************************
+Set Conn = Server.CreateObject("ADODB.Connection") 
+Conn.Open "DSN=" & DSN_Name & ";UID=admin;PWD=Chickens"
+Set rs = Server.CreateObject("ADODB.Recordset")
+
+bodywidth= "770"
+textwidth = "750" 
+backgroundcolor = "#FDF4DD" 
+StripeColor = "#F4F4F4"%>
+
+
+<% EventID = 14
+PeopleID = session("PeopleID")
+
+
+ if len(PeopleID)< 1 then %>
+<% 
+CreateAccount = "False" 
+UpdateAccount= "False"
+EventTypeID = Request.form("EventTypeID") 
+Session("EventTypeID") = EventTypeID
+
+UpdateAccount = Request.Form("UpdateAccount")
+CreateAccount = request.form("CreateAccount")
+
+
+if UpdateAccount = "True" then
+AccountUpdated = False
+BusinessName  = request.Form("BusinessName")
+PeopleFirstName  = request.Form("PeopleFirstName")
+		PeopleLastName  =request.Form("PeopleLastName") 
+		PeopleTitleID =request.Form("PeopleTitleID") 
+		PeopleWebsite =request.Form("Website") 
+		AddressStreet = request.Form("AddressStreet") 
+		AddressApt = request.Form("AddressApt") 
+		AddressCity  = request.Form("AddressCity")
+		AddressState  = request.Form("AddressState")
+		AddressZip  = request.Form("AddressZip")
+		PeoplePhone  = request.Form("PeoplePhone")
+		PeopleCell  = request.Form("PeopleCell")
+		PeopleFax = request.Form("PeopleFax")
+		password =request.Form("Password") 
+		confirmpassword =request.Form("confirmpassword") 
+		confirmEmail =request.Form("confirmEmail")
+		peopleEmail =request.Form("peopleEmail")  
+
+	
+ProceedToUpdate = False	
+if len(PeopleFirstName) > 0 and len(PeopleLastName) > 0 and len(PeopleEmail) > 0 and len(Password) > 0 and len(confirmpassword) > 0 and NotInDB = True then
+
+  if (trim(Password) = trim(confirmPassword)) and (trim(ucase(peopleEmail)) = trim(ucase(confirmEmail))) then
+     ProceedToUpdate = True
+  end if
+end if
+
+
+
+str1 = BusinessName
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	BusinessName= Replace(str1,  str2, "''")
+End If 
+
+str1 = PeopleFirstName
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	PeopleFirstName= Replace(str1,  str2, "''")
+End If  
+
+str1 = PeopleLastName
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	PeopleLastName= Replace(str1,  str2, "''")
+End If  
+
+
+str1 = PeopleTitleID
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	PeopleTitleID= Replace(str1,  str2, "''")
+End If  
+
+
+str1 = PeopleWebsite
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	PeopleWebsite= Replace(str1,  str2, "''")
+End If  
+
+str1 = lcase(PeopleWebsite)
+str2 = "http://"
+If InStr(str1,str2) > 0 Then
+	PeopleWebsite= right(PeopleWebsite, len(PeopleWebsite) - 7)
+End If  
+
+
+str1 = PeopleEmail
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	PeopleEmail= Replace(str1,  str2, "''")
+End If 
+
+str1 = password
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	password= Replace(str1,  str2, "''")
+End If 
+
+str1 = confirm
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	confirm= Replace(str1,  str2, "''")
+End If 
+
+str1 = AddressStreet
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	AddressStreet= Replace(str1,  str2, "''")
+End If 
+
+str1 = StreetApt
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	StreetApt= Replace(str1,  str2, "''")
+End If 
+
+str1 = AddressApt 
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	AddressApt= Replace(str1,  str2, "''")
+End If
+
+str1 = AddressCity
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	AddressCity= Replace(str1,  str2, "''")
+End If
+
+str1 = AddressZip
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	AddressZip= Replace(str1,  str2, "''")
+End If
+
+str1 = PeoplePhone
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	PeoplePhone= Replace(str1,  str2, "''")
+End If
+
+str1 = PeopleCell
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	PeopleCell= Replace(str1,  str2, "''")
+End If
+
+str1 = PeopleFax 
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	PeopleFax= Replace(str1,  str2, "''")
+End If
+sql = "select AddressID, WebsitesID from People where PeopleID = " & PeopleID & ""
+		
+	Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	ExistingEvent = False
+	If Not rs.eof Then
+		AddressID  =rs("AddressID") 
+		WebsitesID  =rs("WebsitesID") 
+End If 
+rs.close
+
+	Query =  " UPDATE Address Set AddressStreet = '" &  AddressStreet & "', " 
+	Query =  Query & " AddressApt = '" &  AddressApt & "'," 
+	Query =  Query & " AddressCity = '" &  AddressCity & "'," 
+    Query =  Query & " AddressState = '" &  AddressState & "'," 
+    Query =  Query & " AddressZip = '" &   AddressZip & "'" & " where AddressID = " & AddressID & ";" 
+
+
+Conn.Execute(Query) 
+
+	Query =  " UPDATE Websites Set Website = '" &  PeopleWebsite & "' " 
+	Query =  Query & " where WebsitesID = " & WebsitesID & ";" 
+
+
+
+Conn.Execute(Query) 
+ sql = "select AddressID from Address where AddressStreet = '" & AddressStreet & "' and AddressCity= '" & AddressCity & "' and AddressZip = '" & AddressZip  & "' order by AddressID Desc"
+		
+	Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	ExistingEvent = False
+	If Not rs.eof Then
+		AddressID = rs("AddressID")
+	End If 
+rs.close
+
+sql = "select WebsitesID from Websites where Website = '" & PeopleWebsite & "'"
+	
+	Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	ExistingEvent = False
+	If Not rs.eof Then
+		WebsitesID = rs("WebsitesID")
+	End If 
+rs.close
+
+
+	Query =  " UPDATE People Set AddressID = " &  AddressID & ", " 
+	Query =  Query & " WebsitesID = " &  WebsitesID & "," 
+	Query =  Query & " PeopleTitleID  = " &  PeopleTitleID & "," 
+    Query =  Query & " PeopleFirstName = '" &  PeopleFirstName & "'," 
+    Query =  Query & " PeopleLastName = '" &  PeopleLastName & "'," 
+    Query =  Query & " PeoplePhone = '" &  PeoplePhone & "'," 
+    Query =  Query & " Peopleemail = '" &  Peopleemail & "'," 
+    Query =  Query & " Peoplefax = '" &  Peoplefax & "',"
+    Query =  Query & " PeopleCell = '" &  PeopleCell & "',"
+        Query =  Query & " BusinessID = '" &  BusinessID & "',"
+    Query =  Query & " Peoplepassword = '" &  password & "'" 
+    Query =  Query & " where PeopleID = " & PeopleID & ";" 
+
+
+		
+Conn.Execute(Query) 
+
+ sql = "select PeopleID from People where AddressID = " & AddressID  & " order by PeopleID Desc;"
+
+		
+	Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	If Not rs.eof Then
+		PeopleID = rs("PeopleID")
+		session("PeopleID") = PeopleID
+	End If 
+rs.close
+
+AccountUpdated= True
+
+end if 
+
+
+if CreateAccount = "True" then
+AccountCreated = False
+        BusinessName  = request.Form("BusinessName")
+        PeopleFirstName  = request.Form("PeopleFirstName")
+		PeopleLastName  =request.Form("PeopleLastName") 
+		PeopleTitleID =request.Form("PeopleTitleID") 
+		PeopleWebsite =request.Form("Website") 
+		AddressStreet = request.Form("AddressStreet") 
+		AddressApt = request.Form("AddressApt") 
+		AddressCity  = request.Form("AddressCity")
+		AddressState  = request.Form("AddressState")
+		AddressZip  = request.Form("AddressZip")
+		PeoplePhone  = request.Form("PeoplePhone")
+		PeopleCell  = request.Form("PeopleCell")
+		PeopleFax = request.Form("PeopleFax")
+		password =request.Form("Password") 
+		confirmpassword =request.Form("confirmpassword") 
+		confirmEmail =request.Form("confirmEmail")
+		peopleEmail =request.Form("peopleEmail")  
+
+
+str1 = PeopleEmail
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	PeopleEmail= Replace(str1,  str2, "''")
+End If 
+
+
+
+
+NotInDB = True		
+sql = "select * from People where ucase(peopleEmail)  = '" & ucase(trim(peopleEmail))  & "'"
+		Set rs = Server.CreateObject("ADODB.Recordset")
+	    rs.Open sql, conn, 3, 3   
+		If Not rs.eof Then
+			NotInDB = False
+		end if 
+	rs.close	
+		
+ProceedToAdd = False	
+if len(PeopleFirstName) > 0 and len(PeopleLastName) > 0 and len(PeopleEmail) > 0 and len(Password) > 0 and len(confirmpassword) > 0 and NotInDB = True then
+
+  if (trim(Password) = trim(confirmPassword)) and (trim(ucase(peopleEmail)) = trim(ucase(confirmEmail))) then
+     ProceedToAdd = True
+  end if
+end if
+
+
+if  ProceedToAdd = True then
+
+
+str1 = BusinessName
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	BusinessName= Replace(str1,  str2, "''")
+End If  
+
+
+str1 = PeopleFirstName
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	PeopleFirstName= Replace(str1,  str2, "''")
+End If  
+
+str1 = PeopleLastName
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	PeopleLastName= Replace(str1,  str2, "''")
+End If  
+
+
+str1 = PeopleTitleID
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	PeopleTitleID= Replace(str1,  str2, "''")
+End If  
+
+
+str1 = PeopleWebsite
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	PeopleWebsite= Replace(str1,  str2, "''")
+End If  
+
+str1 = lcase(PeopleWebsite)
+str2 = "http://"
+If InStr(str1,str2) > 0 Then
+	PeopleWebsite= right(PeopleWebsite, len(PeopleWebsite) - 7)
+End If  
+
+
+
+
+str1 = password
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	password= Replace(str1,  str2, "''")
+End If 
+
+str1 = confirm
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	confirm= Replace(str1,  str2, "''")
+End If 
+
+str1 = AddressStreet
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	AddressStreet= Replace(str1,  str2, "''")
+End If 
+
+str1 = StreetApt
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	StreetApt= Replace(str1,  str2, "''")
+End If 
+
+str1 = AddressApt 
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	AddressApt= Replace(str1,  str2, "''")
+End If
+
+str1 = AddressCity
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	AddressCity= Replace(str1,  str2, "''")
+End If
+
+str1 = AddressZip
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	AddressZip= Replace(str1,  str2, "''")
+End If
+
+str1 = PeoplePhone
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	PeoplePhone= Replace(str1,  str2, "''")
+End If
+
+str1 = PeopleCell
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	PeopleCell= Replace(str1,  str2, "''")
+End If
+
+str1 = PeopleFax 
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	PeopleFax= Replace(str1,  str2, "''")
+End If
+
+		Query =  "INSERT INTO Address (AddressStreet, AddressApt, AddressCity, AddressState, AddressZip)" 
+	    Query =  Query + " Values ('" & AddressStreet  & "'," 
+	    Query =  Query & " '" &  AddressApt & "', " 
+		Query =  Query & " '" &  AddressCity & "', " 
+		Query =  Query & " '" &  AddressState & "', " 
+		Query =  Query & " '" &  AddressZip & "')" 
+
+
+Conn.Execute(Query) 
+
+
+
+
+		Query =  "INSERT INTO Websites (Website)" 
+		Query =  Query & " Values ('" & PeopleWebsite & "')" 
+
+
+Conn.Execute(Query) 
+ sql = "select AddressID from Address where AddressStreet = '" & AddressStreet & "' and AddressCity= '" & AddressCity & "' and AddressZip = '" & AddressZip  & "' order by AddressID Desc"
+		
+	Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	ExistingEvent = False
+	If Not rs.eof Then
+		AddressID = rs("AddressID")
+	End If 
+rs.close
+
+
+
+
+	Query =  "INSERT INTO Business (BusinessName, EventID)" 
+	Query =  Query & " Values ('" & BusinessName  & "'," 
+	 Query =  Query & " " &  EventID & ")" 
+
+Conn.Execute(Query) 
+
+sql = "select BusinessID from Business where EventID = " & EventID & " and  BusinessName = '" & BusinessName & "' order by BusinessID Desc"
+		
+	Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	ExistingEvent = False
+	If Not rs.eof Then
+		BusinessID = rs("BusinessID")
+	End If 
+rs.close
+
+
+
+sql = "select WebsitesID from Websites where Website = '" & PeopleWebsite & "'"
+		
+	Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	ExistingEvent = False
+	If Not rs.eof Then
+		WebsitesID = rs("WebsitesID")
+	End If 
+rs.close
+
+
+
+
+		Query =  "INSERT INTO People (AddressID, WebsitesID, PeopleTitleID, PeopleFirstName, PeopleLastName, PeoplePhone, Peopleemail, Peoplefax, PeopleCell, PeoplePassword,  PeopleActive, BusinessID, PeopleCreationDate  )" 
+		Query =  Query & " Values (" &  AddressID & ","		
+		Query =  Query & " " &   WebsitesID & ", " 
+		Query =  Query & " " &   PeopleTitleID & ", " 	
+ 		Query =  Query & " '" &  PeopleFirstName & "', " 
+		Query =  Query & " '" &  PeopleLastName & "', " 
+		Query =  Query & " '" &  PeoplePhone & "', " 
+		Query =  Query & " '" &  Peopleemail & "', " 
+		Query =  Query & " '" &  Peoplefax & "', " 
+		Query =  Query & " '" &  Peoplecell & "', " 
+		Query =  Query & " '" &  password & "', " 
+		Query =  Query & " Yes, " 
+		Query =  Query & " " &  BusinessID & ", " 
+		Query =  Query & " '" &  Now & "') "
+		
+Conn.Execute(Query) 
+
+
+ sql = "select PeopleID from People where AddressID = " & AddressID  & " order by PeopleID Desc;"
+
+		
+	Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	If Not rs.eof Then
+		PeopleID = rs("PeopleID")
+		session("PeopleID") = PeopleID
+	End If 
+rs.close
+
+if len(PeopleID) > 0 then
+  AccountCreated = True
+  	session("PeopleID") = PeopleID
+  response.Redirect("fibermaniaRegistration.asp?PeopleID=" &  PeopleID )
+end if
+
+end if
+end if 
+
+
+
+CheckLogin = False
+CheckLogin = request.Form("CheckLogin")
+if CheckLogin = "True" then	
+UID=Trim(Request.Form("UID"))
+password=Trim(Request.Form("password"))
+'response.write("name=" & name)  
+if len(name)> 0 then
+  regaccessfound  = false
+ else
+
+	sql2 = "select * from People where Peopleemail = '" & trim(UID) & "' and (PeoplePassword = '" & password & "')"
+
+	acounter = 1
+	Set rs2 = Server.CreateObject("ADODB.Recordset")
+	rs2.Open sql2, conn, 3, 3 
+	
+
+	if Not rs2.eof Then
+	numrecords = rs2.recordcount
+	PeopleID = rs2("PeopleID")
+	Session("PeopleID") = PeopleID
+	Session("LoggedIn") = true
+	regaccessfound  = True
+	redirect = true
+    end if 
+rs2.close
+
+
+if redirect = true then
+  response.Redirect("fibermaniaRegistration.asp?PeopleID=" & PeopleID & "&EventID=" &  EventID )
+ else
+   response.Redirect("fibermaniaRegistration.asp?EventID=" &  EventID & "&Message2=The E-Mail and password that you entered do not match any accounts in our database. Please try again or create an account.")
+end if
+
+End if
+
+End if
+
+
+
+
+if len(PeopleID)> 0 then 
+  	response.Redirect("fibermaniaRegistration.asp?PeopleID=" &  PeopleID )
+
+%>
+<table border = "0" width = "770" bgcolor = "<% =backgroundcolor%>"><tr><td valign = "top">
+
+<%
+'response.write("PeopleID=" & PeopleID )
+
+	sql = "select Address.*, Websites.*, People.* from Address, Websites, People where People.AddressID = Address.AddressID and People.WebsitesID = Websites.WebsitesID and PeopleID = " & PeopleID & ""
+
+		
+	Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	If Not rs.eof Then
+		PeopleFirstName  =rs("PeopleFirstName") 
+		PeopleLastName  =rs("PeopleLastName") 
+		PeopleTitleID =rs("PeopleTitleID") 
+		PeopleWebsite =rs("Website") 
+		PeopleEmail =rs("PeopleEmail") 
+		password =rs("PeoplePassword") 
+		AddressStreet = rs("AddressStreet") 
+		AddressApt = rs("AddressApt") 
+		AddressCity  = rs("AddressCity")
+		AddressState  = rs("AddressState")
+		AddressZip  = rs("AddressZip")
+		PeoplePhone  = rs("PeoplePhone")
+		PeopleCell  = rs("PeopleCell")
+		PeopleFax  = rs("Peoplefax")
+		BusinessID = rs("BusinessID")
+	End If 
+	rs.close
+if len(BusinessID) > 0 then
+sql = "select BusinessName from Business where EventID = " & EventID & " and  BusinessID = " & BusinessID & " order by BusinessID Desc"
+		
+	Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	ExistingEvent = False
+	If Not rs.eof Then
+		BusinessName = rs("BusinessName")
+	End If 
+rs.close
+
+end if
+
+
+	if len(PeopleTitleID) > 0 then 
+		sql = "select PeopleTitle from PeopleTitleLookup where PeopleTitleID = " & PeopleTitleID & ""
+		'response.write(sql)
+		Set rs = Server.CreateObject("ADODB.Recordset")
+	    rs.Open sql, conn, 3, 3   
+		ExistingEvent = False
+		If Not rs.eof Then
+			PeopleTitle = rs("PeopleTitle")
+		end if 
+	end if
+end if
+%>
+
+<table   border="0" cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"  align = "center"  valign ="top" bgcolor = "<% =backgroundcolor%>" width = "780">
+	<tr>
+		<td class ="body" valign = "top" colspan = "2" ><br>
+		<div align = "right"><a href = "http://www.Andresenevents.com" target = "_blank"><img src = "http://www.Andresenevents.com/images/AELogo300px.png" width = "279" height = "155" border = "0" alt = "Andresen Events Online Event Registration" /></a></div>
+		
+			<% if len(PeopleID) < 1 then 
+			%>
+			<H1>Please Log In</H1>
+			  <center>Before you can register for this event you need to log in. Please log in or create an account below.</center>
+			<% else  %>
+				<H1>Your Account</H1>
+				To create your event please select the "Proceed to the Next Step" button at the bottom of this page.<br />
+			<% end if %>
+	
+	
+		<% Message2 = Request.QueryString("Message2")
+		 if len(Message2) >1 then %>
+	        <br /><font color = "brown"><b><%= Message2 %></b></font><br /><br />
+         <% end if
+		if not(AccountCreated = True) and not(AccountUpdated = True) then
+		
+		 if (ProceedToAdd = False and CreateAccount="True")  then%>
+		 <%  if NotInDB = False or len(PeopleFirstName) < 1 or len(PeopleLastName) < 1 or  len(PeopleEmail) < 5 or len(Password) < 6 or not (trim(ucase(peopleEmail)) = trim(ucase(confirmEmail))) or not (trim(Password) = trim(confirmPassword)) then %>
+	
+		<font color = "brown"><b>Your Account Was Not Created.</b><br />
+		Please resolve the following issues and reselect the "Create Your Account" button:
+		<ul><%  if NotInDB = False then %>
+		  <li>There already is an account with that E-Mail address. Please log in with your existing account or use a different E-Mail address.</li>
+		<% end if %>
+		 <%  if len(PeopleFirstName) < 1 then %>
+		  <li>Please enter a first name.</li>
+		<% end if %>
+		<%  if len(PeopleLastName) < 1 then %>
+		  <li>Please enter a last name.</li>
+		<% end if %>
+		<%  if len(PeopleEmail) < 5 then %>
+		  <li>Please enter an valid E-Mail address.</li>
+		<% end if %>
+			
+		<%  if len(Password) < 6 then %>
+		  <li>Please enter a valid password. Passwords must be at least 5 characters long.</li>
+		<% end if %>
+		 <%  if not (trim(ucase(peopleEmail)) = trim(ucase(confirmEmail))) then %>
+		     <li>Please enter matching E-Mail addresses.</li>
+		 <% end if %>
+		<%  if not (trim(Password) = trim(confirmPassword)) then %>
+		     <li>Please enter a matching passwords.</li>
+		 <% end if %>
+
+		</ul>
+       
+		</font>	
+		<% end if  %>
+		<% end if  
+		end if
+		
+		
+		if not(AccountUpdated = True) then
+		
+		 if  (ProceedToUpdate = False and UpdateAccount = "True") then%>
+		  <%  if len(PeopleFirstName) < 1 or  len(PeopleLastName) < 1 or len(PeopleEmail) < 5 or len(Password) < 6 or (not (trim(ucase(peopleEmail)) = trim(ucase(confirmEmail))))  or (not (trim(Password) = trim(confirmPassword))) then %>
+		 
+		<font color = "brown"><b>Your Account Was Not Updated.</b><br />
+		Please resolve the following issues and reselect the "Update Your Account" button:
+		<ul>
+		 <%  if len(PeopleFirstName) < 1 then %>
+		  <li>Please enter a first name.</li>
+		<% end if %>
+		<%  if len(PeopleLastName) < 1 then %>
+		  <li>Please enter a last name.</li>
+		<% end if %>
+		<%  if len(PeopleEmail) < 5 then %>
+		  <li>Please enter an valid E-Mail address.</li>
+		<% end if %>
+			
+		<%  if len(Password) < 6 then %>
+		  <li>Please enter a valid password. Passwords must be at least 5 characters long.</li>
+		<% end if %>
+		 <%  if not (trim(ucase(peopleEmail)) = trim(ucase(confirmEmail))) then %>
+		     <li>Please enter matching E-Mail addresses.</li>
+		 <% end if %>
+		<%  if not (trim(Password) = trim(confirmPassword)) then %>
+		     <li>Please enter a matching passwords.</li>
+		 <% end if %>
+
+		</ul>
+       
+		</font>	
+		<% end if  %>
+		<% end if  %>
+		
+				<% end if  %>
+		
+			<% if AccountCreated = True and CreateAccount="True" then%>
+			<b>Your Account Was Created.</b>
+			<% end if %>
+			
+		<%
+		 if AccountUpdated = "True" and UpdateAccount="True" then%>
+			<b>Your Account Was Updated.</b>
+			<% end if %>
+			
+			
+	<br />
+    	</td>
+</tr></table>
+	
+
+	<table   border="0" cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"  align = "center"  valign ="top" width = "780">
+	<tr>
+		<td class ="body" valign = "top" width = "276" bgcolor = "<%=SecondaryColor %>" align = "center">
+
+<table   border="0" cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"  align = "center"  valign ="top"  width = "279" height = "155"><tr><td class = "body" colspan = "2" >		<form action= 'fibermaniaRegistration.asp' method = "post">
+	<blockquote><center><H2>Existing Account</H2></center>
+Enter your Andresen Events login information:<br /></blockquote>
+</td></tr>
+
+
+<tr><td class = "body"  align = "right" >
+	E-Mail:
+</td>
+<td align = "left" valign = "top" >	
+	<input type=text  name=UID value= "<%=PeopleEmail %>" SIZE = "30" ><br>
+</td>
+</tr>
+<tr><td class = "body"  align = "right">
+		Password:<br>
+	</td>
+	<td align = "left" valign = "top" >	
+		<input type= password name=password value= "<%=password %>" SIZE = "12">
+	</td>
+</tr>
+<tr>
+	<td align = "center" valign = "top" colspan = "2">	
+		<input type= "hidden" name="CheckLogin" value= "True" >
+		<input type=submit value = "Login" class = "regsubmit2" size = "170"  >
+	</td>
+</tr>
+<tr>
+  <td class = "body" colspan = "2"><br />
+ <blockquote> <center><h2>Forgot Your Password?</H2></center>
+  <a href = "sendpassword.asp" class = "body" target = "blank">Click Here</a> to have your password emailed to you.</blockquote>
+  </td>
+</tr>
+</table>
+</form>
+	
+		</td>
+		<td width = "5" bgcolor = "<%=SecondaryColor %>"><img src = "images/px.gif"  width = "4" height = "1" alt = "Event Registration with Andresen Events" /></td>
+		<td class ="body" valign = "top" width = "500" bgcolor = "<%=SecondaryColor %>">
+		<form action= 'fibermaniaRegistration.asp' method = "post">
+	
+		<% if len(PeopleID) > 0 then %>
+				<H2>Your Account Information</H2>
+				If you wish you can update your account information below:<br />
+		<% else %>
+		<H2>New Account</H2>
+		Fill out the form below to create an Andresen Events account:<br />
+		<% end if  %>
+			 (* Indicates Required Fields)
+<% if len(Message) > 1 then %><br>
+<font color = "red"><b><%=Message%></b></font>
+<% end if %>
+
+<table border = "0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"  cellpadding=0 cellspacing=0  width = "500">
+<tr>
+				<td class = "body" align = "right" >
+				 <%  if len(PeopleFirstName) < 1 and (CreateAccount = "True" or UpdateAccount = "True") then %><font color = "brown"><% end if %>First Name:* &nbsp;<%  if len(PeopleFirstName) < 1 and (CreateAccount = "True" or UpdateAccount = "True") then %></font><% end if %>
+				</td>
+				<td class = "body" align = "left" WIDTH = "300">
+					<input name="PeopleFirstName" Value ="<%=PeopleFirstName%>"  size = "33" maxlength = "61">
+				</td>
+			</tr>
+			<tr>
+				<td class = "body" align = "right">
+					<%  if len(PeopleLastName) < 1 and (CreateAccount = "True" or UpdateAccount = "True") then %><font color = "brown"><% end if %>Last Name:* &nbsp;<%  if len(PeopleLastName) < 1 and (CreateAccount = "True" or UpdateAccount = "True") then %></font ><% end if %>
+				</td>
+				<td class = "body">
+					<input name="PeopleLastName" Value ="<%=PeopleLastName%>"  size = "33" maxlength = "61">
+				</td>
+			</tr>
+			<tr>
+				<td  class = "body" align = "right">
+					Title: &nbsp;
+				</td>
+				<td class = "body"   >
+					<select size="1" name="PeopleTitleID">
+						
+<% if len(PeopleTitle) > 0 then %>
+	<option value= "<%=PeopleTitleID %>" selected><%=PeopleTitle %></option>
+<% else %>
+	<option value= "5">N/A</option>
+<% end if %>
+<% 
+  sql = "select * from PeopleTitleLookup where not PeopleTitle = 'N/A'"
+  Set rs = Server.CreateObject("ADODB.Recordset")
+  rs.Open sql, conn, 3, 3   
+  if not rs.eof then
+  while not rs.eof %>
+		<option value= "<%=rs("PeopleTitleID") %>"><%=rs("PeopleTitle") %></option>
+  <% 
+  rs.movenext
+  wend 
+end if %>
+ </select>
+    	</td>
+	</tr>
+	<tr>
+	<td class = "body" align = "right">
+			Business Name: &nbsp;
+		</td>
+		<td class = "body">
+			<input name="BusinessName" Value ="<%=BusinessName%>"  size = "30" maxlength = "61">
+		</td>
+	</tr>
+<tr>
+	<td class = "body" align = "right">
+			Website: &nbsp;
+		</td>
+		<td class = "body">
+			http://<input name="PeopleWebsite" Value ="<%=PeopleWebsite%>"  size = "30" maxlength = "61">
+		</td>
+	</tr>
+	
+
+<tr>
+						  <td   class = "body" align = "right">
+								Mailing Address: &nbsp;
+							</td>
+
+							<td  align = "left" valign = "top" class = "body">
+								<input name="AddressStreet"  size = "30" value = "<%=AddressStreet%>">
+							</td>
+						</tr>
+						<tr>
+						<td   class = "body"  align = "right">
+								Apartment / Suite: &nbsp;
+						</td>
+						<td  valign = "top" class = "body">
+								<input name="AddressApt"  size = "30" value = "<%=AddressApt%>">
+							</td>
+						</tr>
+						<tr>
+							<td   class = "body" align = "right">
+								City: &nbsp;
+							</td>
+							<td  valign = "top" class = "body">
+								<input name="AddressCity"  size = "30" value = "<%=AddressCity%>">
+							</td>
+						</tr>
+						<tr>
+							<td  align = "right" class = "body">
+								State/ Provence: &nbsp;
+							</td>
+							<td  align = "left" valign = "top" class = "body">
+					
+							<select size="1" name="AddressState">
+							<% If Len(AddressState) > 0 then%>
+								<option value="<%=AddressState%>" selected><%=AddressState%></option>
+							<% Else %>
+								<option value="" selected>-----</option>
+							<% End If %>
+					<option value="AL">AL</option>
+					<option  value="AK">AK</option>
+					<option  value="AZ">AZ</option>
+					<option  value="AR">AR</option>
+					<option  value="CA">CA</option>
+					<option  value="CO">CO</option>
+					<option  value="CT">CT</option>
+					<option  value="DE">DE</option>
+					<option  value="DC">DC</option>
+					<option  value="FL">FL</option>
+					<option  value="GA">GA</option>
+					<option  value="HI">HI</option>
+					<option  value="ID">ID</option>
+					<option  value="IL">IL</option>
+					<option  value="IN">IN</option>
+					<option  value="IA">IA</option>
+					<option  value="KS">KS</option>
+					<option  value="KY">KY</option>
+					<option  value="LA">LA</option>
+					<option  value="ME">ME</option>
+					<option  value="MD">MD</option>
+					<option  value="MA">MA</option>
+					<option  value="MI">MI</option>
+					<option  value="MN">MN</option>
+					<option  value="MS">MS</option>
+					<option  value="MO">MO</option>
+					<option  value="MT">MT</option>
+					<option  value="NE">NE</option>
+					<option  value="NV">NV</option>
+					<option  value="NH">NH</option>
+					<option  value="NJ">NJ</option>
+					<option  value="NM">NM</option>
+					<option  value="NY">NY</option>
+					<option  value="NC">NC</option>
+					<option  value="ND">ND</option>
+					<option  value="OH">OH</option>
+					<option  value="OK">OK</option>
+					<option  value="OR">OR</option>
+					<option  value="PA">PA</option>
+					<option  value="RI">RI</option>
+					<option  value="SC">SC</option>
+					<option  value="SD">SD</option>
+					<option  value="TN">TN</option>
+					<option  value="TX">TX</option>
+					<option  value="UT">UT</option>
+					<option  value="VT">VT</option>
+					<option  value="VA">VA</option>
+					<option  value="WA">WA</option>
+					<option  value="WV">WV</option>
+					<option  value="WI">WI</option>
+					<option  value="WY">WY</option>
+					<option  value=""></option>
+					<option  value="ON">ON</option>
+					<option  value="QC">QC</option>
+					<option  value="BC">BC</option>
+					<option  value="AB">AB</option>
+					<option  value="MB">MB</option>
+					<option  value="SK">SK</option>
+					<option  value="NS">NS</option>
+					<option  value="NB">NB</option>
+					<option  value="NL">NL</option>
+					<option  value="PE">PE</option>
+					<option  value="NT">NT</option>
+					<option  value="YK">YK</option>
+					<option  value="NU">NU</option>
+
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td   class = "body" align = "right">
+				Postal Code: &nbsp;
+			</td>
+			<td  align = "left" valign = "top" class = "body">
+				<input name="AddressZip"  size = "8" value = "<%=AddressZip%>">
+			</td>
+		</tr>
+		<tr>
+			<td  align = "right" class = "body">
+				<small>Country: </small>	
+			</td>
+			<td  align = "left" valign = "top" class = "body">
+					
+				<select size="1" name="BusinessCountry">
+					<option value="USA" selected>USA</option>
+					<option value="Canada">Canada</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td   class = "body" align = "right">
+				Phone: &nbsp;
+			</td>
+			<td  align = "left" valign = "top" class = "body">
+				<input name="PeoplePhone"  size = "30" value = "<%=PeoplePhone%>">
+			</td>
+		</tr>
+		<tr>
+			<td   class = "body" align = "right">
+				Cell: &nbsp;
+			</td>
+			<td  align = "left" valign = "top" class = "body">
+				<input name="PeopleCell"  size = "30" value = "<%=PeopleCell%>">
+			</td>
+		</tr>
+		<tr>
+			<td   class = "body" align = "right">
+				Fax: &nbsp;
+			</td>
+			<td  align = "left" valign = "top" class = "body">
+				<input name="PeopleFax"  size = "30" value = "<%=PeopleFax%>">
+			</td>
+		</tr>
+		<tr>
+		<td   class = "body" align = "right">
+			<%  if ((len(PeopleEmail) < 1 or NotInDB = False ) and CreateAccount = "True") or (len(PeopleEmail) < 1 and UpdateAccount = "True") then %><font color = "brown"><% end if %>Email:* &nbsp;<%  if ((len(PeopleEmail) < 1 or NotInDB = False ) and CreateAccount = "True") or (len(PeopleEmail) < 1 and UpdateAccount = "True") then %></font><% end if %>
+	
+		</td>
+		<td  align = "left" valign = "top" class = "body">
+			<input name="PeopleEmail"  size = "30" value = "<%=PeopleEmail%>">
+		</td>
+	</tr>
+		<tr>
+		<td   class = "body" align = "right">
+			<%  if ((len(PeopleEmail) < 1 or NotInDB = False ) and CreateAccount = "True") or (len(PeopleEmail) < 1 and UpdateAccount = "True") then %><font color = "brown"><% end if %>Confirm Email:* &nbsp;<%  if ((len(PeopleEmail) < 1 or NotInDB = False ) and CreateAccount = "True") or (len(PeopleEmail) < 1 and UpdateAccount = "True") then %></font><% end if %>
+		</td>
+		<td  align = "left" valign = "top" class = "body">
+			<input name="confirmemail"  size = "30" value = "<%=confirmEmail%>">
+		</td>
+	</tr>
+	<tr>
+	<td class = "body" align = "right" ><%  if len(password) < 6 and (CreateAccount = "True" or UpdateAccount = "True") then %><font color = "brown"><% end if %>Password:* &nbsp;<%  if len(password) < 1 and (CreateAccount = "True" or UpdateAccount = "True") then %></font ><% end if %></td>
+	<td WIDTH = "300"><label><input name="password" type="password" value="<%=password%>" maxlength = 12 ></label></td>
+	</tr>
+	<tr>
+	<td class = "body" align = "right"><%  if len(password) < 6 and (CreateAccount = "True" or UpdateAccount = "True") then %><font color = "brown"><% end if %>Confirm Password:* &nbsp;<%  if len(password) < 1 and (CreateAccount = "True" or UpdateAccount = "True") then %></font ><% end if %></td>
+	<td><label><input name="confirmpassword" type="password" value="<%=password%>"  maxlength = 12 ></label></td>
+	</tr>
+	<tr rowspan = "2">
+	<td class = "body" colspan = "2" align = "center">
+		Password must be 5-12 characters long.
+	</td>
+	</tr>
+	</table>
+	
+			<% CreateAccount = "False" 
+UpdateAccount= "False" %>
+		<% if len(PeopleID)>0 then %>
+		<input type= "hidden" name="UpdateAccount" value= "True" >
+		<input type= "hidden" name="CreateAccount" value= "False" >
+	<% else %>
+	<input type= "hidden" name="CreateAccount" value= "True" >
+			<input type= "hidden" name="UpdateAccount" value= "False" >
+    <% end if %>
+			
+
+	<center><% if len(PeopleID)>0 then %>
+		<input type=submit value="Update Your Account" class = "regsubmit2" onclick="verify();">
+	<% else %>
+	<input type=submit value="Create Your Account"   class = "regsubmit2">
+    <% end if %>
+</center>	</form>	
+		</td>
+</tr>
+</table>
+<% end if %>
+
+
+
+
+
+<% if len(session("peopleID")) > 0 then %> 
+ 
+ <%
+		sql2 = "SELECT * from Registration where PeopleID = " & PeopleID & " and Quantity > 0 and EventID=" & EventID 
+		 Set rs2 = Server.CreateObject("ADODB.Recordset") 
+		  ' response.write("sql2=" & sql2) 
+    rs2.Open sql2, conn, 3, 3  
+    if not rs2.eof then %>
+ 
+    	<table border = "0" cellpadding = "0" cellspacing = "0" align = "center">
+	<tr>
+		  <td class = "body"  valign = "top"><br />   <br /><h2>Previously Ordered Services</h2>
+		  Below are services that you have previously ordered for this event:<br />
+		  <table border = "0" cellpadding = "0" cellspacing = "0" >
+		  <tr>
+		  <td class = "body" align = "center" width = "300"><b>Service</b></td>
+		  <td class = "body" align = "center" width = "60"><b>QTY</b></td>
+		  <td class = "body" align = "center" width = "90"><b>Price</b></td>
+		  <td class = "body" align = "center" width = "70"><b>Total</b></td>
+		  </tr>
+		  <tr><td colspan = "4" bgcolor = "#abacab"><img src = "images/px.gif" height = "1" width = "1" /></td></tr>
+		 <tr>
+		    <td  class = "body" valign = "top" >
+    
+    
+    
+    
+   <% 
+    while not rs2.eof  
+     CurrentServiceDescription = rs2("ServiceDescription")
+ 
+str1 = CurrentServiceDescription
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	CurrentServiceDescription= Replace(str1,  str2, "''")
+End If 
+
+ sqlTB = "select * from VendorLevels where instr('" &  CurrentServiceDescription & "' , VendorStallName)"
+    Set rsTB = Server.CreateObject("ADODB.Recordset")
+    rsTB.Open sqlTB, conn, 3, 3   
+   if not rsTB.eof then
+ 		CostperTable =rsTB("CostperTable")
+   end if 
+ 
+  rsTB.close
+
+ %>
+	     <%=rs2("ServiceDescription") %><br />
+	    <%  if rs2("ExtraTables") > 0 then %>
+	        Extra Tables<br />
+	    <% end if %>
+	<% 
+	rs2.movenext
+	wend  
+	  %>
+	</td>
+	
+	  <td class = "body" valign = "top" align = "center">
+  
+     <%
+     rs2.movefirst
+  while not rs2.eof 
+      Quantity = rs2("Quantity")   
+      if timepassed < 5 then  %> 
+      <%   if len(rs2("ItemPrice")) > 1 then %>
+	      <%= Quantity %><br />
+	<% end if  %>
+	 <%  if rs2("ExtraTables") > 0 then %>
+	        <%=rs2("ExtraTables") %><br />
+	    <% end if %>
+	<% end if  
+	rs2.movenext
+	wend  
+	  %>	
+	</td> 
+	 <td class = "body" valign = "top" align = "right">
+  
+     <%
+     rs2.movefirst
+  while not rs2.eof  
+      if timepassed < 5 then  %> 
+      <%   if len(rs2("ItemPrice")) > 1 then %>
+	     <%=formatcurrency(rs2("ItemPrice")) %><br />
+	       <%  if rs2("ExtraTables") > 0 then 
+	                extratablecost = CostperTable * rs2("ExtraTables") 
+		       %>
+	       <%= formatcurrency(extratablecost)%> <br />
+	    <% end if %>
+	<% end if  
+	end if  
+	rs2.movenext
+	wend  
+	  %>	
+		&nbsp;</td>  
+	 <td class = "body" valign = "top" align = "right">
+  
+     <%
+     rs2.movefirst
+  while not rs2.eof  
+    Quantity = rs2("Quantity")   
+      if timepassed < 5 then  %> 
+      <%   if len(rs2("ItemPrice")) > 1 then 
+      TotalOrder = TotalOrder + rs2("ItemPrice") * Quantity
+      
+      %>
+	     <%=formatcurrency(rs2("ItemPrice") * Quantity ) %><br />
+	       <%  if rs2("ExtraTables") > 0 then 
+	                extratablecost = CostperTable * rs2("ExtraTables") 
+	       TotalOrder = TotalOrder + extratablecost 
+	       %>
+	       
+	       <%= formatcurrency(extratablecost)%><br />
+	    <% end if %>
+	<% end if  
+	end if  
+	rs2.movenext
+	wend  
+	  %>	
+		&nbsp;</td>
+</tr>
+</table>
+
+</td></tr>
+</table>	
+<% end if %>
+
+ 
+ <table border = "0" width = "770"  bgcolor = "<% =backgroundcolor%>"><tr><td valign = "top"><br />
+
+
+<% StripeColor = "#F4F4F4" 
+FirstGroup = True
+
+PeopleID = 	session("PeopleID") 
+
+
+ if request.querystring("RemoveHalterAnimal") = "True" then
+  RemoveHalterAnimalID = request.querystring("AnimalID")
+  
+  
+  if len(RemoveHalterAnimalID)> 0 then
+    sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & RemoveHalterAnimalID & " and RegistrationType= 'Halter' "
+
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If not rs.eof Then	
+
+		Query =  "Delete * From RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & RemoveHalterAnimalID & " and RegistrationType= 'Halter' " 
+	
+	Conn.Execute(Query) 
+	rs.close
+  end if 
+  end if 
+end if 
+
+if request.querystring("RemoveProductionAnimal") = "True" then
+  RemoveProductionAnimalID = request.querystring("AnimalID")
+ 
+  
+  if len(RemoveProductionAnimalID)> 0 then
+    sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & RemoveProductionAnimalID & " and RegistrationType= 'Production' "
+
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If not rs.eof Then	
+
+		Query =  "Delete * From RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & RemoveProductionAnimalID & " and RegistrationType= 'Production' " 
+
+	Conn.Execute(Query) 
+	rs.close
+  end if 
+  end if 
+
+end if 
+
+
+if request.querystring("RemoveCompanionAnimal") = "True" then
+  RemoveCompanionAnimalID = request.querystring("AnimalID")
+ 
+  
+  if len(RemoveCompanionAnimalID)> 0 then
+    sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & RemoveCompanionAnimalID & " and RegistrationType= 'Companion' "
+
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If not rs.eof Then	
+
+		Query =  "Delete * From RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & RemoveCompanionAnimalID & " and RegistrationType= 'Companion' " 
+
+	Conn.Execute(Query) 
+	rs.close
+  end if 
+  end if 
+
+end if 
+
+
+if request.querystring("RemoveFleeceAnimal") = "True" then
+  RemoveFleeceAnimalID = request.querystring("AnimalID")
+  
+  
+  if len(RemoveFleeceAnimalID)> 0 then
+    sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & RemoveFleeceAnimalID & " and RegistrationType= 'Fleece' "
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If not rs.eof Then	
+
+		Query =  "Delete * From RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & RemoveFleeceAnimalID & " and RegistrationType= 'Fleece' " 
+
+	Conn.Execute(Query) 
+	rs.close
+  end if 
+  end if 
+
+end if 
+
+
+
+if request.querystring("RemoveSpinOffAnimal") = "True" then
+  RemoveSpinOffAnimalID = request.querystring("AnimalID")
+ 
+  
+  if len(RemoveSpinOffAnimalID)> 0 then
+    sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & RemoveSpinOffAnimalID & " and RegistrationType= 'SpinOff' "
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If not rs.eof Then	
+		Query =  "Delete * From RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & RemoveSpinOffAnimalID & " and RegistrationType= 'SpinOff' " 
+
+	Conn.Execute(Query) 
+	rs.close
+  end if 
+  end if 
+
+end if 
+
+
+dim ProductionClassNameArray(1000)
+dim HalterClassNameArray(1000)
+dim HalterClassIDArray(1000)
+dim ProductionClassIDArray(1000)
+dim AnimalNameArray(1000)
+dim AnimalIDArray(1000)
+dim ProductionAnimalNameArray(1000)
+dim ProductionAnimalIDArray(1000)
+dim CompanionAnimalNameArray(1000)
+dim CompanionAnimalIDArray(1000)
+dim FleeceAnimalNameArray(1000)
+dim FleeceAnimalIDArray(1000)
+dim SpinOffAnimalNameArray(1000)
+dim SpinOffAnimalIDArray(1000)
+dim ClassesQTYArray(1000)
+dim SponsorQTYArray(1000)
+dim ClassInfoMaterialFeePay(1000)
+dim AdvertsingQTYArray(1000)
+dim VendorQTYArray(1000)
+dim VendorTableQTYArray(1000)
+dim ExtraOptionsQTYArray(1000)
+Dim DontNeedTableArray(1000)
+
+
+OrderTotal = 0
+
+EventSubTypeID = request.querystring("EventSubTypeID")
+
+sql3 = "select * from Event where EventID = " & EventID
+Set rs3 = Server.CreateObject("ADODB.Recordset")
+rs3.Open sql3, conn, 3, 3   
+if not rs3.eof then 
+  AOBA = rs3("AOBA")
+  AOBAFee = rs3("AOBAFee")
+end if
+rs3.close
+
+if AOBA = True and len(AOBAFee) > 0 then
+  ShowAOBAFee = "True"
+end if
+
+
+
+sql3 = "select * from Services where EventID = " & EventID
+Set rs3 = Server.CreateObject("ADODB.Recordset")
+rs3.Open sql3, conn, 3, 3   
+if not rs3.eof then 
+  ServiceTypeLookupID = rs3("ServiceTypeLookupID")
+end if
+
+	
+	
+
+ sql3 = "select * from EventPagelayout where PageAvailable = True and EventID = " & EventID & " order by LinkOrder"	
+Set rs = Server.CreateObject("ADODB.Recordset")
+rs.Open sql3, conn, 3, 3   
+while Not rs.eof 
+	if rs("PageName") = "Halter Show" and rs("ShowPage") = True then
+       ShowHalterShow = True 
+     End If
+ 
+     if rs("PageName") = "Fleece Show"  and rs("ShowPage") = True then
+       ShowFleeceShow = True 
+     End If
+
+     if rs("PageName") = "Vendors"  and rs("ShowPage") = True then
+       ShowVendors = True 
+     End If
+
+
+     	if rs("PageName") = "Stud Auction"  and rs("ShowPage") = True then
+       		ShowStudauction = True 
+     	End If
+
+	if rs("PageName") = "Spin-Off"  and rs("ShowPage") = True then
+       		ShowSpinOff = True 
+     	End If
+
+
+
+     if rs("PageName") = "Sponsors"  and rs("ShowPage") = True then
+       ShowSponsors = True
+     End If
+
+     
+     if rs("PageName") = "Advertising"  and rs("ShowPage") = True then
+       ShowAdvertising = True
+     End If
+
+
+     if rs("PageName") = "Classes"  and rs("ShowPage") = True then
+       ShowClasses = True 
+     End If
+
+     if rs("PageName") = "Dinner"  and rs("ShowPage") = True then
+       ShowDinner = True 
+     End If
+     
+     
+
+     if rs("PageName") = "Silent Auction" and rs("ShowPage") = True  then
+       ShowSilentAuction = True
+     End If
+rs.movenext
+wend
+  
+dim aID(40000)
+dim aName(40000)
+
+
+sql2 = "select * from Animals where PeopleID = " & PeopleID & " order by FullName "
+	acounter = 1
+	Set rs2 = Server.CreateObject("ADODB.Recordset")
+	rs2.Open sql2, conn, 3, 3 
+	
+	While Not rs2.eof  
+		aID(acounter) = rs2("ID")
+		aName(acounter) = rs2("FullName")
+		acounter = acounter +1
+		rs2.movenext
+	Wend		
+	
+		rs2.close
+
+
+
+ sql = "select * from Services, ServiceTypeLookup where Services.ServiceTypeLookupID = ServiceTypeLookup.ServiceTypeLookupID and ServiceType = 'Halter Show' and EventID =  " & EventID & " Order by ServicesID Desc"
+Set rs = Server.CreateObject("ADODB.Recordset")
+rs.Open sql, conn, 3, 3   
+If Not rs.eof Then	
+
+	ServicesID = rs("ServicesID")
+	ServiceStartDateMonth  = rs("ServiceStartDateMonth")
+	ServiceStartDateDay  = rs("ServiceStartDateDay")
+	ServiceStartDateYear  = rs("ServiceStartDateYear")
+	ServiceEndDateMonth  = rs("ServiceEndDateMonth")
+	ServiceEndDateDay  = rs("ServiceEndDateDay")
+	ServiceEndDateYear  = rs("ServiceEndDateYear")
+	Price1Discount= rs("Price1Discount")
+	Price1DiscountStartDateMonth  = rs("Price1DiscountStartDateMonth")
+	Price1DiscountStartDateDay  = rs("Price1DiscountStartDateDay")
+	Price1DiscountStartDateYear  = rs("Price1DiscountStartDateYear")
+	Price1DiscountEndDateMonth  = rs("Price1DiscountEndDateMonth")
+	Price1DiscountEndDateDay  = rs("Price1DiscountEndDateDay")
+	Price1DiscountEndDateYear  = rs("Price1DiscountEndDateYear")
+	Price2Discount= rs("Price2Discount")
+	Price2DiscountStartDateMonth  = rs("Price2DiscountStartDateMonth")
+	Price2DiscountStartDateDay  = rs("Price2DiscountStartDateDay")
+	Price2DiscountStartDateYear  = rs("Price2DiscountStartDateYear")
+	Price2DiscountEndDateMonth  = rs("Price2DiscountEndDateMonth")
+	Price2DiscountEndDateDay  = rs("Price2DiscountEndDateDay")
+	Price2DiscountEndDateYear  = rs("Price2DiscountEndDateYear")
+	Price3= rs("Price3")
+	Price3Discount= rs("Price3Discount")
+	Price3DiscountStartDateMonth  = rs("Price3DiscountStartDateMonth")
+	Price3DiscountStartDateDay  = rs("Price3DiscountStartDateDay")
+	Price3DiscountStartDateYear  = rs("Price3DiscountStartDateYear")
+	Price3DiscountEndDateMonth  = rs("Price3DiscountEndDateMonth")
+	Price3DiscountEndDateDay  = rs("Price3DiscountEndDateDay")
+	Price3DiscountEndDateYear  = rs("Price3DiscountEndDateYear")
+	Price4= rs("Price4")	
+	Price4Discount= rs("Price4Discount")
+	Price4DiscountStartDateMonth  = rs("Price4DiscountStartDateMonth")
+	Price4DiscountStartDateDay  = rs("Price4DiscountStartDateDay")
+	Price4DiscountStartDateYear  = rs("Price4DiscountStartDateYear")
+	Price4DiscountEndDateMonth  = rs("Price4DiscountEndDateMonth")
+	Price4DiscountEndDateDay  = rs("Price4DiscountEndDateDay")
+	Price4DiscountEndDateYear  = rs("Price4DiscountEndDateYear")
+	EventTypeID = rs("EventTypeID")
+	FeePerAnimal = rs("Price")
+	FeePerPen  =  rs("Price2")
+	MaxQTY =  rs("ServiceMaxQuantity")
+	MaxQTY2 =  rs("ServiceMaxQuantity2")
+	MaxQTY3 =  rs("ServiceMaxQuantity3")
+	if len(MaxQTY2) > 0 then
+	  MaxQTYCheckbox = "checked"
+	end if
+
+	StopDate1 =  rs("ServiceEndDate")
+	if len(StopDate1) > 0 then
+	  StopDate = "checked"
+	end if
+	VetCheckFee = rs("VetCheckFee")
+	ElectricityFee = rs("ElectricityFee")
+	ElectricityAvailable  = rs("ElectricityAvailable")
+
+	Electricityoptional  = rs("Electricityoptional")
+
+	MaxPensPerFarm = rs("MaxPensPerFarm")
+	
+	if MaxPensPerFarm > 0 then
+	else
+		MaxPensPerFarm = 40
+	end if 
+
+	MaxDisplaysPerFarm= rs("MaxDisplaysPerFarm")
+	
+	if MaxDisplaysPerFarm > 0 then
+	else
+		MaxDisplaysPerFarm = 40
+	end if 
+	StallMatsAvailable  = rs("StallMatsAvailable")
+ 	StallMatPrice  = rs("StallMatPrice")
+
+	StallMatPrice = rs("StallMatPrice")
+	Description =  rs("Description")
+
+
+str1 = Description
+str2 = "</br>"
+If InStr(str1,str2) > 0 Then
+	Description= Replace(str1, str2 , vbCrLf)
+	
+End If  
+
+str1 = Description
+str2 = "&nbsp;"
+If InStr(str1,str2) > 0 Then
+	Description= Replace(str1,  str2, " ")
+End If 
+
+str1 = Description
+str2 = "''"
+If InStr(str1,str2) > 0 Then
+	Description= Replace(str1,  str2, "'")
+End If 
+
+	
+End If 
+if len(Price1DiscountStartDateMonth) > 0 and len(Price1DiscountStartDateDay) > 0 and len(Price1DiscountStartDateYear) > 0 then
+	Price1DiscountStartDate = Price1DiscountStartDateMonth & "/" & Price1DiscountStartDateDay & "/" & Price1DiscountStartDateYear
+end if
+if len(Price1DiscountEndDateMonth) > 0 and len(Price1DiscountEndDateDay) > 0 and len(Price1DiscountEndDateYear) > 0 then
+	Price1DiscountEndDate = Price1DiscountEndDateMonth & "/" & Price1DiscountEndDateDay & "/" & Price1DiscountEndDateYear
+end if
+
+
+if len(Price2DiscountStartDateMonth) > 0 and len(Price2DiscountStartDateDay) > 0 and len(Price2DiscountStartDateYear) > 0 then
+	Price2DiscountStartDate = Price2DiscountStartDateMonth & "/" & Price2DiscountStartDateDay & "/" & Price2DiscountStartDateYear
+end if
+if len(Price2DiscountEndDateMonth) > 0 and len(Price2DiscountEndDateDay) > 0 and len(Price2DiscountEndDateYear) > 0 then
+	Price2DiscountEndDate = Price2DiscountEndDateMonth & "/" & Price2DiscountEndDateDay & "/" & Price2DiscountEndDateYear
+end if
+
+if len(Price3DiscountStartDateMonth) > 0 and len(Price3DiscountStartDateDay) > 0 and len(Price3DiscountStartDateYear) > 0 then
+	Price3DiscountStartDate = Price3DiscountStartDateMonth & "/" & Price3DiscountStartDateDay & "/" & Price3DiscountStartDateYear
+end if
+if len(Price3DiscountEndDateMonth) > 0 and len(Price3DiscountEndDateDay) > 0 and len(Price3DiscountEndDateYear) > 0 then
+	Price3DiscountEndDate = Price3DiscountEndDateMonth & "/" & Price3DiscountEndDateDay & "/" & Price3DiscountEndDateYear
+end if
+
+if len(Price4DiscountStartDateMonth) > 0 and len(Price4DiscountStartDateDay) > 0 and len(Price4DiscountStartDateYear) > 0 then
+	Price4DiscountStartDate = Price4DiscountStartDateMonth & "/" & Price4DiscountStartDateDay & "/" & Price4DiscountStartDateYear
+end if
+if len(Price4DiscountEndDateMonth) > 0 and len(Price4DiscountEndDateDay) > 0 and len(Price4DiscountEndDateYear) > 0 then
+	Price4DiscountEndDate = Price4DiscountEndDateMonth & "/" & Price4DiscountEndDateDay & "/" & Price4DiscountEndDateYear
+end if
+
+if len(ServiceEndDateMonth) > 0 then
+  else
+  ServiceEndDateMonth = ""
+end if 
+
+if len(ServiceEndDateday) > 0 then
+  else
+  ServiceEndDateday = ""
+end if 
+
+if len(ServiceEndDateYear) > 0 then
+  else
+  ServiceEndDateYear = ""
+end if 
+
+if len(ServiceStartDateMonth) > 0 and len(ServiceStartDateDay) > 0 and len(ServiceStartDateYear) > 0 then
+	ServiceStartDate = cstr(ServiceStartDateMonth) & "/" & cstr(ServiceStartDateDay) & "/" & cstr(ServiceStartDateYear)
+end if
+
+if len(ServiceEndDateMonth) > 0 and len(ServiceEndDateDay) > 0 and len(ServiceEndDateYear) > 0 then
+	ServiceEndDate = cstr(ServiceEndDateMonth) & "/" & cstr(ServiceEndDateDay) & "/" & cstr(ServiceEndDateYear)
+end if
+
+RegistrationOpen = True 
+
+if len(ServiceEndDate) < 6  then %>
+<% ' <center><h2>The Registration End Date on this Show Has Not Been Determined</h2></center>%>
+<% end if %>
+
+
+<% if len(ServiceEndDate) > 6 and DateDiff("d", ServiceEndDate, now()) > 1 then
+  RegistrationOpen = False %>
+<center><h2>Registration is Closed</h2>
+Regestration for this show ended on <%=ServiceEndDate %></center>
+<% end if %>
+
+<% if len(ServiceStartDate) > 6 and DateDiff("d", ServiceStartDate, now()) < 0 then
+  RegistrationOpen = False %>
+<center><h2>Registration Has Not Opened Yet</h2>
+Registration will open on <%=ServiceStartDate %></center>
+<% end if %>
+
+<% if RegistrationOpen = True then %>
+
+<form action= "fibermaniaRegistration.asp?EventID=<%=EventID%>&Update=True#FormTop" name="OrderForm" method = "post">
+
+
+<%
+sql = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " Order by RegistrationID Desc"
+'response.write("sql=" & sql & "<br>")
+
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	if not rs.eof then
+	    RegistrationID = rs("RegistrationID")
+	    else
+	       RegistrationID = 0
+    end if 
+	rs.close
+	
+	
+	Vendornotes = request.form("Vendornotes")
+	Halternotes = request.form("Halternotes")
+	
+	sql = "select * from RegistrationNotes where  RegistrationID = " &  RegistrationID 
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then	
+
+
+		Query =  "INSERT INTO RegistrationNotes ("
+		if len(Halternotes) > 0 then
+		    Query =  Query & " Halternotes, "
+		end if
+		if len(VendorNotes) > 0 then
+		    Query =  Query & " VendorNotes, "
+		end if
+		
+		Query =  Query & " RegistrationID  ) " 
+		Query =  Query & " Values ( "
+		
+		if len(Halternotes) > 0 then
+		   Query =  Query & " '" &  Halternotes  & "',"
+		end if
+		if len(VendorNotes) > 0 then
+		    Query =  Query & " '" &  VendorNotes  & "',"
+		end if
+
+		Query =  Query & " " &  RegistrationID   & " )" 
+		Conn.Execute(Query) 
+
+	else  	
+	RegistrationID = rs("RegistrationID")
+	
+	if len(Halternotes) > 0  or len(VendorNotes) > 0 then
+	    Query =  " UPDATE RegistrationNotes Set "
+	    if len(Halternotes) > 0 and len(VendorNotes) > 0 then
+	    Query =  Query & " Halternotes = '" &  Halternotes & "', " 
+	    else
+	    if len(Halternotes) > 0 then
+	    Query =  Query & " Halternotes = '" &  Halternotes & "' " 
+	    end if
+	    end if
+	    if len(VendorNotes) > 0 then
+	    Query =  Query & " VendorNotes = '" &  VendorNotes & "' " 
+	    end if
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+	
+	Conn.Execute(Query) 
+    end if
+    
+
+	rs.close
+	end if 
+	
+	sql = "select * from RegistrationNotes where  RegistrationID = " &  RegistrationID 
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If not rs.eof Then	
+	Halternotes = rs("HalterNotes")
+	Vendornotes = rs("Vendornotes")
+	end if
+	
+%>	
+	
+
+<table  border="0"  cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" width = "800" align = "center">	
+<tr>
+  <td class = "body" align = "center"  height = "39">
+
+<table  border="0"  cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" width = "800" align = "center">	
+<tr>
+  <td class = "body" ><h3>Service</h3></td>
+  <td class = "body" align = "center" width = "150"><h3>Price</h3></td>
+  <td class = "body" align = "center" width = "150"><h3>Quantity</h3></td>
+  <td class = "body" align = "right" width = "150"><h3>Total</h3></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td ><a Name= "FormTop"></a>
+  	<table  border="0"  cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" width = "800" align = "center">
+  
+
+<%
+
+'************************************************************
+'  GATHER PAST INFORMATION FROM THE REGISTRATION TEMP TABLE
+'************************************************************
+if NOT(Update = "True") then 
+	dim OldAdvertisingNameArray(1000)
+	dim OldAdvertisingQTYArray(1000)
+	AdvertisingCounter = 0
+	
+	dim OldVendorNameArray(1000)
+	dim OldVendorQTYArray(1000)
+	dim OldVendorTableQTYArray(1000)
+	dim OldDontNeedTableArray(1000)
+	VendorCounter = 0
+
+	dim OldSponsorNameArray(1000)
+	dim OldSponsorQTYArray(1000)
+	SponsorCounter = 0
+	
+	dim OldClassesNameArray(1000)
+	dim OldClassesQTYArray(1000)
+	dim OldClassInfoMaterialFeePay(1000)
+	
+	ClassesCounter = 0
+
+	dim OldExtraOptionNameArray(1000)
+	dim OldExtraOptionQTYArray(1000)
+	ExtraOptionCounter = 0
+
+
+	sql = "select * from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " Order by RegistrationID Desc"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3
+	while not rs.eof    
+		ExtraOptionsName	 = rs("ServiceDescription")
+		Quantity = rs("Quantity")
+		VegitarianQTY = rs("VegitarianQTY")
+		ExtraTablesQTY = rs("ExtraTables")
+
+	if ExtraOptionsName = "Production Class Entries"  and Quantity > 0 then
+    	OldProductionClasEntriesQuantity = Quantity
+    end if
+
+
+	if ExtraOptionsName = "Halter Show Entries"  and Quantity > 0 then
+    	OldHalterShowEntriesQuantity = Quantity
+    end if
+
+	if ExtraOptionsName = "Companion Animal"  and Quantity > 0 then
+    	OldCompanionAnimalQuantity = Quantity
+    end if
+
+
+	if ExtraOptionsName = "Vet Check"  and Quantity > 0 then
+    	OldVetCheckQuantity = Quantity
+    end if
+
+	if ExtraOptionsName = "Electricity"  and Quantity > 0 then
+    	OldElectricityQuantity = Quantity
+    end if
+
+
+	if ExtraOptionsName = "AOBA Fee"  and Quantity > 0 then
+    	OldAOBAFeeQuantity = Quantity
+    end if
+
+	if ExtraOptionsName = "Animal Stalls"  and Quantity > 0 then
+    	OldAnimalStallsQuantity = Quantity
+    end if
+
+
+	if trim(ExtraOptionsName) = "Fleece Show Entry"  and Quantity > 0 then
+    	OldFleeceShowQuantity = Quantity
+    end if
+
+
+	if ExtraOptionsName = "Spin-Off Entry"  and Quantity > 0 then
+    	OldSpinOffQuantity = Quantity
+    end if
+
+    if ExtraOptionsName = "Electricity" and Quantity > 0 then
+    	OldElectricityQTY = Quantity
+    end if
+
+
+    if ExtraOptionsName = "Stall Mats" and Quantity > 0 then
+    	OldStallMatQuantity =  Quantity
+    end if 
+
+
+
+ 	if ExtraOptionsName = "Dinner Ticket" and Quantity > 0 then
+    	OldDinnerTicketQTY =  Quantity
+    end if 
+    
+    if VegitarianQTY > 0 then
+    	OldVegitarianQTY = VegitarianQTY   	   
+    end if
+     
+     if ExtraOptionsName = "Display Stalls" and Quantity > 0 then
+    	OldDisplayStallsQTY =  Quantity
+     end if 
+ 	
+str1 = ExtraOptionsName
+str2 = "Advertising"
+If InStr(str1,str2) > 0 Then
+
+	newOldAdName = right(ExtraOptionsName, len(ExtraOptionsName)- 14 )
+		if not newOldAdName = OldOldAdname then
+			AdvertisingCounter = AdvertisingCounter + 1
+			OldAdvertisingNameArray(AdvertisingCounter) = newOldAdName
+			OldAdvertisingQTYArray(AdvertisingCounter) =  Quantity
+		end if
+	OldOldAdname = newOldAdName	
+End If 
+
+
+str1 = ExtraOptionsName
+str2 = "Vendor"
+If InStr(str1,str2) > 0 Then
+
+	newOldVendorName = right(ExtraOptionsName, len(ExtraOptionsName)- 9 )
+		if not newOldVendorName = OldOldVendorname then
+			VendorCounter = VendorCounter + 1
+			OldVendorNameArray(VendorCounter) = newOldVendorName
+			OldVendorQTYArray(VendorCounter) =  Quantity
+			OldVendorTableQTYArray(VendorCounter) =  rs("ExtraTables")
+			OldDontNeedTableArray(VendorCounter) =  rs("DontNeedTable")
+		
+		end if
+	OldOldVendorname = newOldVendorName	
+End If 
+
+ str1 = ExtraOptionsName
+str2 = "Sponsorship"
+If InStr(str1,str2) > 0 Then
+
+	newOldSponsorName = right(ExtraOptionsName, len(ExtraOptionsName)- 14 )
+		if not newOldSponsorName = OldOldSponsorname then
+			SponsorCounter = SponsorCounter + 1
+			OldSponsorNameArray(SponsorCounter) = newOldSponsorName
+			OldSponsorQTYArray(SponsorCounter) =  Quantity
+		end if
+	OldOldSponsorname = newOldSponsorName	
+End If 
+
+str1 = ExtraOptionsName
+str2 = "Classes"
+If InStr(str1,str2) > 0 Then
+
+	newOldClassesName = right(ExtraOptionsName, len(ExtraOptionsName)- 10 )
+		if not newOldClassesName = OldOldClassesname then
+			ClassesCounter = ClassesCounter + 1
+			OldClassesNameArray(ClassesCounter) = newOldClassesName
+			OldClassesQTYArray(ClassesCounter) =  Quantity
+			OldClassInfoMaterialFeePay(ClassesCounter) = ClassInfoMaterialFeePay
+		end if
+	OldOldClassesname = newOldClassesName	
+End If 
+
+
+
+str1 = ExtraOptionsName
+str2 = "Extra Option"
+If InStr(str1,str2) > 0 Then
+
+	newOldExtraOptionName = right(ExtraOptionsName, len(ExtraOptionsName)- 15 )
+		if not newOldExtraOptionName = OldOldExtraOptionname then
+			ExtraOptionCounter = ExtraOptionCounter + 1
+			OldExtraOptionNameArray(ExtraOptionCounter) = newOldExtraOptionName
+			OldExtraOptionQTYArray(ExtraOptionCounter) =  Quantity
+		end if
+	OldOldExtraOptionname = newOldExtraOptionName	
+End If
+
+
+   rs.movenext
+  wend
+  
+  TotalAdvertisingCounter = AdvertisingCounter
+  TotalVendorCounter = VendorCounter
+  TotalSponsorCounter = SponsorCounter
+  TotalClassesCounter = ClassesCounter
+  TotalExtraOptionCounter = ExtraOptionCounter
+  
+  rs.close
+END IF
+
+'************************************************************
+'  UPDATE REGISTRATION TEMP TABLE
+'************************************************************
+Update = Request.Querystring("Update")
+if Update = "True" then 
+	
+	'***************************************
+	'Update Animal Stall
+	'***************************************	
+	UpdateAnimalStallQTY= request.form("AnimalStallQTY")
+	Halternotes= request.form("Halternotes")
+
+	
+	if len(UpdateAnimalStallQTY) > 0 then
+
+	UpdateFeePerPen = request.form("FeePerPen")
+	UpdateServiceDescription = "Animal Stalls"
+	PeopleID = Session("PeopleID")
+	
+	
+	sql = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then	
+
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, Halternotes, ServiceDescription, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  UpdateAnimalStallQTY  & ","
+		Query =  Query & " '" &  Halternotes  & "',"
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " &  UpdateFeePerPen   & " )" 
+		Conn.Execute(Query) 
+
+	else  	
+	RegistrationID = rs("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  UpdateAnimalStallQTY & ", " 
+	Query =  Query & " ItemPrice = " & UpdateFeePerPen & ", " 
+	Query =  Query & " Halternotes = '" & Halternotes & "' "
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+	Conn.Execute(Query) 
+
+	end if	
+	rs.close
+	end if 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	'***************************************
+	'Update Display Stall
+	'***************************************	
+	DisplayStallQTY= request.form("DisplayStallQTY")
+	
+	if len(DisplayStallQTY)  > 0 then
+	if DisplayStallQTY  > 0 then
+	UpdateDisplayStallPrice = request.form("DisplayStallPrice")
+	UpdateServiceDescription = "Display Stalls"
+	PeopleID = Session("PeopleID")
+	
+	
+	sql = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then	
+
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, ServiceDescription, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  DisplayStallQTY  & ","
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " &  UpdateDisplayStallPrice   & " )" 
+	Conn.Execute(Query) 
+	
+	else 
+	RegistrationID = rs("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  DisplayStallQTY & ", " 
+	Query =  Query & " ItemPrice = " & UpdateDisplayStallPrice & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+	Conn.Execute(Query) 
+
+	end if	
+	rs.close
+  end if 
+	  end if 
+
+	'***************************************
+	'Update Halter Show Entries
+	'***************************************	
+	AnimalQTY= request.form("AnimalQTY")
+counterx = 0
+		
+if AnimalQTY > 0 then
+while cint(counterx) < cint(AnimalQTY)
+    counterx = counterx +1
+	AnimalIDArraycount = "AnimalIDArray(" & counterx & ")"	
+	AnimalIDArray(counterx)=Request.Form(AnimalIDArraycount) 
+	
+	
+  if len(AnimalIDArray(counterx))> 0  then
+    sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & AnimalIDArray(counterx) & " and Registrationtype = 'Halter'"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then
+	Query =  "INSERT INTO RegisteredAnimals (PeopleID, EventID, RegistrationType, AnimalRegistrationID ) " 
+	Query =  Query & " Values ( " &  PeopleID & " ,"
+	Query =  Query & " " &  EventID & " ,"
+	Query =  Query & " 'Halter' ,"
+	Query =  Query & " " & AnimalIDArray(counterx)   & " )" 
+	
+	Conn.Execute(Query) 
+	rs.close
+  end if 
+  end if 
+
+    HalterClassIDArraycount = "HalterClassIDArray(" & counterx & ")"	
+	HalterClassIDArray(counterx)=Request.Form(HalterClassIDArraycount)
+		
+  if len(HalterClassIDArray(counterx))> 0 and len(AnimalIDArray(counterx))> 0 then
+    sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & AnimalIDArray(counterx) & " and Registrationtype = 'Halter'"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If not rs.eof Then	
+
+	
+    Query =  " UPDATE RegisteredAnimals Set HalterClassID = " &  HalterClassIDArray(counterx) & " " 
+  	Query =  Query & " where AnimalRegistrationID = " & AnimalIDArray(counterx) & ";" 
+
+	Conn.Execute(Query) 
+	rs.close
+  end if 
+  end if 
+
+
+Wend
+
+else
+   AnimalQTY = 0
+end if 	
+
+
+
+
+'***************************************
+'Update Production Show Entries
+'***************************************	
+	ProductionQTY= request.form("ProductionQTY")
+counterx = 0
+
+if ProductionQTY > 0 then
+while cint(counterx) < cint(ProductionQTY)
+    counterx = counterx +1
+	ProductionAnimalIDArraycount = "ProductionAnimalIDArray(" & counterx & ")"	
+		
+	ProductionAnimalIDArray(counterx)=Request.Form(ProductionAnimalIDArraycount) 
+  if len(ProductionAnimalIDArray(counterx))> 0 then
+    sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & ProductionAnimalIDArray(counterx) & " and Registrationtype = 'Production'"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then
+
+		Query =  "INSERT INTO RegisteredAnimals (PeopleID, EventID, RegistrationType, AnimalRegistrationID ) " 
+		Query =  Query & " Values ( " &  PeopleID & " ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " 'Production' ,"
+		Query =  Query & " " & ProductionAnimalIDArray(counterx)   & " )" 
+
+	Conn.Execute(Query) 
+	rs.close
+  end if 
+  end if 
+  
+  
+ ProductionClassIDArraycount = "ProductionClassIDArray(" & counterx & ")"	
+	ProductionClassIDArray(counterx)=Request.Form(ProductionClassIDArraycount)
+		
+  if len(ProductionClassIDArray(counterx))> 0 and len(ProductionAnimalIDArray(counterx))> 0 then
+    sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & ProductionAnimalIDArray(counterx) & " and Registrationtype = 'Production'"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If not rs.eof Then
+	
+    Query =  " UPDATE RegisteredAnimals Set ProductionClassID = " &  ProductionClassIDArray(counterx) & " " 
+	Query =  Query & " where AnimalRegistrationID = " & ProductionAnimalIDArray(counterx) & ";" 
+
+	
+	Conn.Execute(Query) 
+	rs.close
+  end if 
+  end if 
+
+Wend
+
+else
+   ProductionQTY = 0
+end if 	
+
+
+'***************************************
+'Update Companion  Entries
+'***************************************	
+	UnshownQTY= request.form("UnshownQTY")
+counterx = 0
+		
+if UnshownQTY > 0 then
+while cint(counterx) < cint(UnshownQTY)
+    counterx = counterx +1
+	CompanionAnimalIDArraycount = "CompanionAnimalIDArray(" & counterx & ")"	
+		
+	CompanionAnimalIDArray(counterx)=Request.Form(CompanionAnimalIDArraycount) 
+	
+  if len(CompanionAnimalIDArray(counterx))> 0 then
+    sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & CompanionAnimalIDArray(counterx) & " and Registrationtype = 'Companion'"
+
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then	
+
+		Query =  "INSERT INTO RegisteredAnimals (PeopleID, EventID, RegistrationType, AnimalRegistrationID ) " 
+		Query =  Query & " Values ( " &  PeopleID & " ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " 'Companion' ,"
+		Query =  Query & " " & CompanionAnimalIDArray(counterx)   & " )" 
+
+	Conn.Execute(Query) 
+	rs.close
+  end if 
+  end if 
+
+
+Wend
+else
+   UnshownQTY = 0
+end if
+	
+	
+'***************************************
+'Update Fleece  Entries
+'***************************************	
+	FleecesQTY= request.form("FleecesQTY")
+counterx = 0
+		
+if FleecesQTY > 0 then
+while cint(counterx) < cint(FleecesQTY)
+    counterx = counterx +1
+	FleeceAnimalIDArraycount = "FleeceAnimalIDArray(" & counterx & ")"	
+		
+	FleeceAnimalIDArray(counterx)=Request.Form(FleeceAnimalIDArraycount) 
+	
+  if len(FleeceAnimalIDArray(counterx))> 0 then
+    sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & FleeceAnimalIDArray(counterx) & " and Registrationtype = 'Fleece'"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then
+
+		Query =  "INSERT INTO RegisteredAnimals (PeopleID, EventID, RegistrationType, AnimalRegistrationID ) " 
+		Query =  Query & " Values ( " &  PeopleID & " ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " 'Fleece' ,"
+		Query =  Query & " " & FleeceAnimalIDArray(counterx)   & " )" 
+	
+	Conn.Execute(Query) 
+	rs.close
+  end if 
+  end if 
+
+
+Wend
+
+else
+   FleecesQTY = 0
+end if	
+
+
+	
+'***************************************
+'Update SpinOff  Entries
+'***************************************	
+	SpinOffQTY= request.form("SpinOffQTY")
+counterx = 0
+		
+if SpinOffQTY > 0 then
+while cint(counterx) < cint(SpinOffQTY)
+    counterx = counterx +1
+	SpinOffAnimalIDArraycount = "SpinOffAnimalIDArray(" & counterx & ")"	
+		
+	SpinOffAnimalIDArray(counterx)=Request.Form(SpinOffAnimalIDArraycount) 
+
+  if len(SpinOffAnimalIDArray(counterx))> 0 then
+    sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and AnimalRegistrationID = " & SpinOffAnimalIDArray(counterx) & " and Registrationtype = 'SpinOff'"
+
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then
+
+		Query =  "INSERT INTO RegisteredAnimals (PeopleID, EventID, RegistrationType, AnimalRegistrationID ) " 
+		Query =  Query & " Values ( " &  PeopleID & " ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " 'SpinOff' ,"
+		Query =  Query & " " & SpinOffAnimalIDArray(counterx)   & " )" 
+	
+	Conn.Execute(Query) 
+	rs.close
+  end if 
+  end if 
+
+Wend
+else
+   SpinOffQTY = 0
+end if	
+
+
+
+
+	
+	UpdateHalterShowFee = request.form("HalterShowFee")
+	
+	if len(AnimalQTY  > 0) then
+	if AnimalQTY  > 0 then
+	UpdateServiceDescription = "Halter Show Entries"
+	PeopleID = Session("PeopleID")
+	
+	
+	sql = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then	
+
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, ServiceDescription, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  AnimalQTY  & ","
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " &  UpdateHalterShowFee   & " )" 
+
+	Conn.Execute(Query) 
+	
+	else  	
+	RegistrationID = rs("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  AnimalQTY & " ," 
+	Query =  Query & " ItemPrice = " & UpdateHalterShowFee & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+	Conn.Execute(Query) 
+
+	end if	
+	rs.close
+  end if 
+    end if  
+  
+  
+    '***************************************
+	'Update Production Show Entries
+	'***************************************
+	ProductionPrice = Price4
+	ProductionPriceDiscount = Price4Discount
+	ProductionPriceDiscountStartDate = Price4DiscountStartDate
+	ProductionPriceDiscountEndDate = Price4DiscountEndDate
+
+	ProductionQTY = request.form("ProductionQTY")
+	if ProductionPriceDiscount > 0 and len(ProductionPriceDiscountStartDate) > 5 and len(ProductionPriceDiscountStartDate) > 5 then
+  	if DateDiff("d", ProductionPriceDiscountStartDate, now()) > 1 and DateDiff("d", ProductionPriceDiscountEndDate, now()) < 1 then
+ 	 	FullPriceProductionPrice = ProductionPrice
+ 	 	ProductionPrice = ProductionPriceDiscount
+ 	  	showdiscount = True
+		end if 
+	end if
+
+	
+	if len(ProductionQTY) > 0 then
+		if ProductionQTY > 0 then
+	UpdateProductionPrice = ProductionPrice
+	UpdateServiceDescription = "Production Class Entries"
+	PeopleID = Session("PeopleID")
+	
+	
+	sql = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then
+
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, ServiceDescription, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  ProductionQTY  & ","
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " &  UpdateProductionPrice   & " )" 
+	Conn.Execute(Query) 
+
+	
+	else  			
+		RegistrationID = rs("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  ProductionQTY & " ," 
+	Query =  Query & " ItemPrice = " & UpdateProductionPrice & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+
+	Conn.Execute(Query) 
+
+	end if	
+	rs.close
+  end if 
+    end if 
+  
+  
+  
+  '***************************************
+	'Update Companion Animal Entries
+	'***************************************	
+	UnshownQTY= request.form("UnshownQTY")
+	
+	if len(UnshownQTY) > 0 then
+		if UnshownQTY > 0 then
+	UpdateCompanionAnimalPrice = 0
+	UpdateServiceDescription = "Companion Animal"
+	PeopleID = Session("PeopleID")
+	
+	
+	sql = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then	
+
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, ServiceDescription, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  UnshownQTY  & ","
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " &  UpdateCompanionAnimalPrice   & " )" 
+
+	Conn.Execute(Query) 
+	
+	else  	
+	RegistrationID = rs("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  UnshownQTY & " ," 
+	Query =  Query & " ItemPrice = " & UpdateCompanionAnimalPrice & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+	Conn.Execute(Query) 
+
+	end if	
+	rs.close
+  end if 
+   end if  
+ 
+
+ 
+ 	'***************************************
+	'Update Vet Check Entries
+	'***************************************	
+	
+	if AnimalQTY > 0  OR UnshownQTY > 0 then
+		VetCheckQTY= 1
+	else
+	 	VetCheckQTY= 0
+	end if 
+
+	UpdateVetCheckPrice = request.form("VetCheckFee")
+	if len(UpdateVetCheckPrice) > 0 then
+	else
+	UpdateVetCheckPrice = 0
+	
+	end if 
+	if len(VetCheckQTY) > 0 then	
+	UpdateServiceDescription = "Vet Check"
+	PeopleID = Session("PeopleID")
+	
+	
+	sql = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then	
+
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, ServiceDescription, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  VetCheckQTY  & ","
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " &  UpdateVetCheckPrice   & " )" 
+
+	Conn.Execute(Query) 
+	
+	else  		
+	RegistrationID = rs("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  VetCheckQTY & " ," 
+	Query =  Query & " ItemPrice = " & UpdateVetCheckPrice & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+	Conn.Execute(Query) 
+
+	end if	
+	rs.close
+  end if 
+  
+  
+ 
+ 
+  '***************************************
+  'Update AOBA Entries
+  '***************************************	
+	
+	 if ShowAOBAFee = "True" then
+	 
+		if AOBAQTY > 0 or DisplayStallQTY > 0 then
+			AOBAQTY = 1
+		else
+			AOBAQTY = 0
+		end if
+	UpdateAOBAFee = AOBAFee
+		
+	if len(AOBAQTY) > 0 then
+	
+
+	UpdateServiceDescription = "AOBA Fee"
+	PeopleID = Session("PeopleID")
+	
+	
+	sql = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then
+
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, ServiceDescription, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  AOBAQTY  & ","
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " &  UpdateAOBAFee   & " )" 
+
+	Conn.Execute(Query) 
+	
+	else  	
+	RegistrationID = rs("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  AOBAQTY & " ," 
+	Query =  Query & " ItemPrice = " & UpdateAOBAFee & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+
+	Conn.Execute(Query) 
+
+	end if	
+	rs.close
+  end if 
+  end if
+
+
+ 
+  '***************************************
+  'Update Electricity Entries
+  '***************************************	
+	
+	if  ElectricityAvailable= "True" then
+		if AnimalStallQTY > 0 or DisplayStallQTY > 0 then
+			ElectricityQTY = 1
+		else
+			ElectricityQTY = 0
+		end if
+	UpdateElectricityFee = ElectricityFee
+		
+	if len(ElectricityQTY) > 0 then
+
+	UpdateServiceDescription = "Electricity"
+	PeopleID = Session("PeopleID")
+	
+	
+	sql = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then
+
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, ServiceDescription, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  ElectricityQTY  & ","
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " &  UpdateVetCheckPrice   & " )" 
+	Conn.Execute(Query) 
+
+	
+	else  		
+	RegistrationID = rs("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  ElectricityQTY & " ," 
+	Query =  Query & " ItemPrice = " & UpdateElectricityFee & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+	Conn.Execute(Query) 
+
+	end if	
+	rs.close
+  end if 
+  end if
+
+
+ '***************************************
+  'Update Mats Entries
+  '***************************************	
+	
+	if  StallMatsAvailable= "True" and StallMatPrice > 0  then
+		StallMatsQTY = request.form("StallMatsQTY")
+			
+		UpdateMatsFee = StallMatPrice	
+	if len(StallMatsQTY) > 0 then
+
+	UpdateServiceDescription = "Stall Mats"
+	PeopleID = Session("PeopleID")
+	
+	
+	sql = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then
+
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, ServiceDescription, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  StallMatsQTY  & ","
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " &  UpdateMatsFee   & " )" 
+	Conn.Execute(Query) 
+
+	else  	
+		RegistrationID = rs("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  StallMatsQTY & " ," 
+	Query =  Query & " ItemPrice = " & UpdateMatsFee & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+
+	Conn.Execute(Query) 
+
+	end if	
+	rs.close
+  end if 
+  end if
+
+  
+  '***************************************
+  'Update Fleece Show Entries
+  '***************************************	
+	
+	if  ShowFleeceShow = True then 		
+	
+	FleecesQTY = request.form("FleecesQTY")
+	
+	UpdateFleeceShowFee = request.form("FleeceShowFee")		
+	if len(FleecesQTY) > 0 then
+
+
+	UpdateServiceDescription = "Fleece Show Entry"
+	PeopleID = Session("PeopleID")
+	
+	
+	sql = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then
+
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, ServiceDescription, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  FleecesQTY  & ","
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " &  UpdateVetCheckPrice   & " )" 
+
+	Conn.Execute(Query) 
+
+	
+	else  		
+	RegistrationID = rs("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  FleecesQTY & " ," 
+	Query =  Query & " ItemPrice = " & UpdateFleeceShowFee & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+	Conn.Execute(Query) 
+
+	end if	
+	rs.close
+  end if 
+  end if
+ 
+   
+  
+  '***************************************
+  'Update Spin Off Show Entries
+  '***************************************	
+	
+	if  ShowSpinOff = True then 		
+	SpinOffQTY = request.form("SpinOffQTY")
+		SpinOffFee = request.form("SpinOffFee")
+	if not len(SpinOffQTY = 0 ) then
+	UpdateServiceDescription = "Spin-Off Entry"
+	PeopleID = Session("PeopleID")
+	
+	
+	sql = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then
+
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, ServiceDescription, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  SpinOffQTY  & ","
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " &  SpinOffFee   & " )" 
+	Conn.Execute(Query) 
+	
+	else  	
+	RegistrationID = rs("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  SpinOffQTY & " ," 
+	Query =  Query & " ItemPrice = " & SpinOffFee & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+	Conn.Execute(Query) 
+
+	end if	
+	rs.close
+  end if 
+  end if
+
+
+ 
+ '********************************************************************************
+ '	Update ADVERTISING OPTIONS
+ '********************************************************************************
+
+
+ if ShowAdvertising = True then 
+  sql = "select * from AdvertisingLevels  where AvaliableByItself = True and EventID = " & EventID 
+
+    Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	if not rs.eof then 
+	
+	While Not rs.eof  
+	AdvertisingLevelID = rs("AdvertisingLevelID")
+	AdvertisingLevelName = rs("AdvertisingLevelName")
+	AdvertisingLevelPrice = rs("AdvertisingLevelPrice")
+	AdvertisingLevelQTYAvailable = rs("AdvertisingLevelQTYAvailable")
+	AdvertsingQTYArraycount = "AdvertsingQTYArray(" & AdvertisingLevelID & ")"
+	AdvertsingQTYArray(AdvertisingLevelID) = Request.Form(AdvertsingQTYArraycount)
+	
+	if not len(AdvertsingQTYArray(AdvertisingLevelID) = 0 ) then
+	
+	UpdateServiceDescription = "Advertising - " & AdvertisingLevelName
+	PeopleID = Session("PeopleID")
+	
+	
+	sql2 = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+
+	Set rs2 = Server.CreateObject("ADODB.Recordset")
+	rs2.Open sql2, conn, 3, 3   
+	If rs2.eof Then
+
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, ServiceDescription, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  AdvertsingQTYArray(AdvertisingLevelID)  & ","
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " &  AdvertisingLevelPrice   & " )" 
+	Conn.Execute(Query) 
+
+	
+	else  	
+	RegistrationID = rs2("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  AdvertsingQTYArray(AdvertisingLevelID) & " ," 
+	Query =  Query & " ItemPrice = " & AdvertisingLevelPrice & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+	Conn.Execute(Query) 
+	end if	
+	rs2.close
+  end if
+ 	  rowcount = rowcount + 1
+	  rs.movenext
+	Wend		
+end if 
+end if
+
+
+ '********************************************************************************
+ '	Update Vendors OPTIONS
+ '********************************************************************************
+
+if ShowVendors = true then
+
+  sql = "select * from VendorLevels  where EventID = " & EventID 
+    Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	if not rs.eof then 
+	
+	While Not rs.eof  
+	VendorLevelID = rs("VendorLevelID")
+	VendorStallName = rs("VendorStallName")
+	VendorStallPrice = rs("VendorStallPrice")
+	VendorStallMaxQtyPer = rs("VendorStallMaxQtyPer")
+	VendorStallQTYAvailable = rs("VendorStallQTYAvailable")
+	
+	Costpertable = rs("Costpertable")
+	MaxExtraTables = rs("MaxExtraTables")
+	if len(MaxExtraTables) < 1 then
+	  Numfreetables = 0
+	end if
+	
+	
+
+	
+	Numfreetables = rs("Numfreetables")
+	if len(Numfreetables) < 1 then
+	  Numfreetables = 0
+	end if
+	
+	
+
+	VendorQTYArraycount = "VendorQTYArray(" & VendorLevelID & ")"
+	VendorQTYArray(VendorLevelID) = Request.Form(VendorQTYArraycount)
+VendorTableQTYArraycount = "VendorTableQTYArray(" & VendorLevelID & ")"
+	DontNeedTableArraycount = "DontNeedTableArray(" & VendorLevelID & ")"
+	
+	DontNeedTableArray(VendorLevelID) = Request.Form(DontNeedTableArraycount)
+	VendorTableQTYArray(VendorLevelID) = Request.Form(VendorTableQTYArraycount)
+	
+	if len(VendorQTYArray(VendorLevelID)) > 0 then
+		if VendorQTYArray(VendorLevelID) > -1 then
+	UpdateServiceDescription = "Vendor - " & VendorStallName
+	PeopleID = Session("PeopleID")
+	
+if len(VendorTableQTYArray(VendorLevelID)) < 1 then
+		VendorTableQTYArray(VendorLevelID) = 0
+    end if 
+    
+
+
+str1 = UpdateServiceDescription
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	UpdateServiceDescription= Replace(str1, str2 , "''")
+	
+End If  
+
+If DontNeedTableArray(VendorLevelID) = "Yes" then
+else
+ DontNeedTableArray(VendorLevelID) = "No"
+End if 
+
+	sql2 = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+
+	Set rs2 = Server.CreateObject("ADODB.Recordset")
+	rs2.Open sql2, conn, 3, 3   
+	If rs2.eof Then
+
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID,  DontNeedTable, Quantity, ServiceDescription, ExtraTables, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  DontNeedTableArray(VendorLevelID)  & ","
+		Query =  Query & " " &  VendorQTYArray(VendorLevelID)  & ","
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " &  VendorTableQTYArray(VendorLevelID)  & ","
+		Query =  Query & " " &  VendorStallPrice   & " )" 
+	Conn.Execute(Query) 
+
+	else  			
+	RegistrationID = rs2("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  VendorQTYArray(VendorLevelID) & " ,"
+	Query =  Query & " DontNeedTable = " & DontNeedTableArray(VendorLevelID) & ", " 
+	Query =  Query & " ItemPrice = " & VendorStallPrice & ", " 
+	Query =  Query & " ExtraTables = " & VendorTableQTYArray(VendorLevelID) & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+			'response.Write("Query" &  Query )
+	Conn.Execute(Query) 
+
+	end if	
+	rs2.close
+  end if
+end if
+ 	  rowcount = rowcount + 1
+	  rs.movenext
+	Wend		
+end if 
+end if
+
+
+ '***************************************
+  'Update Dinner Ticket Entries
+  '***************************************	
+	
+	 if ShowDinner = "True" then
+		UpdateDinnerFee = request.form("DinnerFee")
+		DinnerQTY = request.form("DinnerQTY")
+		DinnerVegQTY = request.form("DinnerVegQTY")
+		
+		if len(DinnerVegQTY) > 0 then
+		else
+		 DinnerVegQTY = 0
+		end if
+
+	if len(DinnerQTY) > 0 or len(DinnerVegQTY) > 0 then
+	
+	if DinnerQTY > 0 or DinnerVegQTY > 0 then
+	
+	UpdateServiceDescription = "Dinner Ticket"
+	PeopleID = Session("PeopleID")
+		
+	sql = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	If rs.eof Then
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, ServiceDescription, VegitarianQTY, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  DinnerQTY  & ","
+		Query =  Query & " '" & UpdateServiceDescription  & "',"
+		Query =  Query & " " & DinnerVegQTY  & ","
+		Query =  Query & " " &  UpdateDinnerFee   & " )" 
+	Conn.Execute(Query) 
+
+	else 
+	RegistrationID = rs("RegistrationID")
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  DinnerQTY & " ," 
+	Query =  Query & " ItemPrice = " & UpdateDinnerFee & ", " 
+	Query =  Query & " VegitarianQTY = " & DinnerVegQTY & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+
+	Conn.Execute(Query) 
+	end if	
+		end if
+	rs.close
+  end if 
+  end if
+
+ '********************************************************************************
+ '	Update Extra Options
+ '********************************************************************************
+
+sql = "select * from ExtraOptions where not (OptionType = 'Halter') and not (OptionType = 'Dinner') and not (OptionType = 'Vendor')  and not (OptionType = 'Advertising') and EventID = " & EventID & "" 
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	if not rs.eof then 
+		ShowExtraOptions = True
+	end if 
+
+  if ShowExtraOptions = True then
+    Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	if not rs.eof then 
+
+	While Not rs.eof  
+	ExtraOptionsID = rs("ExtraOptionsID")
+		ExtraOptionsName = rs("ExtraOptionsName")
+		ExtraOptionsDescription = rs("ExtraOptionsDescription")
+		ExtraOptionsQTYAvailable= rs("ExtraOptionsQTYAvailable")
+		ExtraOptionsPrice= rs("ExtraOptionsPrice")
+		AvaliableWithSponsorships= rs("AvaliableWithSponsorships")
+		AvaliableByItself= rs("AvaliableByItself")
+	
+		str1 = ExtraOptionsName
+		str2 = "&nbsp;"
+		If InStr(str1,str2) > 0 Then
+			ExtraOptionsName= Replace(str1,  str2, " ")
+		End If 
+		
+		str1 = ExtraOptionsName
+		str2 = "'"
+		If InStr(str1,str2) > 0 Then
+			ExtraOptionsName= Replace(str1,  str2, "''")
+		End If 	
+	
+		str1 = UpdateServiceDescription
+		str2 = "'"
+		If InStr(str1,str2) > 0 Then
+			UpdateServiceDescription= Replace(str1,  str2, "''")
+		End If 
+	
+	ExtraOptionsQTYArraycount = "ExtraOptionsQTYArray(" & ExtraOptionsID & ")"
+	ExtraOptionsQTYArray(ExtraOptionsID) = Request.Form(ExtraOptionsQTYArraycount)
+		
+	if len(ExtraOptionsQTYArray(ExtraOptionsID)) > 0  then
+		if ExtraOptionsQTYArray(ExtraOptionsID) > 0  then
+	UpdateServiceDescription = "Extra Option - " & ExtraOptionsName
+	PeopleID = Session("PeopleID")
+		
+	if len(ExtraOptionsPrice) > 0 then
+	else
+		ExtraOptionsPrice = 0
+	end if 
+	
+	sql2 = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+	Set rs2 = Server.CreateObject("ADODB.Recordset")
+	rs2.Open sql2, conn, 3, 3   
+	If rs2.eof Then	
+
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, ServiceDescription, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  ExtraOptionsQTYArray(ExtraOptionsID)  & ","
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " &  ExtraOptionsPrice   & " )" 
+	Conn.Execute(Query) 
+
+	
+	else  		
+	RegistrationID = rs2("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  ExtraOptionsQTYArray(ExtraOptionsID) & " ," 
+	Query =  Query & " ItemPrice = " & ExtraOptionsPrice & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+	Conn.Execute(Query) 
+	end if	
+	rs2.close
+  end if
+  end if		
+ 	  rowcount = rowcount + 1
+	  rs.movenext
+	Wend		
+end if 
+end if
+
+
+ '********************************************************************************
+ '	Update Sponsorship
+ '********************************************************************************
+
+ 	sql = "select * from SponsorshipLevels  where EventID = " & EventID
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	if not rs.eof then 
+		ShowExtraOptions = True
+	end if 
+
+  if showsponsors = true then
+  
+     Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	if not rs.eof then 
+
+	While Not rs.eof  
+		SponsorshipLevelID = rs("SponsorshipLevelID")
+		SponsorshipLevelName= rs("SponsorshipLevelName")
+		SponsorshipLevelDescription= rs("SponsorshipLevelDescription")
+		SponsorshipLevelPrice = rs("SponsorshipLevelPrice")
+		SponsorshipLevelQTYAvailable = rs("SponsorshipLevelQTYAvailable")
+		SponsorshipLevelMaxQtyPer = rs("SponsorshipLevelMaxQtyPer")
+	
+		str1 = SponsorshipLevelName
+		str2 = "&nbsp;"
+		If InStr(str1,str2) > 0 Then
+			SponsorshipLevelName = Replace(str1,  str2, " ")
+		End If 
+		
+		str1 = SponsorshipLevelName
+		str2 = "''"
+		If InStr(str1,str2) > 0 Then
+			SponsorshipLevelName= Replace(str1,  str2, "'")
+		End If 	
+	SponsorQTYArraycount = "SponsorQTYArray(" & SponsorshipLevelID & ")"
+	SponsorQTYArray(SponsorshipLevelID) = Request.Form(SponsorQTYArraycount)
+
+	if  len(SponsorQTYArray(SponsorshipLevelID))  > 0  then
+		if  SponsorQTYArray(SponsorshipLevelID)  > -1  then
+	UpdateServiceDescription = "Sponsorship - " & SponsorshipLevelName
+	PeopleID = Session("PeopleID")
+	
+	
+	sql2 = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+	Set rs2 = Server.CreateObject("ADODB.Recordset")
+	rs2.Open sql2, conn, 3, 3   
+	If rs2.eof Then	
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, ServiceDescription, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  SponsorQTYArray(SponsorshipLevelID)  & ","
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " &  SponsorshipLevelPrice   & " )" 
+	Conn.Execute(Query) 
+
+	else  		
+		RegistrationID = rs2("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  SponsorQTYArray(SponsorshipLevelID) & " ," 
+	Query =  Query & " ItemPrice = " & SponsorshipLevelPrice & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+	Conn.Execute(Query) 
+
+	end if	
+	rs2.close
+  end if
+  end if
+ 	  rowcount = rowcount + 1
+	  rs.movenext
+	Wend		
+end if 
+end if
+
+
+ '********************************************************************************
+ '	Update Classes
+ '********************************************************************************
+
+if ShowClasses= True then
+sql = "select * from Classinfo where EventID = " & EventID & "" 
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	if not rs.eof then 
+		ShowClasses = True 
+	end if 
+
+  if ShowClasses = True then
+    Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	if not rs.eof then 
+
+	While Not rs.eof  
+		ClassInfoID = rs("ClassInfoID")
+		ClassInfoTitle = rs("ClassInfoTitle")
+		ClassInfoDescription = rs("ClassInfoDescription")
+		ClassInfoMaximumStudents= rs("ClassInfoMaximumStudents")
+		ClassInfoStudentFee= rs("ClassInfoStudentFee")
+		ClassDateMonth = rs("ClassDateMonth")
+		ClassDateDay = rs("ClassDateDay")
+		ClassDateYear = rs("ClassDateYear")
+	ClassInfoMaterialFee=  rs("ClassInfoMaterialFee")
+ClassInfoMaterialFeeOptional=  rs("ClassInfoMaterialFeeOptional")
+
+if len(ClassInfoStudentFee)> 0 then
+else
+ClassInfoStudentFee = 0
+end if
+	
+	ClassStartTime = rs("ClassStartTime")
+	ClassEndTime = rs("ClassEndTime")
+	ClassesQTYArraycount = "ClassesQTYArray(" & ClassInfoID & ")"
+	ClassesQTYArray(ClassInfoID) = Request.Form(ClassesQTYArraycount)
+
+	ClassInfoMaterialFeePaycount = "ClassInfoMaterialFeePay(" & ClassInfoID & ")"
+	ClassInfoMaterialFeePay(ClassInfoID) = Request.Form(ClassInfoMaterialFeePaycount)
+
+
+	if len(ClassInfoMaterialFeePay(ClassInfoID))  > 0  then
+		if ClassInfoMaterialFeePay(ClassInfoID)  > -1 then
+	UpdateServiceDescription = "Material / Equipement Fee - " & ClassInfoTitle
+	PeopleID = Session("PeopleID")
+	
+	sql2 = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+
+	Set rs2 = Server.CreateObject("ADODB.Recordset")
+	rs2.Open sql2, conn, 3, 3   
+	If rs2.eof Then	
+
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, ServiceDescription, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & "" & ClassInfoMaterialFeePay(ClassInfoID) & " ," 
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " & ClassInfoMaterialFee  & " )" 
+	Conn.Execute(Query) 
+
+	else  		
+	RegistrationID = rs2("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " & ClassInfoMaterialFeePay(ClassInfoID) & " ," 
+	Query =  Query & " ItemPrice = " & ClassInfoMaterialFee & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+	Conn.Execute(Query) 
+
+	end if	
+	rs2.close
+  end if
+  end if
+  
+  
+  
+
+
+
+	if len(ClassesQTYArray(ClassInfoID))  > 0  then
+		if ClassesQTYArray(ClassInfoID)  > -1 then
+	UpdateServiceDescription = "Classes - " & ClassInfoTitle
+	PeopleID = Session("PeopleID")
+	
+	sql2 = "select RegistrationID from RegistrationTemp where Status='Draft' and EventId = " & EventID & " and PeopleID =" & PeopleID & " and ServiceDescription = '" & UpdateServiceDescription & "' Order by RegistrationID Desc"
+
+	Set rs2 = Server.CreateObject("ADODB.Recordset")
+	rs2.Open sql2, conn, 3, 3   
+	If rs2.eof Then	
+
+		Query =  "INSERT INTO RegistrationTemp (Status, EventID, PeopleID, Quantity, ServiceDescription, ItemPrice ) " 
+		Query =  Query & " Values ('Draft' ,"
+		Query =  Query & " " &  EventID & " ,"
+		Query =  Query & " " &  PeopleID  & ","
+		Query =  Query & " " &  ClassesQTYArray(ClassInfoID)  & ","
+		Query =  Query & " '" &  UpdateServiceDescription  & "',"
+		Query =  Query & " " & ClassInfoStudentFee  & " )" 
+	Conn.Execute(Query) 
+
+	else  		
+	RegistrationID = rs2("RegistrationID")
+	
+	Query =  " UPDATE RegistrationTemp Set Quantity = " &  ClassesQTYArray(ClassInfoID) & " ," 
+	Query =  Query & " ItemPrice = " & ClassInfoStudentFee & " " 
+	Query =  Query & " where RegistrationID = " & RegistrationID & ";" 
+	Conn.Execute(Query) 
+
+	end if	
+	rs2.close
+  end if
+  end if
+ 	  rowcount = rowcount + 1
+	  rs.movenext
+	Wend		
+end if 
+
+end if
+
+end if
+%>
+
+
+<% end if ' END UPDATE REGISTRATION TEMP TABLE %>
+
+
+<%'************************************************************
+'  GET EXISTING REGISTRATION INFORMATION - PREVIOUS INPUT
+'************************************************************
+
+OrderExists = False
+numorders = 0
+sql = "select RegistrationID from RegistrationTemp where EventId = " & EventID & " and PeopleID =" & PeopleID 
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	if not rs.eof then
+		OrderExists = True
+		numorders = rs.recordcount
+	end if
+
+
+ '********************************************************************************
+ '	CREATE ARRAY OF SPPONSORSHIPS
+ '********************************************************************************
+
+dim SponsorNameArray(100)
+dim SponsorIDArray(100)
+dim ExtraOptionSponsorQTYArray(100)
+
+
+sql4 = "select * from SponsorshipLevelbenefits, Sponsorshiplevels  where SponsorshipLevelbenefits.SponsorshipLevelID = Sponsorshiplevels.SponsorshipLevelID and Sponsorshiplevels.EventID = " & EventID & " order by SponsorshipLevelName"
+
+Set rs4 = Server.CreateObject("ADODB.Recordset")
+rs4.Open sql4, conn, 3, 3 
+if not rs4.eof then 
+   i = 1
+  ExtraOptionSponsorQTYArray(i) = 0
+ SponsorIDArray(i) = rs4("ExtraOptionID")
+ SponsorNameArray(i) = rs4("SponsorshipLevelName")
+ OldOptionName = rs4("SponsorshipLevelName")
+    				
+ while not rs4.eof 
+    NewOptionName = rs4("SponsorshipLevelName")
+	if not(OldOptionName = NewOptionName) then
+		i = i + 1
+		ExtraOptionSponsorQTYArray(i) = 0
+		SponsorIDArray(i) = rs4("ExtraOptionID")
+		SponsorNameArray(i) = rs4("SponsorshipLevelName")
+	end if
+     				
+	SponsorshipLevelID = rs4("SponsorshipLevelID") 
+	SponsorQTYArraycount = "SponsorQTYArray(" & SponsorshipLevelID & ")"
+	SponsorQTYArray(SponsorshipLevelID) = Request.Form(SponsorQTYArraycount)
+	ExtraOptionSponsorQTYArray(i) = ExtraOptionSponsorQTYArray(i) +  ( rs4("SponsorshipLevelQTY") *     SponsorQTYArray(SponsorshipLevelID) )
+    OldOptionName = rs4("SponsorshipLevelName")
+    			
+    rs4.movenext
+ wend
+ 
+ TotalSponsorshipCounter = i
+ 
+ i = 1
+  
+end if
+
+
+
+
+ '********************************************************************************
+ '	CREATE ARRAY OF EXTRA OPTIONS
+ '********************************************************************************
+dim ExtraOptionID(100)
+dim ExtraOptionQTY(100)
+
+sql4 = "select * from SponsorshipLevelbenefits, ExtraOptions where OptionType ='ExtraOption' and SponsorshipLevelbenefits.ExtraOptionID = ExtraOptions.ExtraOptionsID and SponsorshipLevelQTY > 0 and ExtraOptions.EventID = " & EventID & " order by ExtraOptionsname"
+		
+Set rs4 = Server.CreateObject("ADODB.Recordset")
+rs4.Open sql4, conn, 3, 3 
+if not rs4.eof then 
+    TotalSponsorshipLevelQTY = 0
+    i = 1
+    ExtraOptionQTY(i) = 0
+    ExtraOptionID(i) = rs4("ExtraOptionID")
+    OldOptionName = rs4("ExtraOptionsName")
+    while not rs4.eof 
+        NewOptionName = rs4("ExtraOptionsName")
+		 if not(OldOptionName = NewOptionName) then
+			i = i + 1
+			ExtraOptionQTY(i) = 0
+			ExtraOptionID(i) = rs4("ExtraOptionID")
+		 end if
+    			
+	SponsorshipLevelID = rs4("SponsorshipLevelID") 
+	SponsorQTYArraycount = "SponsorQTYArray(" & SponsorshipLevelID & ")"
+	SponsorQTYArray(SponsorshipLevelID) = Request.Form(SponsorQTYArraycount)
+	ExtraOptionQTY(i) = ExtraOptionQTY(i) +  ( rs4("SponsorshipLevelQTY") * SponsorQTYArray(SponsorshipLevelID) )
+	OldOptionName = rs4("ExtraOptionsName")
+     rs4.movenext
+ wend
+ 
+ TotalExtraOptions = i
+ 
+ i = 1
+ end if
+
+
+ 
+ '********************************************************************************
+ '	CREATE ARRAY OF VENDOR OPTIONS
+ '********************************************************************************
+dim VendorNameArray(100)
+dim VendorIDArray(100)
+dim ExtraOptionVendorQTYArray(100)
+
+
+sql4 = "select * from SponsorshipLevelbenefits, ExtraOptions where OptionType ='Vendor' and SponsorshipLevelbenefits.ExtraOptionID = ExtraOptions.ExtraOptionsID and SponsorshipLevelQTY > 0 and ExtraOptions.EventID = " & EventID & " order by ExtraOptionsname"
+			
+Set rs4 = Server.CreateObject("ADODB.Recordset")
+rs4.Open sql4, conn, 3, 3 
+if not rs4.eof then 
+   i = 1
+    				ExtraOptionVendorQTYArray(i) = 0
+    				VendorIDArray(i) = rs4("ExtraOptionID")
+    				VendorNameArray(i) = rs4("ExtraOptionsName")
+    				OldOptionName = rs4("ExtraOptionsName")
+    				
+    				while not rs4.eof 
+
+    				 NewOptionName = rs4("ExtraOptionsName")
+				     if not(OldOptionName = NewOptionName) then
+				      	i = i + 1
+				      	ExtraOptionVendorQTYArray(i) = 0
+				      	VendorIDArray(i) = rs4("ExtraOptionID")
+				      	VendorNameArray(i) = rs4("ExtraOptionsName")
+				     end if
+    				
+    				
+	SponsorshipLevelID = rs4("SponsorshipLevelID") 
+	SponsorQTYArraycount = "SponsorQTYArray(" & SponsorshipLevelID & ")"
+	SponsorQTYArray(SponsorshipLevelID) = Request.Form(SponsorQTYArraycount)
+	ExtraOptionVendorQTYArray(i) = ExtraOptionVendorQTYArray(i) +  ( rs4("SponsorshipLevelQTY") * SponsorQTYArray(SponsorshipLevelID) )
+	 
+    OldOptionName = rs4("ExtraOptionsName")
+    			
+    rs4.movenext
+ wend
+ 
+ TotalVendorOptions = i
+ 
+ i = 1
+ 
+end if
+
+
+ '********************************************************************************
+ '	CREATE ARRAY OF ADVERTISING OPTIONS
+ '********************************************************************************
+dim AdvertisingNameArray(100)
+dim AdvertisingIDArray(100)
+dim ExtraOptionAdvertsingQTYArray(100)
+
+
+
+sql4 = "select * from SponsorshipLevelbenefits, ExtraOptions where OptionType ='Advertising' and SponsorshipLevelbenefits.ExtraOptionID = ExtraOptions.ExtraOptionsID and SponsorshipLevelQTY > 0 and ExtraOptions.EventID = " & EventID & " order by ExtraOptionsname"
+			
+		    		Set rs4 = Server.CreateObject("ADODB.Recordset")
+    				rs4.Open sql4, conn, 3, 3 
+    				if not rs4.eof then 
+    				i = 1
+    				ExtraOptionAdvertsingQTYArray(i) = 0
+    				AdvertisingIDArray(i) = rs4("ExtraOptionID")
+    				AdvertisingNameArray(i) = rs4("ExtraOptionsName")
+    				OldOptionName = rs4("ExtraOptionsName")
+    				
+    				while not rs4.eof 
+
+    				 NewOptionName = rs4("ExtraOptionsName")
+				     if not(OldOptionName = NewOptionName) then
+				      	i = i + 1
+				      	ExtraOptionAdvertsingQTYArray(i) = 0
+				      	AdvertisingIDArray(i) = rs4("ExtraOptionID")
+				      	AdvertisingNameArray(i) = rs4("ExtraOptionsName")
+				     end if
+    		
+    				
+	SponsorshipLevelID = rs4("SponsorshipLevelID") 
+	SponsorQTYArraycount = "SponsorQTYArray(" & SponsorshipLevelID & ")"
+	SponsorQTYArray(SponsorshipLevelID) = Request.Form(SponsorQTYArraycount)
+	ExtraOptionAdvertsingQTYArray(i) = ExtraOptionAdvertsingQTYArray(i) +  ( rs4("SponsorshipLevelQTY") * SponsorQTYArray(SponsorshipLevelID) )
+		
+    OldOptionName = rs4("ExtraOptionsName")
+    			
+    rs4.movenext
+ wend
+ 
+ TotalAdvertisingOptions = i
+ 
+ i = 1
+ 
+end if
+
+
+
+
+ '********************************************************************************
+ '	SPONSORSHIP OPTIONS
+ '********************************************************************************
+
+  if showsponsors = true then
+  	sql = "select * from SponsorshipLevels  where EventID = " & EventID
+    Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	if not rs.eof then %>
+		
+	  <tr >
+		<td class = "body" colspan = "4" height = "30">
+	       <img src = "/images/px.gif" width = "5" alt = "Sponsorship Options"><h3>Sponsorships</h3>
+	     </td>
+	   </tr>
+	<%
+	
+	order = "Even"
+	While Not rs.eof  
+	SponsorshipLevelID = rs("SponsorshipLevelID")
+		SponsorshipLevelName= rs("SponsorshipLevelName")
+		SponsorshipLevelDescription= rs("SponsorshipLevelDescription")
+		SponsorshipLevelPrice = rs("SponsorshipLevelPrice")
+		SponsorshipLevelQTYAvailable = rs("SponsorshipLevelQTYAvailable")
+		SponsorshipLevelMaxQtyPer = rs("SponsorshipLevelMaxQtyPer")
+
+
+
+	str1 = SponsorshipLevelName
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	SponsorshipLevelName= Replace(str1, str2 , "''")
+End If 
+
+
+	  if len(SponsorshipLevelQTYAvailable) > 0 then
+        sqlqty = "select * from Registration where EventID = " & EventID & " and ServiceDescription = 'Sponsorship - " & SponsorshipLevelName & "' "
+         Set rsqty = Server.CreateObject("ADODB.Recordset")
+         rsqty.Open sqlqty, conn, 3, 3   
+	     while not rsqty.eof 
+	     	     SponsorshipLevelQTYAvailable =SponsorshipLevelQTYAvailable - rsqty("Quantity")
+	       rsqty.movenext
+	     wend
+	     rsqty.close
+	end if
+
+
+
+
+   if len(SponsorshipLevelQTYAvailable) > 0 then
+   else
+     SponsorshipLevelQTYAvailable = 50
+   end if
+	SponsorQTYArraycount = "SponsorQTYArray(" & SponsorshipLevelID & ")"
+	SponsorQTYArray(SponsorshipLevelID) = Request.Form(SponsorQTYArraycount)
+
+	i = 0
+	while i < (TotalSponsorCounter + 1 )
+	   	i = i + 1
+		if OldSponsorNameArray(i) = SponsorshipLevelName  then
+			OldSponsorQTY = OldSponsorQTYArray(i)
+		end if
+	wend
+
+
+if SponsorQTYArray(SponsorshipLevelID) < 1 and OldSponsorQTY > 0  and NOT(Update = "True") then
+	SponsorQTYArray(SponsorshipLevelID) = OldSponsorQTY
+end if
+
+  if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+	<td class = "body" width = "360">
+		<img src = "/images/px.gif" width = "10" alt = "Vendor Registration"><%= SponsorshipLevelName %><bR>
+	</td>
+	<td class = "body" align = "right" width = "110">	
+		<%= formatcurrency(SponsorshipLevelPrice) %><img src = "/images/px.gif" width = "10" alt = "Sponsorship Registration">
+    </td>
+    <td class = "body" align = "right" width = "110">	
+ 		<select size="1" name="SponsorQTYArray(<%=SponsorshipLevelID%>)" onchange="submit();" width="50" style="width: 50px" >
+  		<% if len(SponsorQTYArray(SponsorshipLevelID)) > 0 then %>
+  		<option value="<%=SponsorQTYArray(SponsorshipLevelID)%>" ><%=SponsorQTYArray(SponsorshipLevelID)%></option>
+  
+  		<% end if %>
+  		<% x = 0
+  			 while x < (SponsorshipLevelQTYAvailable + 1) %>
+  				<option value="<%=x%>"><%=x%></option>
+  		<% x = x + 1
+		wend %>
+	</select>
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event Registration"> 
+    </td>
+	<td class = "body" align = "right" width = "110">	
+		<%=formatcurrency(SponsorQTYArray(SponsorshipLevelID) * SponsorshipLevelPrice ) %>
+		<% OrderTotal = OrderTotal + (SponsorQTYArray(SponsorshipLevelID) * SponsorshipLevelPrice) %>
+    </td>
+ </tr>
+	 
+
+<% 
+
+sql3 = "select * from SponsorshipLevelbenefits, ExtraOptions where SponsorshipLevelbenefits.ExtraOptionID = ExtraOptions.ExtraOptionsID and  SponsorshipLevelID = " & SponsorshipLevelID & " and SponsorshipLevelQTY > 0 and ExtraOptions.EventID = " & EventID & ""
+Set rs3 = Server.CreateObject("ADODB.Recordset")
+rs3.Open sql3, conn, 3, 3   
+while Not rs3.eof
+    if rs3("ExtraOptionsName") = "Free Halter Stall" then
+    	TotalFreeHalterStallQTY = TotalFreeHalterStallQTY + ( rs3("SponsorshipLevelQTY") * SponsorQTYArray(SponsorshipLevelID))
+    end if 
+  
+    if rs3("ExtraOptionsName") = "Free Display Stall" then
+    	TotalFreeDisplayStallQTY = TotalFreeDisplayStallQTY + ( rs3("SponsorshipLevelQTY") * SponsorQTYArray(SponsorshipLevelID))
+    end if 
+
+   if trim(rs3("ExtraOptionsName")) = "Expidited Vet Check in" then
+    	TotalExpiditedVetCheckinQTY = TotalExpiditedVetCheckinQTY + ( rs3("SponsorshipLevelQTY") * SponsorQTYArray(SponsorshipLevelID))
+    end if 
+
+    if rs3("ExtraOptionsName") = "Free Vet Check in" then
+    	TotalFreeVetCheckinQTY = TotalFreeVetCheckinQTY + ( rs3("SponsorshipLevelQTY") * SponsorQTYArray(SponsorshipLevelID))
+    end if 
+
+
+    if rs3("ExtraOptionsName") = "Free Stall Mat" then
+    	TotalFreeStallMatQTY = TotalFreeStallMatQTY + ( rs3("SponsorshipLevelQTY") * SponsorQTYArray(SponsorshipLevelID))
+    end if 
+
+    if rs3("ExtraOptionsName") = "Free Electricity" then
+    	TotalFreeElectricityQTY = TotalFreeElectricityQTY + ( rs3("SponsorshipLevelQTY") * SponsorQTYArray(SponsorshipLevelID))
+    end if
+
+	if rs3("ExtraOptionsName") = "Free Dinner Ticket(s)" then
+    	TotalFreeDinnerTicketsQTY = TotalFreeDinnerTicketsQTY + ( rs3("SponsorshipLevelQTY") * SponsorQTYArray(SponsorshipLevelID))
+    end if
+	
+	rs3.movenext
+wend
+rs3.close	
+	  
+  rowcount = rowcount + 1
+		rs.movenext
+	Wend		
+  end if 
+  
+  end if
+  %>
+ <tr ><td class = "body" colspan = "4" height = "1" bgcolor = "#abacab"></td></tr>
+
+
+<% if  ShowHalterShow = True  then %>
+
+ <tr >
+		<td class = "body" colspan = "4" height = "30"><a name ="Halter"></a>
+	       <img src = "/images/px.gif" width = "5" alt = "Halter Show Registration"><h3>Halter Show</h3>
+	       <small><i>Note: the number of animals that you can bring is limited by the number of stalls that you sellect.</i></small>
+	     </td>
+	   </tr>
+
+
+<%
+'************************************************************
+'  ANIMAL STALLS
+'************************************************************
+ if  FeePerPen > 0 then
+AnimalStallQTY = request.form("AnimalStallQTY")
+ Halternotes = request.form("Halternotes")
+if AnimalStallQTY < 1 and OldAnimalStallsQuantity > 0 and NOT(Update = "True") then
+	AnimalStallQTY = OldAnimalStallsQuantity
+end if
+
+ showdiscount = False
+if len(Price2Discount) > 0 and len(Price2DiscountStartDate) > 4 and len(Price2DiscountStartDate) > 4 then
+  if DateDiff("d", Price2DiscountStartDate, now()) > 1 and DateDiff("d", Price2DiscountEndDate, now()) < 1 then
+ 	 FullPriceFeePerPen = FeePerPen
+ 	 FeePerPen = Price2Discount
+ 	  showdiscount = True
+	end if 
+end if
+
+if len(AnimalStallQTY) > 0  and len(FeePerPen) > 0  then
+	AnimalStallTotal = AnimalStallQTY * FeePerPen
+else
+	AnimalStallTotal = 0
+end if 
+
+ if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+  <td class = "body" >
+  <input type = "hidden" value = "<%=FeePerPen %>" name = "FeePerPen">
+  
+  <% if len(FeePerPen) > 1 then %>
+  <img src = "images/px.gif" width = "4" height = "1" alt = "Livestock Event Registration">Animal Stalls 
+  <% if len(MaxQTY) > 0 or len(MaxQTY2) > 0 then %><small>-<% end if %>
+  	<% if len(MaxQTY2) > 0 then %><%=MaxQty2%> adults <% end if %>
+  	<% if len(MaxQTY) > 0 and len(MaxQTY2) > 0 then %> OR <% end if %>
+  	 <% if len(MaxQTY) > 0 then %><%=MaxQty%> juveniles per stall <% end if %>  
+   <% if len(MaxQTY) > 0 or len(MaxQTY2) > 0 then %></small><% end if %>
+  <% if showdiscount = True then %>
+ 	 <br><small><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">Discount Rate from <%=Price2DiscountStartDate %> To <% =Price2DiscountEndDate %>.</small>
+	<% end if %>
+
+ </td>
+  <td class = "body" align = "right" >
+    <% if showdiscount = True then %>   
+ 	   <small><strike><%=formatcurrency(FullPriceFeePerPen,2)%></strike></small><img src = "images/px.gif" width = "5" alt = "Event Registration"><br>
+ 			<%=formatcurrency(FeePerPen,2)%>
+ 		<% else %>
+	  <%=formatcurrency(FeePerPen,2)%>
+	
+<% end if %>
+
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"> </td>
+  <td class = "body" align = "right" >
+  <% if len(MaxPensPerFarm) > 0 then
+     else
+      MaxPensPerFarm = 50
+     end if %>
+  <select size="1" name="AnimalStallQTY" onchange="submit();" width="50" style="width: 50px" >
+  	<% if len(AnimalStallQTY) > 0 then %>
+  	<option value="<%=AnimalStallQTY%>"><%=AnimalStallQTY%></option>
+  
+  	<% end if %>
+  	<% x = 0
+  	 while x < (MaxPensPerFarm + 1) %>
+  		<option value="<%=x%>"><%=x%></option>
+
+	<% x = x + 1
+	wend %>
+	</select>
+
+
+ <img src = "/images/px.gif" width = "5" alt = "Livestock event registration"> </td>
+  <td class = "body" align = "right" > <%=formatcurrency(AnimalStallTotal,2)%>
+	<% OrderTotal = OrderTotal + AnimalStallTotal %>
+	<img src = "/images/px.gif" width = "5" alt = "Sponsorship Registration">
+  </td>
+</tr> 
+<tr><td class = "body" colspan = "4" valign = "top">
+&nbsp;Animal Stall Location Requests:
+</td></tr>
+<tr><td class = "body" colspan = "4" valign = "top" align = "center">
+<textarea name="Halternotes" cols="80" rows="2" wrap="VIRTUAL" class = "body"><%= Halternotes%></textarea>
+</td></tr>
+
+
+
+
+<% if TotalFreeHalterStallQTY > 0 then %>
+<tr bgcolor = "#F6F6F6" height = "20">
+<td class = "body" align = "right" colspan = "2" valign = "top">
+   <img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration"><small>Animal stalls that come with your sponsorship<% if TotalFreeHalterStallQTY > 1 then %>s<%end if %>:</small>
+</td>
+<td class = "body" align = "right" valign = "top">
+	<%=TotalFreeHalterStallQTY%><img src = "images/px.gif" width = "20" height = "1" alt = "Event Registration">
+</td>
+<td class = "body" align = "right" valign = "top">
+N/A	<img src = "/images/px.gif" width = "5" alt = "Sponsorship Registration"><img src = "images/px.gif" width = "20" height = "1" alt = "Event Registration">
+</td>
+</tr>
+ <tr ><td class = "body" colspan = "4" height = "9" ></td></tr>
+<% end if 
+ end if 
+end if 
+
+'************************************************************
+'  DISPLAY STALLS
+'************************************************************
+ if  Price3 > 0 then
+DisplayStallQTY = request.form("DisplayStallQTY")
+
+	if DisplayStallQTY < 1 and OldDisplayStallsQTY > 0 and NOT(Update = "True") then
+		DisplayStallQTY = OldDisplayStallsQTY
+	end if
+
+
+CurrentNumDisplayStallQTY = DisplayStallQTY
+ showdiscount = False
+if Price3Discount > 0 and len(Price3DiscountStartDate) > 5 and len(Price3DiscountStartDate) > 5 then
+  if DateDiff("d", Price3DiscountStartDate, now()) > 1 and DateDiff("d", Price3DiscountEndDate, now()) < 1 then
+ 	 FullPricePrice3 = Price3
+ 	 Price3 = Price3Discount
+ 	  showdiscount = True
+	end if 
+end if
+
+
+if len(AnimalStallQTY) > 0  and len(Price3) > 0  then
+	DisplayStallTotal = DisplayStallQTY * Price3
+else
+	DisplayStallTotal = 0
+end if 
+
+ if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+  <td class = "body" >
+    <input type = "hidden" value = "<%= Price3 %>" name = "DisplayStallPrice">
+
+  <img src = "images/px.gif" width = "4" height = "1" alt = "Livestock Event Registration">Display Stalls 
+  <% if showdiscount = True then %>  
+ 	 <br><small><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">Discount rate from <%=Price3DiscountStartDate %> to <% =Price3DiscountEndDate %>.</small>
+	<% end if %>
+
+ </td>
+  <td class = "body" align = "right" >
+    <% if showdiscount = True then %>   
+ 	   <small><strike><%=formatcurrency(FullPricePrice3,2)%></strike></small><img src = "images/px.gif" width = "5" alt = "Event Registration"><br>
+ 			<%=formatcurrency(Price3,2)%>
+ 			<% else %>
+	  <%=formatcurrency(Price3,2)%>
+	
+<% end if %>
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"> </td>
+  <td class = "body" align = "right" >
+  <select size="1" name="DisplayStallQTY" onchange="submit();" width="50" style="width: 50px"  >
+  	<% if len(DisplayStallQTY) > 0 then %>
+  	<option value="<%=DisplayStallQTY%>"><%=DisplayStallQTY%></option>
+  
+  	<% end if 
+  	 x = 0
+  	 while x < (MaxDisplaysPerFarm + 1) %>
+  		<option value="<%=x%>"><%=x%></option>
+
+	<% x = x + 1
+	wend %>
+	</select>
+
+
+ <img src = "/images/px.gif" width = "5" alt = "Livestock event registration"> </td>
+  <td class = "body" align = "right" > <%=formatcurrency(DisplayStallTotal,2)%>
+  	<% OrderTotal = OrderTotal + DisplayStallTotal %>
+	<img src = "/images/px.gif" width = "5" alt = "Vendor Registration">
+
+  </td>
+</tr> 
+
+
+<% if TotalFreeDisplayStallQTY > 0 then %>
+<tr bgcolor = "#F6F6F6" height = "20">
+<td class = "body" valign = "top" align="right" colspan = "2">
+   <small>Display stalls that come with your sponsorship<% if TotalFreeDisplayStallQTY > 1 then %>s<%end if %>:</small>
+</td>
+<td class = "body" align = "right">
+	<%=TotalFreeDisplayStallQTY%><img src = "images/px.gif" width = "20" height = "1" alt = "Event Registration">
+</td>
+<td class = "body" align = "right">
+N/A<img src = "images/px.gif" width = "20" height = "1" alt = "Event Registration">
+</td>
+</tr>
+ <tr ><td class = "body" colspan = "4" height = "10" ></td></tr>
+<% end if 
+ end if 
+
+
+
+'************************************************************
+'  HALTER SHOW ENTRIES
+'************************************************************
+ if  FeePerAnimal > 0 then
+AnimalQTY = request.form("AnimalQTY")
+
+if AnimalQTY < 1 and OldHalterShowEntriesQuantity > 0 and NOT(Update = "True") then
+	AnimalQTY = OldHalterShowEntriesQuantity
+end if
+
+if len(MaxQty2) > 0 then
+else
+MaxQty2 = 3
+end if 
+ showdiscount = False
+if Price1Discount > 0 and len(Price1DiscountStartDate) > 5 and len(Price1DiscountStartDate) > 5 then
+  if DateDiff("d", Price1DiscountStartDate, now()) > 1 and DateDiff("d", Price1DiscountEndDate, now()) < 1 then
+ 	 FullPricePrice1 = FeePerAnimal
+ 	 FeePerAnimal = Price1Discount
+ 	  showdiscount = True
+	end if 
+end if
+
+if len(AnimalQTY) > 0  and len(FeePerAnimal) > 0   then
+	AnimalTotal = AnimalQTY * FeePerAnimal
+	else
+	AnimalTotal = 0
+end if 
+
+ if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+  <td class = "body" >
+    <input type = "hidden" value = "<%= FeePerAnimal %>" name = "HalterShowFee">
+ <img src = "images/px.gif" width = "4" height = "1" alt = "Livestock Event Registration">Halter Show Entries
+ <% if AnimalStallQTY = 0 and TotalFreeHalterStallQTY = 0 then %>
+ <br><small><font color = "brown"><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">Before you add animals please select stalls to put them in.</font></small>
+
+<% end if 
+ 	 if MaxQTY3 > 0 then %>  
+ 	 <br><small><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">Max. <% =MaxQTY3 %> Entries Per Exhibitor Per Class.</small>
+	<% end if 
+
+   if showdiscount = True then %>  
+ 	 <br><small><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">Discount rate from <%=Price1DiscountStartDate %> to <% =Price1DiscountEndDate %>.</small>
+	<% end if %>
+
+ </td>
+  <td class = "body" align = "right" >
+    <% if showdiscount = True then %>   
+ 	   <small><strike><%=formatcurrency(FullPricePrice1,2)%></strike></small><img src = "images/px.gif" width = "5" alt = "Event Registration"><br>
+ 			<%=formatcurrency(FeePerAnimal,2)%>
+ 			<% else %>
+	  <%=formatcurrency(FeePerAnimal,2)%>
+	
+<% end if %>
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"> </td>
+  <td class = "body" align = "right" >
+  <select size="1" name="AnimalQTY" onchange="submit();" width="50" style="width: 50px" >
+  	<% if len(AnimalQTY) > 0 then %>
+  	<option value="<%=AnimalQTY%>"><%=AnimalQTY%></option>
+  
+  	<% end if 
+  	 x = 0
+  	 while x < ((AnimalStallQTY * MaxQty2) + 1) + TotalFreeHalterStallQTY %>
+  		<option value="<%=x%>"><%=x%></option>
+  		<% x = x + 1
+	wend %>
+	</select>
+
+
+ <img src = "/images/px.gif" width = "5" alt = "Livestock event registration"> </td>
+  <td class = "body" align = "right" > <%=formatcurrency(AnimalTotal,2)%>
+  	<% OrderTotal = OrderTotal + AnimalTotal %>
+	<img src = "/images/px.gif" width = "5" alt = "Vendor Registration">
+ </td>
+</tr> 
+
+<%
+'************************************************************
+'  HALTER SHOW ENTRIES
+'************************************************************
+
+if AnimalQTY > 0 then %>
+
+<tr>
+  <td colspan = "4">
+
+
+  <table  border="0"  cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" width = "650" align = "center">
+  <tr><td height = "4"></td>	
+	<tr>
+  		<td class = "body" align = "center" background = "images/header650.jpg" height = "20">
+		<table  border="0"  cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" width = "650" align = "center">	
+		<tr>
+   			<td class = "body" align = "center" width = "310"><b>Animal's Name</b></td>
+  			<td class = "body" align = "center" width = "200"><b>Halter Class</b></td>
+  			<td class = "body" align = "center" width = "140"><b>Options</b></td>
+		</tr>
+	</table>
+</td>
+</tr>
+
+
+<tr>
+  <td background = "images/background650.jpg">
+
+  <table>
+  <% 
+  
+counterx = 0 
+sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and RegistrationType = 'Halter'"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	while not rs.eof 
+	
+	 counterx = counterx +1
+	AnimalIDArray(counterx) = rs("AnimalRegistrationID")	
+	HalterClassIDArray(counterx) = rs("HalterClassID")	
+	if HalterClassIDArray(counterx)> 0 then
+	    sqlH = "select * from AnimalHalterClassesLookup where AnimalHalterLookupID = " & HalterClassIDArray(counterx) 
+	    Set rsH = Server.CreateObject("ADODB.Recordset")
+	    rsH.Open sqlH, conn, 3, 3   
+	    if not rsH.eof then
+	        HalterClassNameArray(counterx) = rsH("HalterClassName")	
+	    end if
+	    rsH.close
+	 end if
+	rs.movenext
+	wend
+  
+      BoxOrder = "Even"
+  counterx = 0 
+    while counterx < cint(AnimalQTY) 
+    counterx = counterx + 1 
+    
+    if len(AnimalIDArray(counterx)) > 0 then
+    sql3 = "select * from Animal where AnimalID = " & AnimalIDArray(counterx) & ""
+    Set rs3 = Server.CreateObject("ADODB.Recordset")
+    rs3.Open sql3, conn, 3, 3   
+    if Not rs3.eof then
+      AnimalNameArray(counterx) = rs3("AnimalsName")
+      DOB = rs3("DOBMonth") & "/" & rs3("DOBDay")& "/" & rs3("DOBYear")
+      AgeClass = rs3("AgeClass")
+      Category = rs3("Category")
+      if Category = "Experienced Female" or Category = "Inexperienced Female" then
+         Gender = "F"
+      else
+         Gender = "M"
+      end if
+    end if
+    end if
+    
+  if BoxOrder = "Even" then
+     BoxOrder = "Odd"
+    %>
+     <tr>
+  <% else 
+  BoxOrder = "Even"%>
+  <tr bgcolor = "#EFEFEF">
+  <% end if %>
+      <td class = "body" width = "310">
+  <select size="1" name="AnimalIDArray(<%=counterx %>)" width = "300" style="width: 300px" onchange="submit();">
+
+        <% if len(AnimalIDArray(counterx))> 0 then %>
+			<option name = "AID0" value= "<%=AnimalIDArray(counterx) %>" selected ><%=AnimalNameArray(counterx)%> </option>
+		<% else %>
+		    <option name = "AID0" value= "" selected >Select an animal</option>
+		<% end if %>
+
+	 <%	count = 1
+						while count < acounter
+					%>
+						<option name = "AID1" value="<%=aID(count)%>">
+							<%=aName(count)%>
+						</option>
+					<% 	count = count + 1
+					wend %>
+					</select>
+	  </td>
+ <td width = "200">
+<%
+ if len(AnimalIDArray(counterx))> 0 then 
+
+
+ sqlp = "select * from AnimalHalterClassesLookup where SpeciesID = 1"
+				Set rsp = Server.CreateObject("ADODB.Recordset")
+				rsp.Open sqlp, conn, 3, 3
+				if Not rsp.eof then
+				AnimalHalterLookupID = rsp("AnimalHalterLookupID")
+				HalterClassName = rsp("HalterClassName") %>
+			 <select size="1" name="HalterClassIDArray(<%=counterx %>)" width = "190" style="width: 190px" onchange="submit();">
+                    <% if len(HalterClassIDArray(counterx) )> 0 then %>
+                        <option  value="<%=HalterClassIDArray(counterx) %>" selected><%=HalterClassNameArray(counterx) %></option>
+                    <% else %>
+                     <option  value="" selected>Select a Class</option>
+                    <% end if %>
+                    <% count = 1
+						while Not rsp.eof 
+					%>
+						<option name = "AID1" value="<%=rsp("AnimalHalterLookupID")%>">
+							<%=rsp("HalterClassName")%>
+						</option>
+					<% 	rsp.movenext
+					wend %>
+					</select>		  
+	  
+	        <% end if %> 
+	        	  
+	        <% end if %> 
+	  </td>
+      <td class = "body" align = "center" width = "140">
+      <% if len(AnimalIDArray(counterx))> 0 then %>
+ 
+         <a href = "EventAddAnimal.asp?AddAnimal=False&EditAnimal=True&AnimalAdded=True&AnimalID=<%=AnimalIDArray(counterx)%>" class = "body">Edit</a> | <a href = "fibermaniaRegistration.asp?RemoveHalterAnimal=True&AnimalID=<%=AnimalIDArray(counterx)%>#Halter" class = "body">Remove</a>
+      <% end if %>
+	  </td>
+	 </tr>
+	<% 
+	wend %>
+  <tr>
+      <td class = "body" >
+
+	  </td>
+      <td class = "body" colspan = "3" align = "center">
+
+<a href = "EventAddAnimal.asp?EventID=<%=EventID%>"  class = "body">Add an Animal</a><img src = "images/px.gif" width = "20" height = "1" /><a href = "EventDeleteAnimal.asp?EventID=<%=EventID%>"  class = "body">Delete an Animal</a>
+	  </td>
+	 </tr>
+  </table>
+  </td>
+</tr>
+
+<tr>
+  <td background = "images/Footer650.jpg" height = "15"><img src = "images/px.gif" height = "1" width = "1" alt = "<%= EventName %> at Andresen Events - Event Registration"></td></tr>
+</table>
+<br />
+
+  </td>
+</tr>
+<% end if %>
+
+<% ' Halter Animals Box End %>
+
+
+
+
+
+
+<%
+'************************************************************
+'  PRODUCTION CLASS HALTER SHOW ENTRIES
+'************************************************************
+
+ProductionPrice = Price4
+ProductionPriceDiscount = Price4Discount
+ProductionPriceDiscountStartDate = Price4DiscountStartDate
+ProductionPriceDiscountEndDate = Price4DiscountEndDate
+
+
+if  ProductionPrice > 0 then
+ProductionQTY = request.form("ProductionQTY")
+if len(ProductionQTY) > 0 then
+else
+ProductionQTY = 0
+end if 
+
+if ProductionQTY < 1  and  OldProductionClasEntriesQuantity > 0 and  NOT(Update = "True") then
+	ProductionQTY = OldProductionClasEntriesQuantity
+END IF
+
+
+ showdiscount = False
+ 	
+if ProductionPriceDiscount > 0 and len(ProductionPriceDiscountStartDate) > 5 and len(ProductionPriceDiscountStartDate) > 5 then
+  if DateDiff("d", ProductionPriceDiscountStartDate, now()) > 1 and DateDiff("d", ProductionPriceDiscountEndDate, now()) < 1 then
+ 	 FullPriceProductionPrice = ProductionPrice
+ 	 ProductionPrice = ProductionPriceDiscount
+ 	  showdiscount = True
+	end if 
+end if
+
+if len(ProductionQTY) > 0  and len(FeePerAnimal) > 0  then
+	ProductionPriceTotal = ProductionQTY * ProductionPrice
+	else
+	ProductionPriceTotal = 0
+end if 
+
+ %>
+<% if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+  <td class = "body" >
+<a name = "Production"></a>
+ <img src = "images/px.gif" width = "4" height = "1" alt = "Livestock Event Registration">Halter Show Production Class Entries
+ <% sqlp = "select * from AnimalProductionClassesLookup where SpeciesID = 1"
+			Set rsp = Server.CreateObject("ADODB.Recordset")
+			rsp.Open sqlp, conn, 3, 3
+			if not rsp.eof then 
+			 i = 0
+				 while Not rsp.eof  
+				AnimalProductionLookupID = rsp("AnimalProductionLookupID")
+				ProductionClassName = rsp("ProductionClassName") 
+				 sqlp2 = "select * from AnimalProductionClasses where AnimalProductionLookupID = " & AnimalProductionLookupID & " and EventID =" & EventID
+				Set rsp2 = Server.CreateObject("ADODB.Recordset")
+				rsp2.Open sqlp2, conn, 3, 3
+					if not rsp2.eof then 
+					 i = i + 1 
+					 if i > 1 then %>, <% else %><small>-<% end if %><%=ProductionClassName%>
+				<% end if 
+				rsp2.close 
+				 rsp.movenext
+			wend 
+			rsp.close %>
+			</small><% end if %>
+
+ 
+ <% if AnimalStallQTY = 0 then %>
+ <br><small><font color = "brown"><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">Before you add animals please select stalls to put them in.</font></small>
+
+<% end if %> 
+	<% if MaxQTY3 > 0 then %>  
+ 	 <br><small><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">Max. <% =MaxQTY3 %> Entries Per Exhibitor Per Class.</small>
+	<% end if %>
+
+
+  <% if showdiscount = True then %>  
+ 	 <br><small><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">Discount rate from <%=ProductionPriceDiscountStartDate %> to <% =ProductionPriceDiscountEndDate %>.</small>
+	<% end if %>
+
+ </td>
+  <td class = "body" align = "right" >
+    <% if showdiscount = True then %>   
+ 	   <small><strike><%=formatcurrency(FullPriceProductionPrice,2)%></strike></small><img src = "images/px.gif" width = "5" alt = "Event Registration"><br>
+ 			<%=formatcurrency(ProductionPrice,2)%>
+ 			<% else %>
+	  <%=formatcurrency(ProductionPrice,2)%>
+	
+<% end if %>
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"> </td>
+  <td class = "body" align = "right" >
+  <select size="1" name="ProductionQTY" onchange="submit();" width="50" style="width: 50px" >
+  	<% if len(ProductionQTY) > 0 then %>
+  	<option value="<%=ProductionQTY%>"><%=ProductionQTY%></option>
+  
+  	<% end if %>
+  	<% x = 0
+  	 while x < ((AnimalStallQTY * MaxQty2) + 1) %>
+  		<option value="<%=x%>"><%=x%></option>
+  		<% x = x + 1
+	wend %>
+	</select>
+
+
+ <img src = "/images/px.gif" width = "5" alt = "Livestock event registration"> </td>
+  <td class = "body" align = "right" > <%=formatcurrency(ProductionPriceTotal,2)%>
+  	<% OrderTotal = OrderTotal + ProductionPriceTotal %>
+	<img src = "/images/px.gif" width = "5" alt = "Vendor Registration">
+ </td>
+</tr> 
+
+<%
+'************************************************************
+'  PRODUCTION CLASS ENTRIES
+'************************************************************
+
+if ProductionQTY > 0 then %>
+
+<tr>
+  <td colspan = "4">
+
+
+  <table  border="0"  cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" width = "650" align = "center">
+  <tr><td height = "4"></td>	
+	<tr>
+  		<td class = "body" align = "center" background = "images/header650.jpg" height = "20">
+		<table  border="0"  cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" width = "650" align = "center">	
+		<tr>
+   			<td class = "body" align = "center" width = "310"><b>Animal's Name</b></td>
+   			<td class = "body" align = "center" width = "200"><b>Production Class</b></td>
+  			<td class = "body" align = "center" width = "140"><b>Options</b></td>
+		</tr>
+	</table>
+</td>
+</tr>
+<tr>
+  <td background = "images/background650.jpg">
+
+  <table border= "0">
+  <% 
+  
+counterx = 0 
+sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and RegistrationType = 'Production'"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	while not rs.eof 
+	
+	 counterx = counterx +1
+	ProductionAnimalIDArray(counterx) = rs("AnimalRegistrationID")	
+    ProductionClassIDArray(counterx) = rs("ProductionClassID")	
+    
+	if len(ProductionClassIDArray(counterx))> 0 then
+	sqlH = "select * from AnimalProductionClassesLookup where AnimalProductionLookupID = " & ProductionClassIDArray(counterx) 
+	Set rsH = Server.CreateObject("ADODB.Recordset")
+	rsH.Open sqlH, conn, 3, 3   
+	if not rsH.eof then
+	    ProductionClassNameArray(counterx) = rsH("ProductionClassName")	
+	end if
+	rsH.close
+	end if
+	rs.movenext
+	wend
+      BoxOrder = "Even"
+  counterx = 0 
+    while counterx < cint(ProductionQTY) 
+    counterx = counterx + 1 
+    
+    if len(ProductionAnimalIDArray(counterx)) > 0 then
+    sql3 = "select * from Animal where AnimalID = " & ProductionAnimalIDArray(counterx) & ""
+    Set rs3 = Server.CreateObject("ADODB.Recordset")
+    rs3.Open sql3, conn, 3, 3   
+    if Not rs3.eof then
+      ProductionAnimalNameArray(counterx) = rs3("AnimalsName")
+      DOB = rs3("DOBMonth") & "/" & rs3("DOBDay")& "/" & rs3("DOBYear")
+      AgeClass = rs3("AgeClass")
+      Category = rs3("Category")
+      if Category = "Experienced Female" or Category = "Inexperienced Female" then
+         Gender = "F"
+      else
+         Gender = "M"
+      end if
+    end if
+    end if
+    
+  if BoxOrder = "Even" then
+     BoxOrder = "Odd"
+    %>
+     <tr>
+  <% else 
+  BoxOrder = "Even"%>
+  <tr bgcolor = "#EFEFEF">
+  <% end if %>
+      <td class = "body" width = "310">
+  <select size="1" name="ProductionAnimalIDArray(<%=counterx %>)" width = "300" style="width: 300px" onchange="submit();">
+        <% if len(ProductionAnimalNameArray(counterx))> 1 then %>
+			<option  value= "<%=ProductionAnimalIDArray(counterx) %>" selected ><%=ProductionAnimalNameArray(counterx)%> </option>
+		<% else %>
+		    <option name = "AID0" value= "" selected >select an animal</option>
+		<% end if %>
+		<% count = 1
+			while count < acounter
+		%>
+				<option name = "AID1" value="<%=aID(count)%>">
+					<%=aID(count)%><%=aName(count)%>
+				</option>
+		<% 	count = count + 1
+			wend %>
+		</select>
+	  </td>
+	  <td width = "200">
+	  <% if len(ProductionAnimalNameArray(counterx))> 1 then 
+    sqlp = "select * from AnimalProductionClassesLookup where SpeciesID = 1"
+				Set rsp = Server.CreateObject("ADODB.Recordset")
+				rsp.Open sqlp, conn, 3, 3
+				if Not rsp.eof then
+				AnimalProductionLookupID = rsp("AnimalProductionLookupID")
+				ProductionClassName = rsp("ProductionClassName") %>
+			 <select size="1" name="ProductionClassIDArray(<%=counterx %>)" width = "200" style="width: 200px" onchange="submit();">
+        <% if len(ProductionClassIDArray(counterx) )> 0 then %>
+                        <option  value="<%=ProductionClassIDArray(counterx) %>" Selected><%=ProductionClassNameArray(counterx) %></option>
+                    <% else %>
+                     <option  value="" selected>Select a Class</option>
+                    <% end if %>
+					<% count = 1
+						while Not rsp.eof 
+					%>
+						<option name = "AID1" value="<%=rsp("AnimalProductionLookupID")%>">
+							<%=rsp("ProductionClassName")%>
+						</option>
+					<% 	rsp.movenext
+					wend %>
+					</select>		  
+	  
+	        <% end if %> 
+	        <% end if %>
+      </td>
+      <td class = "body" align = "center" width = "140">
+      <% if len(ProductionAnimalIDArray(counterx))> 0 then %>
+         <a href = "EventAddAnimal.asp?AddAnimal=False&EditAnimal=True&AnimalAdded=True&AnimalID=<%=ProductionAnimalIDArray(counterx)%>" class = "body">Edit</a> | <a href = "fibermaniaRegistration.asp?RemoveProductionAnimal=True&AnimalID=<%=ProductionAnimalIDArray(counterx)%>#Production" class = "body">Remove</a>
+      <% end if %>
+	  </td>
+	 </tr>
+	<% 
+	wend %>
+  <tr>
+      <td class = "body" >
+
+	  </td>
+ <td class = "body" colspan = "3" align = "center">
+
+<a href = "EventAddAnimal.asp?EventID=<%=EventID%>"  class = "body">Add an Animal</a><img src = "images/px.gif" width = "20" height = "1" /><a href = "EventDeleteAnimal.asp?EventID=<%=EventID%>"  class = "body">Delete an Animal</a>
+	  </td>
+	 </tr>
+  </table>
+  </td>
+</tr>
+
+<tr>
+  <td background = "images/Footer650.jpg" height = "15"><img src = "images/px.gif" height = "1" width = "1" alt = "<%= EventName %> at Andresen Events - Event Registration"></td></tr>
+</table>
+<br />
+
+  </td>
+</tr>
+<% end if
+ ' Production Animals Box End 
+ end if 
+ 
+'************************************************************
+'  COMPANION ANIMALS
+'************************************************************
+%>
+<% if  ShowHalterShow = True  then %>
+<% UnshownQTY = request.form("UnshownQTY")
+ 
+if  UnshownQTY < 1  and OldCompanionAnimalQuantity > 0 and  NOT(Update = "True") then
+	UnshownQTY = OldCompanionAnimalQuantity
+end if
+
+%>
+<% if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+  <td class = "body" ><a name = "Companion"></a>
+
+  <img src = "images/px.gif" width = "4" height = "1" alt = "Livestock Event Registration">Companion Animals <small>(animals that will not be shown)</small>
+ <% if AnimalStallQTY = 0 then %>
+ <br><small><font color = "brown"><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">Before you add animals please select stalls to put them in.</font></small>
+
+<% end if %> 
+
+ 
+ </td>
+  <td class = "body" align = "right" >
+  N/A
+
+
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"> </td>
+  <td class = "body" align = "right" >
+   <select size="1" name="UnshownQTY" onchange="submit();" width="50" style="width: 50px" >
+  
+  <% if AnimalStallQTY = 0 then %> 
+  	<option value="0">0</option>
+
+  <% else %>
+
+  	<% if len(UnshownQTY) > 0 then %>
+  	<option value="<%= UnshownQTY%>"><%= UnshownQTY%></option>
+  
+  	<% end if %>
+  	<% x = 0
+  	 while x < ((AnimalStallQTY * MaxQty2) + 1 - AnimalQTY) %>
+  		<option value="<%=x%>"><%=x%></option>
+  		<% x = x + 1
+	wend 
+	
+	end if %>
+	</select>
+
+
+ <img src = "/images/px.gif" width = "5" alt = "Livestock event registration"> </td>
+  <td class = "body" align = "right" >  
+  N/A
+<img src = "/images/px.gif" width = "5" alt = "Livestock event registration"> </td>
+</tr> 
+
+
+<%
+'************************************************************
+'  Companion CLASS ENTRIES
+'************************************************************
+
+if UnshownQTY > 0 then %>
+
+<tr>
+  <td colspan = "4">
+
+
+  <table  border="0"  cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" width = "650" align = "center">
+  <tr><td height = "4"></td>	
+	<tr>
+  		<td class = "body" align = "center" background = "images/header650.jpg" height = "20">
+		<table  border="0"  cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" width = "650" align = "center">	
+		<tr>
+   			<td class = "body" align = "center" width = "310"><b>Animal's Name</b></td>
+  			<td class = "body" align = "center" width = "200"><b>Gender</b></td>
+  			<td class = "body" align = "center" width = "140"><b>Options</b></td>
+		</tr>
+	</table>
+</td>
+</tr>
+<tr>
+  <td background = "images/background650.jpg">
+
+  <table border= "0">
+  <% 
+  
+counterx = 0 
+sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and RegistrationType = 'Companion'"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	while not rs.eof 
+	
+	 counterx = counterx +1
+	CompanionAnimalIDArray(counterx) = rs("AnimalRegistrationID")	
+	rs.movenext
+	wend
+  
+      BoxOrder = "Even"
+  counterx = 0 
+    while counterx < cint(UnshownQTY) 
+    counterx = counterx + 1 
+    
+    if len(CompanionAnimalIDArray(counterx)) > 0 then
+    sql3 = "select * from Animal where AnimalID = " & CompanionAnimalIDArray(counterx) & ""
+    Set rs3 = Server.CreateObject("ADODB.Recordset")
+    rs3.Open sql3, conn, 3, 3   
+    if Not rs3.eof then
+      CompanionAnimalNameArray(counterx) = rs3("AnimalsName")
+      DOB = rs3("DOBMonth") & "/" & rs3("DOBDay")& "/" & rs3("DOBYear")
+      AgeClass = rs3("AgeClass")
+      Category = rs3("Category")
+      if Category = "Experienced Female" or Category = "Inexperienced Female" then
+         Gender = "F"
+      else
+         Gender = "M"
+      end if
+    end if
+    end if
+    
+  if BoxOrder = "Even" then
+     BoxOrder = "Odd"
+    %>
+     <tr>
+  <% else 
+  BoxOrder = "Even"%>
+  <tr bgcolor = "#EFEFEF">
+  <% end if %>
+      <td class = "body" width = "310">
+  <select size="1" name="CompanionAnimalIDArray(<%=counterx %>)"  width = "300" style="width: 300px" onchange="submit();">
+        <% if len(CompanionAnimalNameArray(counterx))> 1 then %>
+			<option name = "AID0" value= "<%=CompanionAnimalIDArray(counterx) %>" selected ><%=CompanionAnimalNameArray(counterx)%> </option>
+		<% else %>
+		    <option name = "AID0" value= "" selected >select an animal</option>
+		<% end if %>
+					<% count = 1
+						while count < acounter
+					%>
+						<option name = "AID1" value="<%=aID(count)%>">
+							<%=aName(count)%>
+						</option>
+					<% 	count = count + 1
+					wend %>
+					</select>
+	  </td>
+ 	  <td class = "body" width = "100" align = "center">
+         <% if len(CompanionAnimalIDArray(counterx))> 0 then %> <%=Gender %> <% end if %></td>
+         	  <td class = "body" width = "100" align = "center">
+         <% if len(CompanionAnimalIDArray(counterx))> 0 then %> <%=AgeClass %>  <% end if %></td>
+      <td class = "body" align = "center" width = "140">
+      <% if len(CompanionAnimalIDArray(counterx))> 0 then %>
+         <a href = "EventAddAnimal.asp?AddAnimal=False&EditAnimal=True&AnimalAdded=True&AnimalID=<%=CompanionAnimalIDArray(counterx)%>" class = "body">Edit</a> | <a href = "fibermaniaRegistration.asp?RemoveCompanionAnimal=True&AnimalID=<%=CompanionAnimalIDArray(counterx)%>#Companion" class = "body">Remove</a>
+      <% end if %>
+	  </td>
+	 </tr>
+	<% 
+	wend %>
+  <tr>
+      <td class = "body" >
+
+	  </td>
+	   <td class = "body" colspan = "3" align = "center">
+
+<a href = "EventAddAnimal.asp?EventID=<%=EventID%>"  class = "body">Add an Animal</a><img src = "images/px.gif" width = "20" height = "1" /><a href = "EventDeleteAnimal.asp?EventID=<%=EventID%>"  class = "body">Delete an Animal</a>
+	  </td>
+	 </tr>
+  </table>
+  </td>
+</tr>
+
+<tr>
+  <td background = "images/Footer650.jpg" height = "15"></td></tr>
+</table>
+<br />
+
+  </td>
+</tr>
+<% end if  ' Companion Animals Box End 
+ end if 
+
+
+'************************************************************
+'  VET CHECK FEE
+'************************************************************
+if  VetCheckFee > 0 then
+
+if TotalFreeVetCheckinQTY < 1 then
+
+
+VetCheckQTY = request.form("VetCheckQTY")
+if VetCheckQTY < 1 and OldVetCheckQuantity > 0 and  NOT(Update = "True") then
+ VetCheckQTY = OldVetCheckQuantity
+end if
+
+
+ showdiscount = False
+ 
+if Price4Discount > 0 and len(Price4DiscountStartDate) > 5 and len(Price4DiscountStartDate) > 5 then
+  if DateDiff("d", Price4DiscountStartDate, now()) > 1 and DateDiff("d", Price4DiscountEndDate, now()) < 1 then
+ 	 FullPricePrice4 = Price4
+ 	 Price4 = Price4Discount
+ 	  showdiscount = True
+	end if 
+end if
+
+if len(VetCheckQTY) > 0  and len(FeePerAnimal) > 0  then
+	Price4Total = VetCheckQTY * FeePerAnimal
+	else
+	Price4Total = 0
+end if 
+
+ %>
+<% if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+  <td class = "body" >
+    <input type = "hidden" value = "<%= VetCheckFee %>" name = "VetCheckFee">
+     
+  <img src = "images/px.gif" width = "4" height = "1" alt = "Livestock Event Registration">Vet Check Fee
+ 
+ <% if AnimalQTY = 0  and UnshownQTY = 0 then %>
+ <br><small><font color = "brown"><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">This fee will automatically be added if you register animals.</font></small>
+
+<% end if %> 
+
+ </td>
+  <td class = "body" align = "right" >
+  <%=formatcurrency(VetCheckFee,2)%>
+
+
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"> </td>
+  <td class = "body" align = "right" >
+  <% if AnimalQTY > 0  OR UnshownQTY > 0 then %>
+    <input type = "hidden" value = "1" name = "VetCheckQTY">
+    	<% OrderTotal = OrderTotal + VetCheckFee %>
+	1
+  <% else %>
+    <input type = "hidden" value = "0" name = "VetCheckQTY">
+  	N/A
+  <% end if %>
+  
+
+
+ <img src = "/images/px.gif" width = "5" alt = "Livestock event registration"> </td>
+  <td class = "body" align = "right" >  
+  <% if AnimalQTY > 0  OR UnshownQTY > 0 then %>
+	 <%=formatcurrency(VetCheckFee,2)%>
+<% end if %>
+
+	<img src = "/images/px.gif" width = "5" alt = "Vendor Registration">
+
+</td>
+</tr> 
+
+
+
+
+<% else %>
+<tr bgcolor = "#F6F6F6" height = "25">
+<td class = "body" colspan = "2" valign = "top" align = "right">    
+   <small>The vet check comes with your sponsorship<% if TotalFreeDisplayStallQTY > 1 then %>s<%end if %>.</small>
+</td>
+<td class = "body" align = "right">
+	1<img src = "images/px.gif" width = "20" height = "1" alt = "Event Registration">
+</td>
+<td class = "body" align = "right">
+$0.00<img src = "images/px.gif" width = "5" height = "1" alt = "Event Registration">
+</td>
+</tr>
+ <tr ><td class = "body" colspan = "4" height = "10" ><img src = "/images/px.gif" width = "1" alt = "Sponsorship Registration"></td></tr>
+<% end if 
+end if 
+end if 
+
+'************************************************************
+'  ELECTRICITY FEE
+'************************************************************
+ if  TotalFreeElectricityQTY < 1 then 
+ 
+if  ElectricityAvailable= "True" then
+
+
+ElectricityQTY = request.form("ElectricityQTY")
+
+if ElectricityQTY < 1 and OldElectricityQuantity > 0 and NOT(Update = "True") then
+	ElectricityQTY = OldElectricityQuantity
+end if
+
+
+ showdiscount = False
+ 
+ %>
+<% if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+  <td class = "body" ><img src = "images/px.gif" width = "4" height = "1" alt = "Livestock Event Registration">Electricity Fee
+  
+ <% if Electricityoptional  ="True" then %>
+ 
+  
+ <% if AnimalStallQTY = 0 or DisplayStallQTY = 0 then %>
+ <br><small><font color = "brown"><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">This fee will automatically be added if you add animal <br><img src = "images/px.gif" width = "5" height = "1" alt = "Event Registration"> or display stalls.</font></small>
+
+<% end if %> 
+
+ </td>
+  <td class = "body" align = "right" >
+      <input type = "hidden" value = "<%= ElectricityFee %>" name = "ElectricityFee">
+  <%=formatcurrency(ElectricityFee,2)%>
+
+
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"> </td>
+  <td class = "body" align = "right" >
+  
+  <% if AnimalStallQTY > 0 or DisplayStallQTY > 0  then %>
+	 <select size="1" name="ElectricityQTY" onchange="submit();" width="50" style="width: 50px" >
+  
+  <% if ElectricityQTY = 0 then %> 
+  	<option value="0" selected>0</option>
+	<option value="1">1</option>
+
+  <% else %>
+  
+	<option value="1" selected>1</option>
+  	<option value="0">0</option>
+  <% end if %>
+	</select><img src = "/images/px.gif" width = "5" alt = "Livestock event registration"> 
+	
+  <% else %>
+  	N/A<img src = "/images/px.gif" width = "5" alt = "Livestock Event registration">
+  <% end if %>
+  
+</td>
+  <td class = "body" align = "right" >  
+  <% if AnimalStallQTY > 0 or DisplayStallQTY > 0 then %>
+	 <%=formatcurrency((ElectricityFee * ElectricityQTY),2)%>
+<% end if %>
+	<% OrderTotal = OrderTotal + (ElectricityFee * ElectricityQTY) %>
+	<img src = "/images/px.gif" width = "5" alt = "Vendor Registration">
+
+ </td>
+</tr> 
+
+<% else ' Electricity Optional= False 
+
+ if AnimalStallQTY = 0 and DisplayStallQTY = 0 then %>
+ <br><small><font color = "brown"><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">This fee will automatically be added if you add a animal<br><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">or display stall.</font></small><% end if %>
+</td>
+  <td class = "body" align = "right" >
+  <%=formatcurrency(ElectricityFee,2)%>
+
+
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"> </td>
+  <td class = "body" align = "right" >
+  <% if ElectricityQTY > 0 then %>
+	1
+  <% else %>
+  	N/A
+  <% end if %>
+  
+
+
+ <img src = "/images/px.gif" width = "5" alt = "Livestock event registration"> </td>
+  <td class = "body" align = "right" >  
+  <% if AnimalStallQTY > 0 or DisplayStallQTY > 0 then %>
+	 <%=formatcurrency(ElectricityFee,2)%>
+<% end if %>
+<% OrderTotal = OrderTotal + ElectricityFee %>
+	<img src = "/images/px.gif" width = "5" alt = "Vendor Registration">
+ </td>
+</tr> 
+
+<% end if ' Electricity is Available %>
+
+
+
+ <tr><td colspan = "4"> </td></tr>
+ <% end if %>
+ 
+<% else %>
+<tr bgcolor = "#F6F6F6" height = "20" >
+<td class = "body" colspan = "2" align = "right">    <input type = "hidden" value = "0" name = "VetCheckFee">
+   <small>Electricity comes with your sponsorship<% if TotalFreeDisplayStallQTY > 1 then %>s<%end if %>.</small>
+</td>
+<td class = "body" align = "right">
+	1<img src = "images/px.gif" width = "20" height = "1" alt = "Event Registration">
+</td>
+<td class = "body" align = "right">
+$0.00<img src = "images/px.gif" width = "5" height = "1" alt = "Event Registration">
+</td>
+</tr>
+ <tr ><td class = "body" colspan = "4" height = "10" ><img src = "/images/px.gif" width = "1" alt = "Sponsorship Registration"></td></tr>
+<% end if %>
+
+
+
+
+<%
+'************************************************************
+'  STALL MATS FEE
+'************************************************************
+%>
+
+<% if  StallMatsAvailable= "True" and StallMatPrice > 0   then
+StallMatsQTY = request.form("StallMatsQTY")
+
+	if StallMatsQTY > 1 and OldStallMatQuantity	 > 0 and NOT(Update = "True") then
+	else
+		StallMatsQTY =  OldStallMatQuantity	
+	end if
+
+
+ showdiscount = False
+ 
+ %>
+<% if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+ <td class = "body" ><img src = "images/px.gif" width = "4" height = "1" alt = "Livestock Event Registration">Stall Mats
+  
+  <% if AnimalStallQTY > 0 or DisplayStallQTY > 0 or TotalFreeHalterStallQTY > 0 or TotalFreeDisplayStallQTY > 0  then 
+  	else %>
+  <br><small><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">Before you can add stall matts you need to select stalls to <br><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">put them in.</small>
+  
+  <% end if %>
+ </td>
+  <td class = "body" align = "right" >
+      <input type = "hidden" value = "<%= StallMatPrice %>" name = "StallMatPrice">
+  <%=formatcurrency(StallMatPrice,2)%>
+ 
+
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"> </td>
+  <td class = "body" align = "right" >
+ <% Maxnumstallmats = cint(AnimalStallQTY) + cint(CurrentNumDisplayStallQTY) + 1%>
+
+   
+ <select size="1" name="StallMatsQTY" onchange="submit();" width="50" style="width: 50px" >
+  
+  <% if (AnimalStallQTY + DisplayStallQTY) = 0 then %> 
+  	<option value="0">0</option>
+
+  <% else %>
+
+  	<% if (StallMatsQTY) > 0 then %>
+  	<option value="<%=StallMatsQTY%>"><%= StallMatsQTY%></option>
+  
+  	<% end if %>
+  	<% x = 0
+  	 while x < Maxnumstallmats %>
+  		<option value="<%=x%>"><%=x%></option>
+  		<% x = x + 1
+	wend 
+	
+	end if %>
+	</select><img src = "/images/px.gif" width = "5" alt = "Livestock Event registration">
+
+ </td>
+  <td class = "body" align = "right" >  
+  <% if AnimalStallQTY > 0 or DisplayStallQTY > 0 then %>
+	 <%=formatcurrency((StallMatPrice * StallMatsQTY),2)%>
+<% end if %>
+<% OrderTotal = OrderTotal + (StallMatPrice * StallMatsQTY) %>
+	<img src = "/images/px.gif" width = "5" alt = "Vendor Registration">
+ </td>
+</tr> 
+
+
+
+<% if TotalFreeStallMatQTY > 0 then %>
+<tr bgcolor = "#F6F6F6" height = "20">
+<td class = "body" colspan = "2" align = "right">
+   <small># Stall Mats that come with your sponsorship<% if TotalFreeStallMatQTY > 1 then %>s<%end if %>:</small>
+</td>
+<td class = "body" align = "right">
+	<%=TotalFreeStallMatQTY %><img src = "images/px.gif" width = "20" height = "1" alt = "Event Registration">
+</td>
+<td class = "body" align = "right">
+N/A<img src = "images/px.gif" width = "20" height = "1" alt = "Event Registration">
+</td>
+</tr>
+ <tr ><td class = "body" colspan = "4" height = "10" ><img src = "/images/px.gif" width = "1" alt = "Event Registration"></td></tr>
+<% end if %>
+
+
+
+<% end if ' Stall Matts are Available %>
+ <tr ><td class = "body" colspan = "4" height = "5" ><img src = "/images/px.gif" width = "1" alt = "Sponsorship Registration"></td></tr>
+ <tr ><td class = "body" colspan = "4" height = "1" bgcolor = "#abacab"></td></tr>
+<% end if 'END IF SHOWHALTERSHOW = TRUE %>
+
+
+
+<% if  ShowFleeceShow = True then %>
+
+	  <tr >
+		<td class = "body" colspan = "4" height = "30">
+	       <img src = "/images/px.gif" width = "5" alt = "Fleece Show"><h3>Fleece Show</h3>
+	     </td>
+	   </tr>
+
+<%
+'************************************************************
+'  FLEECE SHOW ENTRIES
+'************************************************************
+ sql = "select * from Services, ServiceTypeLookup where Services.ServiceTypeLookupID = ServiceTypeLookup.ServiceTypeLookupID and ServiceType = 'Fleece Show' and EventID =  " & EventID & " Order by ServicesID Desc"
+Set rs = Server.CreateObject("ADODB.Recordset")
+rs.Open sql, conn, 3, 3   
+If Not rs.eof Then	
+	ServicesID = rs("ServicesID")
+	ServiceStartDateMonth  = rs("ServiceStartDateMonth")
+	ServiceStartDateDay  = rs("ServiceStartDateDay")
+	ServiceStartDateYear  = rs("ServiceStartDateYear")
+	ServiceEndDateMonth  = rs("ServiceEndDateMonth")
+	ServiceEndDateDay  = rs("ServiceEndDateDay")
+	ServiceEndDateYear  = rs("ServiceEndDateYear")
+	Price1Discount= rs("Price1Discount")
+	Price1DiscountStartDateMonth  = rs("Price1DiscountStartDateMonth")
+	Price1DiscountStartDateDay  = rs("Price1DiscountStartDateDay")
+	Price1DiscountStartDateYear  = rs("Price1DiscountStartDateYear")
+	Price1DiscountEndDateMonth  = rs("Price1DiscountEndDateMonth")
+	Price1DiscountEndDateDay  = rs("Price1DiscountEndDateDay")
+	Price1DiscountEndDateYear  = rs("Price1DiscountEndDateYear")
+	Price2Discount= rs("Price2Discount")
+	Price2DiscountStartDateMonth  = rs("Price2DiscountStartDateMonth")
+	Price2DiscountStartDateDay  = rs("Price2DiscountStartDateDay")
+	Price2DiscountStartDateYear  = rs("Price2DiscountStartDateYear")
+	Price2DiscountEndDateMonth  = rs("Price2DiscountEndDateMonth")
+	Price2DiscountEndDateDay  = rs("Price2DiscountEndDateDay")
+	Price2DiscountEndDateYear  = rs("Price2DiscountEndDateYear")
+	Price3= rs("Price3")
+	Price3Discount= rs("Price3Discount")
+	Price3DiscountStartDateMonth  = rs("Price3DiscountStartDateMonth")
+	Price3DiscountStartDateDay  = rs("Price3DiscountStartDateDay")
+	Price3DiscountStartDateYear  = rs("Price3DiscountStartDateYear")
+	Price3DiscountEndDateMonth  = rs("Price3DiscountEndDateMonth")
+	Price3DiscountEndDateDay  = rs("Price3DiscountEndDateDay")
+	Price3DiscountEndDateYear  = rs("Price3DiscountEndDateYear")
+	Price4= rs("Price4")	
+	Price4Discount= rs("Price4Discount")
+	Price4DiscountStartDateMonth  = rs("Price4DiscountStartDateMonth")
+	Price4DiscountStartDateDay  = rs("Price4DiscountStartDateDay")
+	Price4DiscountStartDateYear  = rs("Price4DiscountStartDateYear")
+	Price4DiscountEndDateMonth  = rs("Price4DiscountEndDateMonth")
+	Price4DiscountEndDateDay  = rs("Price4DiscountEndDateDay")
+	Price4DiscountEndDateYear  = rs("Price4DiscountEndDateYear")
+	
+	FeePerAnimal = rs("Price")
+	FeePerPen  =  rs("Price2")
+	MaxQTY =  rs("ServiceMaxQuantity")
+	MaxQTY2 =  rs("ServiceMaxQuantity2")
+	if len(MaxQTY2) > 0 then
+	  MaxQTYCheckbox = "checked"
+	end if
+
+	StopDate1 =  rs("ServiceEndDate")
+	if len(StopDate1) > 0 then
+	  StopDate = "checked"
+	end if
+End If 
+
+Price1DiscountStartDate = Price1DiscountStartDateMonth & "/" & Price1DiscountStartDateDay & "/" & Price1DiscountStartDateYear
+Price1DiscountEndDate = Price1DiscountEndDateMonth & "/" & Price1DiscountEndDateDay & "/" & Price1DiscountEndDateYear
+
+if len(ServiceEndDateMonth) > 0 then
+  else
+  ServiceEndDateMonth = ""
+end if 
+
+if len(ServiceEndDateday) > 0 then
+  else
+  ServiceEndDateday = ""
+end if 
+
+if len(ServiceEndDateYear) > 0 then
+  else
+  ServiceEndDateYear = ""
+end if 
+
+
+if len(ServiceStartDateMonth) > 0 and len(ServiceStartDateDay) > 0 and len(ServiceStartDateYear) > 0 then
+	ServiceStartDate = cstr(ServiceStartDateMonth) & "/" & cstr(ServiceStartDateDay) & "/" & cstr(ServiceStartDateYear)
+end if
+
+if len(ServiceEndDateMonth) > 0 and len(ServiceEndDateDay) > 0 and len(ServiceEndDateYear) > 0 then
+	ServiceEndDate = cstr(ServiceEndDateMonth) & "/" & cstr(ServiceEndDateDay) & "/" & cstr(ServiceEndDateYear)
+end if
+
+RegistrationOpen = True 
+
+ if FeePerAnimal > 0 then
+FleecesQTY = request.form("FleecesQTY")
+
+if FleecesQTY < 1 and OldFleeceShowQuantity > 0 and  NOT(Update = "True") then
+	FleecesQTY = OldFleeceShowQuantity
+end if
+
+ showdiscount = False
+ FullFeePerAnimal = FeePerAnimal
+if Price1Discount > 0 and len(Price1DiscountStartDate) > 5 and len(Price1DiscountStartDate) > 5 then
+  if DateDiff("d", Price1DiscountStartDate, now()) > 1 and DateDiff("d", Price1DiscountEndDate, now()) < 1 then
+ 	 
+ 	 FeePerAnimal = Price1Discount
+ 	  showdiscount = True
+	end if 
+end if
+
+if len(FleecesQTY) > 0  and len(FeePerAnimal) > 0   then
+	Price1Total = FleecesQTY * FeePerAnimal
+	else
+	Price1Total = 0
+end if 
+
+if len(ServiceStartDate) > 0 and DateDiff("d",  ServiceStartDate, now() ) > 1 and DateDiff("d", ServiceEndDate, now()  ) < 1 then
+ 
+  if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+  <td class = "body" >
+
+ <img src = "images/px.gif" width = "4" height = "1" alt = "Livestock Event Registration">Fleece Show Entries 
+ 
+ 
+  <% if showdiscount = True then %>  
+ 	 <br><small><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">Discount rate from <%=Price1DiscountStartDate %> to <% =Price1DiscountEndDate %>.</small>
+	<% end if %>
+	<% if MaxQTY > 0 then %>  
+ 	 <br><small><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">Max. <% =MaxQTY %> Fleece Entries Per Exhibitor Per Class.</small>
+	<% end if %>
+
+ </td>
+  <td class = "body" align = "right" ><input type = "hidden" value = "<%= FullFeePerAnimal %>" name = "FleeceShowFee">
+      <% if showdiscount = True then %>   
+ 	   <small><strike><%=formatcurrency(FullFeePerAnimal,2)%></strike></small><img src = "images/px.gif" width = "5" alt = "Flece Show Event Registration"><br>
+ 			<%=formatcurrency(FeePerAnimal,2)%>
+ 			<% else %>
+	  <%=formatcurrency(FeePerAnimal,2)%>
+	
+<% end if %>
+   
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"> </td>
+  <td class = "body" align = "right" >
+  <select size="1" name="FleecesQTY" onchange="submit();" width="50" style="width: 50px" >
+  	<% if len(FleecesQTY) > 0 then %>
+  	<option value="<%=FleecesQTY%>"><%=FleecesQTY%></option>
+  
+  	<% end if %>
+  	<% x = 0
+  	 while x < 30 %>
+  		<option value="<%=x%>"><%=x%></option>
+  		<% x = x + 1
+	wend %>
+	</select>
+
+
+ <img src = "/images/px.gif" width = "5" alt = "Livestock event registration"> </td>
+  <td class = "body" align = "right" > <%=formatcurrency(Price1Total,2)%>
+  <% OrderTotal = OrderTotal + Price1Total %>
+	<img src = "/images/px.gif" width = "5" alt = "Vendor Registration">
+ </td>
+</tr> 
+
+
+<% end if %>
+<% end if %>
+
+
+
+
+<%
+'************************************************************
+'  Fleece Show ENTRIES
+'************************************************************
+
+if FleecesQTY > 0 then %>
+
+<tr>
+  <td colspan = "4">
+
+
+  <table  border="0"  cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" width = "650" align = "center">
+  <tr><td height = "4"></td>	
+	<tr>
+  		<td class = "body" align = "center" background = "images/header650.jpg" height = "20">
+		<table  border="0"  cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" width = "650" align = "center">	
+		<tr>
+   			<td class = "body" align = "center" width = "310"><b>Animal's Name</b></td>
+  			<td class = "body" align = "center" width = "100"><b>Gender</b></td>
+  			 <td class = "body" align = "center" width = "100"><b>Age Class</b></td>
+  			<td class = "body" align = "center" width = "140"><b>Options</b></td>
+		</tr>
+	</table>
+</td>
+</tr>
+<tr>
+  <td background = "images/background650.jpg">
+
+  <table border= "0">
+  <% 
+  
+counterx = 0 
+sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and RegistrationType = 'Fleece'"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	while not rs.eof 
+	 counterx = counterx +1
+	FleeceAnimalIDArray(counterx) = rs("AnimalRegistrationID")	
+	rs.movenext
+	wend
+  
+      BoxOrder = "Even"
+  counterx = 0 
+    while counterx < cint(FleecesQTY) 
+    counterx = counterx + 1 
+    
+    if len(FleeceAnimalIDArray(counterx)) > 0 then
+    sql3 = "select * from Animal where AnimalID = " & FleeceAnimalIDArray(counterx) & ""
+    Set rs3 = Server.CreateObject("ADODB.Recordset")
+    rs3.Open sql3, conn, 3, 3   
+    if Not rs3.eof then
+      FleeceAnimalNameArray(counterx) = rs3("AnimalsName")
+      DOB = rs3("DOBMonth") & "/" & rs3("DOBDay")& "/" & rs3("DOBYear")
+      AgeClass = rs3("AgeClass")
+      Category = rs3("Category")
+      if Category = "Experienced Female" or Category = "Inexperienced Female" then
+         Gender = "F"
+      else
+         Gender = "M"
+      end if
+    end if
+    end if
+    
+  if BoxOrder = "Even" then
+     BoxOrder = "Odd"
+    %>
+     <tr>
+  <% else 
+  BoxOrder = "Even"%>
+  <tr bgcolor = "#EFEFEF">
+  <% end if %>
+      <td class = "body" width = "310">
+  <select size="1" name="FleeceAnimalIDArray(<%=counterx %>)" width = "300" style="width: 300px"  onchange="submit();">
+        <% if len(FleeceAnimalNameArray(counterx))> 1 then %>
+			<option name = "AID0" value= "<%=FleeceAnimalIDArray(counterx) %>" selected ><%=FleeceAnimalNameArray(counterx)%> </option>
+		<% else %>
+		    <option name = "AID0" value= "" selected >select an animal</option>
+		<% end if %>
+					<% count = 1
+						while count < acounter
+					%>
+						<option name = "AID1" value="<%=aID(count)%>">
+							<%=aID(count)%><%=aName(count)%>
+						</option>
+					<% 	count = count + 1
+					wend %>
+					</select>
+	  </td>
+	  <td class = "body" width = "100" align = "center">
+         <% if len(FleeceAnimalIDArray(counterx))> 0 then %> <%=Gender %> <% end if %>
+	  </td>
+	  	  <td class = "body" width = "100" align = "center">
+         <% if len(FleeceAnimalIDArray(counterx))> 0 then %> <%=AgeClass %>  <% end if %>
+	  </td>
+      <td class = "body" align = "center" width = "140">
+      <% if len(FleeceAnimalIDArray(counterx))> 0 then %>
+         <a href = "EventAddAnimal.asp?AddAnimal=False&EditAnimal=True&AnimalAdded=True&AnimalID=<%=FleeceAnimalIDArray(counterx)%>" class = "body">Edit</a> | <a href = "fibermaniaRegistration.asp?RemoveFleeceAnimal=True&AnimalID=<%=FleeceAnimalIDArray(counterx)%>#Fleece" class = "body">Remove</a>
+      <% end if %>
+	  </td>
+	 </tr>
+	<% 
+	wend %>
+  <tr>
+      <td class = "body" >
+
+	  </td>
+	   <td class = "body" colspan = "3" align = "center">
+
+<a href = "EventAddAnimal.asp?EventID=<%=EventID%>"  class = "body">Add an Animal</a><img src = "images/px.gif" width = "20" height = "1" /><a href = "EventDeleteAnimal.asp?EventID=<%=EventID%>"  class = "body">Delete an Animal</a>
+	  </td>
+	 </tr>
+  </table>
+  </td>
+</tr>
+
+<tr>
+  <td background = "images/Footer650.jpg" height = "15"><img src = "images/px.gif" height = "1" width = "1" alt = "<%= EventName %> at Andresen Events - Event Registration"></td></tr>
+</table>
+<br />
+
+  </td>
+</tr>
+<% end if %>
+
+<% ' Fleece Animals Box End %>
+
+
+<% end if ' SHOW FLEECE SHOW %>
+
+
+
+<% '***************************************
+   ' AOBA Fee Entries
+   '***************************************	
+ if ShowAOBAFee = "True" then
+
+	AOBAQTY = request.form("AOBAQTY")
+
+if AOBAQTY < 1 and OldAOBAFeeQuantity > 0 and NOT(Update = "True") then
+	AOBAQTY = OldAOBAFeeQuantity
+end if
+ showdiscount = False
+%>
+
+<% If FirstGroup = True then
+   FirstGroup = False
+else
+ %>
+ <tr ><td class = "body" colspan = "4" height = "5" ></td></tr>
+ <tr ><td class = "body" colspan = "4" height = "1" bgcolor = "#abacab"></td></tr>
+ <% end if  %>  
+  <% if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+  <td class = "body" >  
+   <input type = "hidden" value = "<%= AOBAFee %>" name = "AOBAFee">
+  <img src = "images/px.gif" width = "4" height = "30" alt = "Livestock Event Registration">AOBA Fee for Non-AOBA Show Division Members
+ 
+ <br><small><font color = "brown"><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">This fee only applies if you enter an animal or fleece<Br><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration"> into the show <b>and</b> you are a Non-AOBA Member.</font></small>
+
+
+ </td>
+  <td class = "body" align = "right" >
+  <%=formatcurrency(AOBAFee,2)%>
+
+
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"> </td>
+  <td class = "body" align = "right" >
+  <% if AnimalQTY > 0  OR ProductionQTY > 0 OR FleecesQTY > 0 then %>
+   <select size="1" name="AOBAQTY" onchange="submit();" width="50" style="width: 50px" >
+    <% if AOBAQTY = 0 then %> 
+  	<option value="0" selected>0</option>
+	<option value="1">1</option>
+
+  <% else %>
+  
+	<option value="1" selected>1</option>
+  	<option value="0">0</option>
+  <% end if %>
+  </select><img src = "images/px.gif" width = "4" height = "1" alt = "Livestock Event Registration">
+  <% else %>
+    <input type = "hidden" value = "0" name = "AOBAQTY">
+  	N/A
+  <% end if %>
+  
+
+
+ <img src = "/images/px.gif" width = "5" alt = "Livestock event registration"> </td>
+  <td class = "body" align = "right" >  
+  <% if AOBAQTY > 0  then %>
+	 <%=formatcurrency(AOBAFee,2)%>
+	 <% OrderTotal = OrderTotal + AOBAFee %>
+  <% else %>
+     N/A
+<% end if %>
+
+	<img src = "/images/px.gif" width = "5" alt = "Vendor Registration">
+
+ </td>
+</tr> 
+
+ 
+
+<% end if 
+
+'************************************************************
+'  SPIN OFF SHOW ENTRIES
+'************************************************************
+if  ShowSpinOff = True  then %>
+<% If FirstGroup = True then
+   FirstGroup = False
+else
+ %>
+ <tr ><td class = "body" colspan = "4" height = "5" ></td></tr>
+ <tr ><td class = "body" colspan = "4" height = "1" bgcolor = "#abacab"></td></tr>
+ <% end if  %>  
+	  <tr >
+		<td class = "body" colspan = "4" height = "30">
+	       <img src = "/images/px.gif" width = "5" alt = "Sponsorship Options"><h3>Spin-Off</h3>
+	     </td>
+	   </tr>
+
+
+<% sql = "select * from Services, ServiceTypeLookup where Services.ServiceTypeLookupID = ServiceTypeLookup.ServiceTypeLookupID and ServiceType = 'SpinOff' and EventID =  " & EventID & " Order by ServicesID Desc"
+Set rs = Server.CreateObject("ADODB.Recordset")
+rs.Open sql, conn, 3, 3   
+If Not rs.eof Then	
+
+	ServicesID = rs("ServicesID")
+	ServiceStartDateMonth  = rs("ServiceStartDateMonth")
+	ServiceStartDateDay  = rs("ServiceStartDateDay")
+	ServiceStartDateYear  = rs("ServiceStartDateYear")
+	
+	ServiceEndDateMonth  = rs("ServiceEndDateMonth")
+	ServiceEndDateDay  = rs("ServiceEndDateDay")
+	ServiceEndDateYear  = rs("ServiceEndDateYear")
+	
+	Price1Discount= rs("Price1Discount")
+	Price1DiscountStartDateMonth  = rs("Price1DiscountStartDateMonth")
+	Price1DiscountStartDateDay  = rs("Price1DiscountStartDateDay")
+	Price1DiscountStartDateYear  = rs("Price1DiscountStartDateYear")
+	Price1DiscountEndDateMonth  = rs("Price1DiscountEndDateMonth")
+	Price1DiscountEndDateDay  = rs("Price1DiscountEndDateDay")
+	Price1DiscountEndDateYear  = rs("Price1DiscountEndDateYear")
+
+	
+	Price2Discount= rs("Price2Discount")
+	Price2DiscountStartDateMonth  = rs("Price2DiscountStartDateMonth")
+	Price2DiscountStartDateDay  = rs("Price2DiscountStartDateDay")
+	Price2DiscountStartDateYear  = rs("Price2DiscountStartDateYear")
+	Price2DiscountEndDateMonth  = rs("Price2DiscountEndDateMonth")
+	Price2DiscountEndDateDay  = rs("Price2DiscountEndDateDay")
+	Price2DiscountEndDateYear  = rs("Price2DiscountEndDateYear")
+
+	Price3= rs("Price3")
+	Price3Discount= rs("Price3Discount")
+	Price3DiscountStartDateMonth  = rs("Price3DiscountStartDateMonth")
+	Price3DiscountStartDateDay  = rs("Price3DiscountStartDateDay")
+	Price3DiscountStartDateYear  = rs("Price3DiscountStartDateYear")
+	Price3DiscountEndDateMonth  = rs("Price3DiscountEndDateMonth")
+	Price3DiscountEndDateDay  = rs("Price3DiscountEndDateDay")
+	Price3DiscountEndDateYear  = rs("Price3DiscountEndDateYear")
+
+	Price4= rs("Price4")	
+	Price4Discount= rs("Price4Discount")
+	Price4DiscountStartDateMonth  = rs("Price4DiscountStartDateMonth")
+	Price4DiscountStartDateDay  = rs("Price4DiscountStartDateDay")
+	Price4DiscountStartDateYear  = rs("Price4DiscountStartDateYear")
+	Price4DiscountEndDateMonth  = rs("Price4DiscountEndDateMonth")
+	Price4DiscountEndDateDay  = rs("Price4DiscountEndDateDay")
+	Price4DiscountEndDateYear  = rs("Price4DiscountEndDateYear")
+
+	
+	FeePerAnimal = rs("Price")
+	FeePerPen  =  rs("Price2")
+	MaxQTY =  rs("ServiceMaxQuantity")
+	MaxQTY =  rs("ServiceMaxQuantity2")
+	if len(MaxQTY) > 0 then
+	else
+	  MaxQTY = 20
+	end if
+
+
+	MaxQTY2 =  rs("ServiceMaxQuantity2")
+	if len(MaxQTY2) > 0 then
+	  MaxQTYCheckbox = "checked"
+	end if
+
+	StopDate1 =  rs("ServiceEndDate")
+	if len(StopDate1) > 0 then
+	  StopDate = "checked"
+	end if
+End If 
+
+Price1DiscountStartDate = Price1DiscountStartDateMonth & "/" & Price1DiscountStartDateDay & "/" & Price1DiscountStartDateYear
+Price1DiscountEndDate = Price1DiscountEndDateMonth & "/" & Price1DiscountEndDateDay & "/" & Price1DiscountEndDateYear
+
+if len(ServiceEndDateMonth) > 0 then
+  else
+  ServiceEndDateMonth = ""
+end if 
+
+if len(ServiceEndDateday) > 0 then
+  else
+  ServiceEndDateday = ""
+end if 
+
+if len(ServiceEndDateYear) > 0 then
+  else
+  ServiceEndDateYear = ""
+end if 
+
+if len(ServiceStartDateMonth) > 0 and len(ServiceStartDateDay) > 0 and len(ServiceStartDateYear) > 0 then
+	ServiceStartDate = cstr(ServiceStartDateMonth) & "/" & cstr(ServiceStartDateDay) & "/" & cstr(ServiceStartDateYear)
+end if
+
+if len(ServiceEndDateMonth) > 0 and len(ServiceEndDateDay) > 0 and len(ServiceEndDateYear) > 0 then
+	ServiceEndDate = cstr(ServiceEndDateMonth) & "/" & cstr(ServiceEndDateDay) & "/" & cstr(ServiceEndDateYear)
+end if
+
+RegistrationOpen = True 
+
+ if FeePerAnimal > 0 then
+SpinOffQTY = request.form("SpinOffQTY")
+
+ showdiscount = False
+ 
+if Price1Discount > 0 and len(Price1DiscountStartDate) > 5 and len(Price1DiscountStartDate) > 5 then
+  if DateDiff("d", Price1DiscountStartDate, now()) > 1 and DateDiff("d", Price1DiscountEndDate, now()) < 1 then
+ 	 FullFeePerAnimal = FeePerAnimal
+ 	 FeePerAnimal = Price1Discount
+ 	  showdiscount = True
+	end if 
+end if
+
+	if SpinOffQTY  = 0 and len(OldSpinOffQuantity) > 0 and NOT(Update = "True")then
+		SpinOffQTY = OldSpinOffQuantity
+	end if
+
+if len(SpinOffQTY) > 0  and len(FeePerAnimal) > 0 then
+	Price1Total = SpinOffQTY * FeePerAnimal
+	else
+	Price1Total = 0
+end if 
+
+if len(ServiceStartDate) > 0 and DateDiff("d", ServiceStartDate, now()) > 1 and DateDiff("d", ServiceEndDate, now()) < 1 then
+
+if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+  <td class = "body">
+
+ <img src = "images/px.gif" width = "4" height = "1" alt = "Livestock Event Registration">Spin-Off Show Entries 
+ 
+ 
+  <% if showdiscount = True then %>  
+ 	 <br><small><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">Discount rate from <%=Price1DiscountStartDate %> to <% =Price1DiscountEndDate %>.</small>
+	<% end if %>
+<% if MaxQTY > 0 then %>  
+ 	 <br><small><img src = "images/px.gif" width = "10" height = "1" alt = "Event Registration">Max. <% =MaxQTY %> Entries Per Exhibitor Per Class.</small>
+	<% end if %>
+
+ </td>
+  <td class = "body" align = "right">    <input type = "hidden" value = "<%= FullFeePerAnimal %>" name = "SpinOffFee">
+    <% if showdiscount = True then %>   
+ 	   <small><strike><%=formatcurrency(FullFeePerAnimal,2)%></strike></small><img src = "images/px.gif" width = "10" alt = "Flece Show Event Registration"><br>
+ 			<%=formatcurrency(FeePerAnimal,2)%>
+ 			<% else %>
+	  <%=formatcurrency(FeePerAnimal,2)%>
+	
+<% end if %><img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"> </td>
+  <td class = "body" align = "right">
+  <select size="1" name="SpinOffQTY" onchange="submit();" width="50" style="width: 50px" >
+  	<% if len(SpinOffQTY) > 0 then %>
+  	<option value="<%=SpinOffQTY%>"><%=SpinOffQTY%></option>
+  
+  	<% end if %>
+  	<% x = 0
+  	 while x < (MaxQty + 1) %>
+  		<option value="<%=x%>"><%=x%></option>
+  		<% x = x + 1
+	wend %>
+	</select>
+
+
+ <img src = "/images/px.gif" width = "5" alt = "Livestock event registration"> </td>
+  <td class = "body" align = "right"> <%=formatcurrency(Price1Total,2)%>
+  <% OrderTotal = OrderTotal + Price1Total %>
+	<img src = "/images/px.gif" width = "5" alt = "Vendor Registration">
+
+ </td>
+</tr> 
+
+
+<% end if %>
+<% end if %>
+
+<%
+'************************************************************
+'  Fleece Show ENTRIES
+'************************************************************
+
+if SpinOffQTY > 0 then %>
+
+<tr>
+  <td colspan = "4">
+
+
+  <table  border="0"  cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" width = "650" align = "center">
+  <tr><td height = "4"><img src = "images/px.gif" height = "1" width = "1"></td>	
+	<tr>
+  		<td class = "body" align = "center" background = "images/header650.jpg" height = "20">
+		<table  border="0"  cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" width = "650" align = "center">	
+		<tr>
+   			<td class = "body" align = "center" width = "310"><b>Animal's Name</b></td>
+  			<td class = "body" align = "center" width = "100"><b>Gender </b></td>
+  			<td class = "body" align = "center" width = "100"><b>Age Class</b></td>
+  			<td class = "body" align = "center" width = "140"><b>Options</b></td>
+		</tr>
+	</table>
+</td>
+</tr>
+<tr>
+  <td background = "images/background650.jpg">
+
+  <table border= "0">
+  <% 
+  
+counterx = 0 
+sql = "select * from RegisteredAnimals where EventId = " & EventID & " and PeopleID =" & PeopleID & " and RegistrationType = 'SpinOff'"
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	while not rs.eof 
+	
+	 counterx = counterx +1
+	SpinOffAnimalIDArray(counterx) = rs("AnimalRegistrationID")	
+	rs.movenext
+	wend
+  
+      BoxOrder = "Even"
+  counterx = 0 
+    while counterx < cint(SpinOffQTY) 
+    counterx = counterx + 1 
+    
+    if len(SpinOffAnimalIDArray(counterx)) > 0 then
+    sql3 = "select * from Animal where AnimalID = " & SpinOffAnimalIDArray(counterx) & ""
+    Set rs3 = Server.CreateObject("ADODB.Recordset")
+    rs3.Open sql3, conn, 3, 3   
+    if Not rs3.eof then
+      SpinOffAnimalNameArray(counterx) = rs3("AnimalsName")
+      DOB = rs3("DOBMonth") & "/" & rs3("DOBDay")& "/" & rs3("DOBYear")
+      AgeClass = rs3("AgeClass")
+      Category = rs3("Category")
+      if Category = "Experienced Female" or Category = "Inexperienced Female" then
+         Gender = "F"
+      else
+         Gender = "M"
+      end if
+    end if
+    end if
+    
+  if BoxOrder = "Even" then
+     BoxOrder = "Odd"
+    %>
+     <tr>
+  <% else 
+  BoxOrder = "Even"%>
+  <tr bgcolor = "#EFEFEF">
+  <% end if %>
+      <td class = "body" width = "310">
+  <select size="1" name="SpinOffAnimalIDArray(<%=counterx %>)"  width = "300" style="width: 300px" onchange="submit();">
+        <% if len(SpinOffAnimalNameArray(counterx))> 1 then %>
+			<option name = "AID0" value= "<%=SpinOffAnimalIDArray(counterx) %>" selected ><%=SpinOffAnimalNameArray(counterx)%> </option>
+		<% else %>
+		    <option name = "AID0" value= "" selected >select an animal</option>
+		<% end if %>
+					<% count = 1
+						while count < acounter
+					%>
+						<option name = "AID1" value="<%=aID(count)%>">
+							<%=aID(count)%><%=aName(count)%>
+						</option>
+					<% 	count = count + 1
+					wend %>
+					</select>
+	  </td>
+	  <td class = "body" width = "100" align = "center">
+         <% if len(SpinOffAnimalIDArray(counterx))> 0 then %> <%=Gender %> <% end if %>
+	  </td>
+	  	  <td class = "body" width = "100" align = "center">
+         <% if len(SpinOffAnimalIDArray(counterx))> 0 then %> <%=AgeClass %>  <% end if %>
+	  </td>
+      <td class = "body" align = "center" width = "140">
+      <% if len(SpinOffAnimalIDArray(counterx))> 0 then %>
+         <a href = "EventAddAnimal.asp?AddAnimal=False&EditAnimal=True&AnimalAdded=True&AnimalID=<%=SpinOffAnimalIDArray(counterx)%>" class = "body">Edit</a> | <a href = "fibermaniaRegistration.asp?RemoveSpinOffAnimal=True&AnimalID=<%=SpinOffAnimalIDArray(counterx)%>#SpinOff" class = "body">Remove</a>
+      <% end if %>
+	  </td>
+	 </tr>
+	<% 
+	wend %>
+  <tr>
+      <td class = "body" >
+
+	  </td>
+ <td class = "body" colspan = "3" align = "center">
+
+<a href = "EventAddAnimal.asp?EventID=<%=EventID%>"  class = "body">Add an Animal</a><img src = "images/px.gif" width = "20" height = "1" /><a href = "EventDeleteAnimal.asp?EventID=<%=EventID%>"  class = "body">Delete an Animal</a>
+	  </td>
+	 </tr>
+  </table>
+  </td>
+</tr>
+
+<tr>
+  <td background = "images/Footer650.jpg" height = "15"><img src = "images/px.gif" height = "1" width = "1" alt = "<%= EventName %> at Andresen Events - Event Registration"></td></tr>
+</table>
+<br />
+
+  </td>
+</tr>
+<% end if %>
+
+<% ' Spin Off Animals Box End %>
+
+<% end if ' SHOW Spin Off SHOW %>
+
+ <% 
+ '********************************************************************************
+ '	ADVERTISING OPTIONS
+ '********************************************************************************
+  if ShowAdvertising = True then %>
+
+ <% sql = "select * from AdvertisingLevels  where AvaliableByItself =True and EventID = " & EventID 
+    Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	if not rs.eof then %>
+<% If FirstGroup = True then
+   FirstGroup = False
+else
+ %>
+ <tr ><td class = "body" colspan = "4" height = "5" ></td></tr>
+ <tr ><td class = "body" colspan = "4" height = "1" bgcolor = "#abacab"></td></tr>
+ <% end if  %>  
+
+	<tr>
+   <td class = "body" colspan = "4" height ="30">
+     <img src = "images/px.gif" width = "4" height = "1" alt = "Livestock Event Registration"><h3>Advertising</h3>
+   </td>
+</tr>
+
+	
+	<% 
+	dim AdvertsingQTYArray2(1000)
+	While Not rs.eof 
+	AdvertisingLevelID = rs("AdvertisingLevelID")
+	AdvertisingLevelName = rs("AdvertisingLevelName")
+	AdvertisingLevelPrice = rs("AdvertisingLevelPrice")
+	AdvertisingLevelQTYAvailable = rs("AdvertisingLevelQTYAvailable")
+	AdvertsingQTYArraycount = "AdvertsingQTYArray(" & AdvertisingLevelID & ")"
+	AdvertsingQTYArray2(AdvertisingLevelID) = Request.Form(AdvertsingQTYArraycount)
+	if len(AdvertisingLevelQTYAvailable) > 0 then
+	else
+	  AdvertisingLevelQTYAvailable = 20
+	end if
+
+
+i = 0
+	while i < (TotalAdvertisingCounter + 1 )
+	   	i = i + 1
+		if OldAdvertisingNameArray(i) = AdvertisingLevelName then
+			OldAdvertisingQTY = OldAdvertisingQTYArray(i)
+		end if
+	wend
+	
+	
+  if AdvertsingQTYArray2(AdvertisingLevelID) < 1 and OldAdvertisingQTY > 0 and NOT(Update = "True") then
+ 	AdvertsingQTYArray2(AdvertisingLevelID) =  OldAdvertisingQTY
+  end if 
+	%>
+   
+<% if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+  <td class = "body">
+	<img src = "/images/px.gif" width = "10" alt = "Livestock Event Registration"><%=AdvertisingLevelName %>
+
+
+ </td>
+  <td class = "body" align = "right">
+   <%=formatcurrency(AdvertisingLevelPrice) %>
+   
+		<img src = "/images/px.gif" width = "5" alt = "Livestock Event Registration"> </td>
+  <td class = "body" align = "right">
+  
+   <select size="1" name="AdvertsingQTYArray(<%=AdvertisingLevelID%>)" onchange="submit();" width="50" style="width: 50px" >
+  	<% if len(AdvertsingQTYArray2(AdvertisingLevelID)) > 0 then %>
+  	<option value="<%=AdvertsingQTYArray2(AdvertisingLevelID)%>"><%=AdvertsingQTYArray2(AdvertisingLevelID)%></option>
+  
+  	<% end if %>
+  	<% x = 0
+  	 while x < (AdvertisingLevelQTYAvailable + 1) %>
+  		<option value="<%=x%>"><%=x%></option>
+  		<% x = x + 1
+	wend %>
+	</select>
+
+ <img src = "/images/px.gif" width = "5" alt = "Livestock event registration"> </td>
+  <td class = "body" align = "right"> <%= formatcurrency(AdvertsingQTYArray2(AdvertisingLevelID) * AdvertisingLevelPrice) %>
+  <% OrderTotal = OrderTotal + (AdvertsingQTYArray2(AdvertisingLevelID) * AdvertisingLevelPrice) %>
+	<img src = "/images/px.gif" width = "5" alt = "Vendor Registration">
+ </td>
+</tr> 
+
+
+
+<% 	
+
+
+i = 1
+ for i = 1 to TotalAdvertisingOptions
+    if  		AdvertisingNameArray(i) = AdvertisingLevelName then
+ %>
+			<% if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+			<td class = "body"   align = "Right" colspan = "2" height = "20"><small># <%=AdvertisingLevelName %> that comes with sponsorship<% if ExtraOptionAdvertsingQTYArray(i) > 1 then %>s<%end if %>:</small></td>
+  			<td class = "body"   align = "right"><%= ExtraOptionAdvertsingQTYArray(i) %><img src = "images/px.gif"width = "10" height = "1" alt = "Event Registration"></td>
+  			<td class = "body"   align = "right">N/A <img src = "images/px.gif"width = "10" height = "1" alt = "<%=AdvertisingLevelName %> Registration"></td>
+  		</tr>
+		<tr ><td class = "body" colspan = "4" height = "10" ><img src = "/images/px.gif" width = "1" alt = "<%=EventName%> Event Registration"></td></tr>
+
+ <%  
+   end if 
+ next
+    	
+		rowcount = rowcount + 1
+		rs.movenext
+	Wend		
+  end if %>
+
+<% end if %>
+
+
+
+ <% 
+ '********************************************************************************
+ '	VENDOR OPTIONS
+ '********************************************************************************
+
+  if showvendors = true then
+ sql = "select * from VendorLevels  where EventID = " & EventID & " Order by VendorStallPrice"
+    Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	if not rs.eof then %>
+	
+<% If FirstGroup = True then
+   FirstGroup = False
+else
+ %>
+ <tr ><td class = "body" colspan = "4" height = "5" ></td></tr>
+ <tr ><td class = "body" colspan = "4" height = "1" bgcolor = "#abacab"></td></tr>
+ <% end if  %>  
+    <tr ><td class = "body" colspan = "4" height ="30"><img src = "/images/px.gif" width = "5"  alt = "Vendor Registration"><h3>Vendor Options</h3></td></tr>
+	<%
+	counter = 0
+	While Not rs.eof  
+	counter = counter + 1
+	VendorLevelID = rs("VendorLevelID")
+	VendorStallName = rs("VendorStallName")
+	VendorStallPrice = rs("VendorStallPrice")
+	VendorStallMaxQtyPer = rs("VendorStallMaxQtyPer")
+	VendorStallQTYAvailable = rs("VendorStallQTYAvailable")
+	
+str1 = VendorStallName
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	VendorStallName= Replace(str1, str2 , "''")
+End If 
+	  if len(VendorStallQTYAvailable) > 0 then
+        sqlqty = "select * from Registration where EventID = " & EventID & " and ServiceDescription = 'Vendor - " & VendorStallName & "' "
+         Set rsqty = Server.CreateObject("ADODB.Recordset")
+         rsqty.Open sqlqty, conn, 3, 3   
+	     while not rsqty.eof 
+	     	     VendorStallQTYAvailable =VendorStallQTYAvailable - rsqty("Quantity")
+	       rsqty.movenext
+	     wend
+	     rsqty.Close
+	end if
+	
+	
+	if len(VendorStallMaxQtyPer) > 0 then
+	   if VendorStallMaxQtyPer > VendorStallQTYAvailable then
+	      VendorStallMaxQtyPer  = VendorStallQTYAvailable
+	   end if 
+	else
+	  VendorStallMaxQtyPer = 20
+	end if
+	
+	Costpertable = rs("Costpertable")
+	MaxExtraTables = rs("MaxExtraTables")
+	if len(MaxExtraTables) < 1 then
+	  Numfreetables = 0
+	end if
+	Numfreetables = rs("Numfreetables")
+
+	if len(MaxExtraTables) > 0 then
+	else
+	  MaxExtraTables = 10
+	end if
+
+
+	if len(Numfreetables) > 0 then
+	else
+	  Numfreetables = 0
+	end if
+
+ 
+ 
+ 
+	DontNeedTableArraycount = "DontNeedTableArray(" & VendorLevelID & ")"
+	DontNeedTableArray(VendorLevelID) = Request.Form(DontNeedTableArraycount)
+		
+	
+	VendorQTYArraycount = "VendorQTYArray(" & VendorLevelID & ")"
+	VendorQTYArray(VendorLevelID) = Request.Form(VendorQTYArraycount)
+	
+VendorTableQTYArraycount = "VendorTableQTYArray(" & VendorLevelID & ")"
+	VendorTableQTYArray(VendorLevelID) = Request.Form(VendorTableQTYArraycount)
+
+str1 = VendorStallName
+str2 = "''"
+If InStr(str1,str2) > 0 Then
+	VendorStallName= Replace(str1, str2 , "'")
+End If 
+		i = 0
+	while i < (TotalVendorCounter + 1 )
+	   	i = i + 1
+	   '	response.write("VendorStallName=" & Vendorstallname & "<br>")
+	   	'	   	response.write("OldVendorNameArray(i)=" & OldVendorNameArray(i) & "<br>")
+		if OldVendorNameArray(i) = VendorStallName then
+			OldVendorQTY = OldVendorQTYArray(i)
+			OldVendorTableQTY = OldVendorTableQTYArray(i)
+	
+		end if
+	wend
+
+	IF VendorQTYArray(VendorLevelID) < 1 and OldVendorQTYArray(counter) > -1 and NOT(Update = "True") then
+		VendorQTYArray(VendorLevelID) = OldVendorQTYArray(counter)
+	end if
+
+
+
+
+if OldDontNeedTableArray(counter)= False then
+    OldDontNeedTableArray(counter)= "No"
+else
+    OldDontNeedTableArray(counter)= "Yes"
+end if
+
+
+if len(DontNeedTableArray(VendorLevelID)) < 1 and OldDontNeedTableArray(counter)= "Yes" and NOT(Update = "True") then
+DontNeedTableArray(VendorLevelID) = "Yes"
+end if
+
+		
+	IF VendorTableQTYArray(VendorLevelID) < 1 and OldVendorTableQTY > -1 and NOT(Update = "True") then
+		VendorTableQTYArray(VendorLevelID) = OldVendorTableQTY
+	end if
+
+ if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+	<td class = "body">
+		<img src = "/images/px.gif" width = "10" alt = "Vendor Registration"><%= VendorStallName %><bR>
+		<img src = "/images/px.gif" width = "10" alt = "Vendor Registration"><small>This option comes with <%=Numfreetables %> table<% if Numfreetables > 1 or Numfreetables = 0 then %>s<% end if %>.</small>
+	</td>
+	<td class = "body" align = "right">	
+		<%= formatcurrency(VendorStallPrice) %><img src = "/images/px.gif" width = "5" alt = "Vendor Registration">
+    </td>
+    <td class = "body" align = "right">
+    <% if VendorStallQTYAvailable > 0 then %>	
+ 		<select size="1" name="VendorQTYArray(<%=VendorLevelID%>)" onchange="submit();" width="50" style="width: 50px" >
+  		<% if len(VendorQTYArray(VendorLevelID)) > 0 then %>
+  		<option value="<%=VendorQTYArray(VendorLevelID)%>"><%=VendorQTYArray(VendorLevelID)%></option>
+  
+  		<% end if %>
+  		<% x = 0
+  			 while x < (VendorStallMaxQtyPer + 1) %>
+  				<option value="<%=x%>"><%=x%></option>
+  		<% x = x + 1
+		wend %>
+	</select>
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event Registration"> 
+</td>
+<td class = "body" align = "right">	
+		<%=formatcurrency(VendorQTYArray(VendorLevelID) * VendorStallPrice ) %>
+	<% OrderTotal = OrderTotal + (VendorQTYArray(VendorLevelID) * VendorStallPrice )  %>
+
+		<img src = "/images/px.gif" width = "5" alt = "Vendor Registration">
+		<% else %>
+		
+		Sold Out
+		<% end if %>
+    </td>
+ </tr>
+
+
+<% 	
+i = 1
+ for i = 1 to TotalVendorOptions
+    if VendorNameArray(i) = VendorStallName then
+ %>
+ 
+	<tr>
+		<td class = "body"   align = "Right" colspan = "2" height = "20" ><small># <%=VendorStallName %> that comes with sponsorship<% if ExtraOptionVendorQTYArray(i) > 1 then %>s<%end if %>:</small></td>
+  		<td class = "body"   align = "right"><%= ExtraOptionVendorQTYArray(i) %><img src = "images/px.gif"width = "10" height = "1" alt = "Event Registration"></td>
+  		<td class = "body"   align = "right">N/A <img src = "images/px.gif"width = "10" height = "1" alt = "<%=VendorLevelName %> Registration"></td>
+  	</tr>
+	<tr ><td class = "body" colspan = "4" height = "10" ><img src = "/images/px.gif" width = "1" alt = "<%=EventName%> Event Registration"></td></tr>
+
+ <%  
+   end if 
+ next 
+  
+    
+if  Numfreetables > 0 and VendorStallQTYAvailable > 0 then %> 
+	<% if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+	<td class = "body" align = "right">
+		 I Don't Need a Table<% 
+        if DontNeedTableArray(VendorLevelID) = "Yes" then
+     %>
+    Yes<input TYPE="RADIO" name="DontNeedTableArray(<%=VendorLevelID%>)" Value = "Yes" checked >
+    No<input TYPE="RADIO" name="DontNeedTableArray(<%=VendorLevelID%>)" Value = "No" >  
+    <% else %>
+    
+        Yes<input TYPE="RADIO" name="DontNeedTableArray(<%=VendorLevelID%>)" Value = "Yes" >
+    No<input TYPE="RADIO" name="DontNeedTableArray(<%=VendorLevelID%>)" Value = "No" checked> 
+    
+
+    <% end if %><bR>
+	</td>
+	<td class = "body" align = "right">
+
+    </td>
+    <td class = "body" align = "right">	
+   
+    
+
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event Registration"> 
+
+    </td>
+
+	<td class = "body" align = "right">	
+</td>
+</tr>
+<% end if 	
+ 
+	
+	
+	
+	
+ if MaxExtraTables > 0 and VendorStallMaxQtyPer > 0 then %>
+	<% if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+	<td class = "body" align = "right">
+		<img src = "/images/px.gif" width = "10" alt = "Vendor Registration">Extra Tables<bR>
+	</td>
+	<td class = "body" align = "right">
+	  <% if len(Costpertable) > 0 then %>
+	  	<%= formatcurrency(Costpertable) %>
+	    <% else %>
+	      Free
+	    <%   	Costpertable = 0 
+	     end if %>
+  
+	
+	  <img src = "/images/px.gif" width = "5" alt = "Vendor Registration">
+    </td>
+    <td class = "body" align = "right">	
+ 		<select size="1" name="VendorTableQTYArray(<%=VendorLevelID%>)" onchange="submit();" width="50" style="width: 50px" >
+  		<% if len(VendorTableQTYArray(VendorLevelID)) > 0 then %>
+  		<option value="<%=VendorTableQTYArray(VendorLevelID)%>"><%=VendorTableQTYArray(VendorLevelID)%></option>
+  
+  		<% end if %>
+  		<% x = 0
+  			 while x < (MaxExtraTables + 1) %>
+  				<option value="<%=x%>"><%=x%></option>
+  		<% x = x + 1
+		wend %>
+	</select>
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event Registration"> 
+
+    </td>
+
+	<td class = "body" align = "right">	
+		<%=formatcurrency(VendorTableQTYArray(VendorLevelID) * Costpertable ) %>
+	<% OrderTotal = OrderTotal + (VendorTableQTYArray(VendorLevelID) * Costpertable )  %>
+	<img src = "/images/px.gif" width = "5" alt = "Vendor Registration">
+</td>
+</tr>
+<% end if %>
+
+<% rowcount = rowcount + 1
+		rs.movenext
+	Wend		
+  end if 
+ %> 
+  <tr><td class = "body" colspan = "4" valign = "top">
+&nbsp;Vendor Stall Location Requests:
+</td></tr>
+<tr><td class = "body" colspan = "4" valign = "top" align = "center">
+<textarea name="VendorNotes" cols="80" rows="2" wrap="VIRTUAL" class = "body"><%= VendorNotes%></textarea>
+</td></tr>
+ 
+ <% end if
+  
+ '********************************************************************************
+ '	CLASSES OPTIONS
+ '********************************************************************************
+if ShowClasses = True then
+sql = "select * from Classinfo where EventID = " & EventID & "" 
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	if not rs.eof then 
+		ShowClasses = True %>
+	
+<% If FirstGroup = True then
+   FirstGroup = False
+else
+ %>
+ <tr ><td class = "body" colspan = "4" height = "5" ></td></tr>
+ <tr ><td class = "body" colspan = "4" height = "1" bgcolor = "#abacab"></td></tr>
+ <% end if  %>  
+	<tr ><td class = "body" colspan = "4" height ="30"><img src = "/images/px.gif"  width = "5" alt = "Class Registration"><h3>Classes</h3></td></tr>
+	<%
+
+		
+	end if 
+
+  if ShowClasses = True then
+    Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+if not rs.eof then 
+	
+	While Not rs.eof  
+		ClassInfoID = rs("ClassInfoID")
+		ClassInfoTitle = rs("ClassInfoTitle")
+		ClassInfoDescription = rs("ClassInfoDescription")
+		ClassInfoMaximumStudents= rs("ClassInfoMaximumStudents")
+		ClassInfoStudentFee= rs("ClassInfoStudentFee")
+		ClassDateMonth = rs("ClassDateMonth")
+		ClassDateDay = rs("ClassDateDay")
+		ClassDateYear = rs("ClassDateYear")
+		ClassInfoMaterialFee=  rs("ClassInfoMaterialFee")
+        ClassInfoMaterialFeeOptional=  rs("ClassInfoMaterialFeeOptional")
+	
+	if len(ClassDateMonth) > 0 and len(ClassDateDay) > 0 and len(ClassDateYear) > 0 then
+	ClassDate = cstr(ClassDateMonth) & "/" & cstr(ClassDateDay) & "/" & cstr(ClassDateYear)
+end if
+	
+	str1 = ClassInfoTitle
+str2 = "'"
+If InStr(str1,str2) > 0 Then
+	ClassInfoTitle= Replace(str1, str2 , "''")
+End If 
+
+
+ 'response.Write("ClassInfoMaximumStudents=" & ClassInfoMaximumStudents & "<br>")
+	  if len(ClassInfoMaximumStudents) > 0 then
+        sqlqty = "select * from Registration where EventID = " & EventID & " and ServiceDescription = 'Classes - " & ClassInfoTitle & "' "
+         Set rsqty = Server.CreateObject("ADODB.Recordset")
+         rsqty.Open sqlqty, conn, 3, 3   
+	     while not rsqty.eof 
+	     ' response.Write("ClassInfoMaximumStudents=" & ClassInfoMaximumStudents & "<br>")
+	      ' response.Write("Quantity=" & rsqty("Quantity") )
+	     	     ClassInfoMaximumStudents =ClassInfoMaximumStudents - rsqty("Quantity")
+	     	     ' response.Write("ClassInfoMaximumStudents2=" & ClassInfoMaximumStudents & "<br>")
+	       rsqty.movenext
+	     wend
+	     rsqty.close
+	end if
+	
+	
+	
+	if len(ClassInfoMaximumStudents) > 0 then
+	else
+	  ClassInfoMaximumStudents = 100
+	end if
+	
+	ClassInfoRoomDesignation = rs("ClassInfoRoomDesignation")
+	
+		str1 = ClassInfoTitle
+		str2 = "&nbsp;"
+		If InStr(str1,str2) > 0 Then
+			ClassInfoTitle= Replace(str1,  str2, " ")
+		End If 
+		
+		str1 = ClassInfoTitle
+		str2 = "''"
+		If InStr(str1,str2) > 0 Then
+			ClassInfoTitle= Replace(str1,  str2, "'")
+		End If 	
+	
+	ClassStartTime = rs("ClassStartTime")
+	ClassEndTime = rs("ClassEndTime")
+	ClassesQTYArraycount = "ClassesQTYArray(" & ClassInfoID & ")"
+	ClassesQTYArray(ClassInfoID) = Request.Form(ClassesQTYArraycount)
+	ClassInfoMaterialFeePaycount = "ClassInfoMaterialFeePay(" & ClassInfoID & ")"
+	ClassInfoMaterialFeePay(ClassInfoID) = Request.Form(ClassInfoMaterialFeePaycount)
+	
+	if len(ClassInfoStudentFee) > 0 then
+	else
+	  ClassInfoStudentFee = 0 
+	end if
+
+
+
+i = 0
+	while i < (TotalClassesCounter + 1 )
+	   	i = i + 1
+		if OldClassesNameArray(i) = ClassInfoTitle then
+			OldClassesQTY = OldClassesQTYArray(i)
+		end if
+	wend
+	
+	
+  if ClassesQTYArray(ClassInfoID) < 1 and OldClassesQTY > 0 and NOT(Update = "True") then
+ 	ClassesQTYArray(ClassInfoID) =  OldClassesQTY
+ 	
+  end if
+  
+ if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+	<td class = "body">
+		<img src = "/images/px.gif" width = "10" alt = "Classes Registration"><%= ClassInfoTitle %><br>
+		<% if len(ClassDate) > 8 then %>
+		  <img src = "/images/px.gif" width = "15" alt = "Classes Registration"><small><%=ClassDate%></small>
+		<% end if %>
+		<% if len(ClassStartTime) > 0 then %>
+			<small><%=ClassStartTime%></small>
+		<% end if %>
+		<% if len(ClassEndTime) > 0 then %>
+			<small> - <%=ClassEndTime%></small>
+		<% end if %>
+		<% if len(ClassInfoRoomDesignation) > 0 then %>
+			<small>Room <%=ClassInfoRoomDesignation%></small>
+		<% end if %>
+
+	</td>
+	<td class = "body" align = "right">	
+		<% if len(ClassInfoStudentFee) > 0 and ClassInfoStudentFee > 0 then %>
+			<%= formatcurrency(ClassInfoStudentFee) %>
+		<% else %>
+			Free
+		<% end if %><img src = "/images/px.gif" width = "5" alt = "Classes Registration">
+    </td>
+    <td class = "body" align = "right">	
+ 		<select size="1" name="ClassesQTYArray(<%=ClassInfoID%>)" onchange="submit();" width="50" style="width: 50px" >
+  		<% if len(ClassesQTYArray(ClassInfoID)) > 0 then %>
+  		<option value="<%=ClassesQTYArray(ClassInfoID)%>"><%=ClassesQTYArray(ClassInfoID)%></option>
+  
+  		<% end if %>
+  		<% x = 0
+  			 while x < ( ClassInfoMaximumStudents  + 1) %>
+  				<option value="<%=x%>"><%=x%></option>
+  		<% x = x + 1
+		wend %>
+	</select>
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event Registration"> 
+
+    </td>
+
+	<td class = "body" align = "right">	
+		<% if len(ClassInfoStudentFee) > 0 and ClassInfoStudentFee > 0 then %>
+			<%=formatcurrency(ClassesQTYArray(ClassInfoID) * ClassInfoStudentFee ) %>
+			<% OrderTotal = OrderTotal + (ClassesQTYArray(ClassInfoID) * ClassInfoStudentFee )  %>
+
+
+		<% else %>
+			Free
+		<% end if %> 	
+				<img src = "/images/px.gif" width = "5" alt = "Class Registration">    </td>
+</tr>
+<% if len(ClassInfoMaterialFee) > 1 then
+ if ClassInfoMaterialFee > 1 then %>
+<tr><td class = "body">Class Materials/Equipment Fee</td>
+<td class = "body"><%=formatcurrency(ClassInfoMaterialFee) %></td>
+<td ><% if ClassInfoMaterialFeeOptional = True then %>
+
+<% 'response.write("ClassInfoMaterialFeePay(ClassInfoID)=" & ClassInfoMaterialFeePay(ClassInfoID) ) %>
+
+<select size="1" name="ClassInfoMaterialFeePay(<%=ClassInfoID%>)" onchange="submit();" width="50" style="width: 50px" >
+  		<% if len(ClassInfoMaterialFeePay(ClassInfoID)) > 0 then %>
+  		<option value="<%=ClassInfoMaterialFeePay(ClassInfoID)%>"><%=ClassInfoMaterialFeePay(ClassInfoID)%></option>
+  
+  		<% end if %>
+  		<% x = 0
+  			 while x < ( ClassInfoMaximumStudents  + 1) %>
+  				<option value="<%=x%>"><%=x%></option>
+  		<% x = x + 1
+		wend %>
+	</select>
+
+		<% else %>
+		Required.
+		<% end if %>   </td>
+		<td class = "body">
+		<% if ClassInfoMaterialFeeOptional = True then 
+		if ClassInfoMaterialFeePay(ClassInfoID)  > 0 then%>
+				<%=formatcurrency(ClassInfoMaterialFee * ClassInfoMaterialFeePay(ClassInfoID)) %>
+				<% else %>
+    $0.00
+		<% end if %>
+		<% else %>
+		<%=formatcurrency(ClassInfoMaterialFee * ClassesQTYArray(ClassInfoID) ) %>
+		<% end if %>
+		</td>
+</tr>
+<% end if %>
+<% end if %>
+<% rowcount = rowcount + 1
+		rs.movenext
+	Wend		
+  end if 
+  
+  end if
+   end if 
+  
+ '********************************************************************************
+ '	EXTRA OPTIONS
+ '********************************************************************************
+ 
+sql = "select * from ExtraOptions where not (OptionType = 'Halter') and not (OptionType = 'Dinner') and not (OptionType = 'Vendor')  and not (OptionType = 'Advertising') and AvaliableByItself = True and EventID = " & EventID & "" 
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.Open sql, conn, 3, 3   
+	if not rs.eof then 
+		ShowExtraOptions = True %>
+	
+<% If FirstGroup = True then
+   FirstGroup = False
+else
+ %>
+ <tr ><td class = "body" colspan = "4" height = "5" ><img src = "/images/px.gif" width = "1" alt = "Event Registration"></td></tr>
+ <tr ><td class = "body" colspan = "4" height = "1" bgcolor = "#abacab"><img src = "/images/px.gif" width = "1" alt = "Event Registration"></td></tr>
+ <% end if  %>  
+	<tr ><td class = "body" colspan = "4" height ="30"><img src = "/images/px.gif" width = "5"  alt = "Vendor Registration"><h3>Other Options</h3></td></tr>
+	<%
+
+	end if 
+
+  if ShowExtraOptions = True then
+
+    Set rs = Server.CreateObject("ADODB.Recordset")
+    rs.Open sql, conn, 3, 3   
+	if not rs.eof then 
+	
+	While Not rs.eof  
+	ExtraOptionsID = rs("ExtraOptionsID")
+		ExtraOptionsName = rs("ExtraOptionsName")
+		ExtraOptionsDescription = rs("ExtraOptionsDescription")
+		ExtraOptionsQTYAvailable= rs("ExtraOptionsQTYAvailable")
+		ExtraOptionsPrice= rs("ExtraOptionsPrice")
+		AvaliableWithSponsorships= rs("AvaliableWithSponsorships")
+		AvaliableByItself= rs("AvaliableByItself")
+	
+	
+	if len(ExtraOptionsQTYAvailable) > 0 then
+	else
+	  ExtraOptionsQTYAvailable = 50
+	end if
+		str1 = ExtraOptionsName
+		str2 = "&nbsp;"
+		If InStr(str1,str2) > 0 Then
+			ExtraOptionsName= Replace(str1,  str2, " ")
+		End If 
+		
+		str1 = ExtraOptionsName
+		str2 = "''"
+		If InStr(str1,str2) > 0 Then
+			ExtraOptionsName= Replace(str1,  str2, "'")
+		End If 	
+	
+	
+	ExtraOptionsQTYArraycount = "ExtraOptionsQTYArray(" & ExtraOptionsID & ")"
+	ExtraOptionsQTYArray(ExtraOptionsID) = Request.Form(ExtraOptionsQTYArraycount)
+
+i = 0
+	while i < (TotalExtraOptionCounter + 1 )
+	   	i = i + 1
+		if OldExtraOptionNameArray(i) = ExtraOptionsName then
+			OldExtraOptionQTY = OldExtraOptionQTYArray(i)
+		end if
+	wend
+	
+	
+  if ExtraOptionsQTYArray(ExtraOptionsID) < 1 and OldExtraOptionQTY > 0 and NOT(Update = "True") then
+ 	ExtraOptionsQTYArray(ExtraOptionsID) =  OldExtraOptionQTY
+  end if 
+
+ if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+	<td class = "body">
+		<blockquote><%= ExtraOptionsName %></blockquote>
+	</td>
+	<td class = "body" align = "right">	
+	<% if len(ExtraOptionsPrice) > 0 then %>	
+		<%= formatcurrency(ExtraOptionsPrice) %>
+	<% else %>
+	Free
+	<% end if %>	
+		<img src = "/images/px.gif" width = "5" alt = "ExtraOptions Registration">
+    </td>
+    <td class = "body" align = "right">	
+ 		<select size="1" name="ExtraOptionsQTYArray(<%=ExtraOptionsID%>)" onchange="submit();" width="50" style="width: 50px" >
+  		<% if len(ExtraOptionsQTYArray(ExtraOptionsID)) > 0 then %>
+  		<option value="<%=ExtraOptionsQTYArray(ExtraOptionsID)%>"><%=ExtraOptionsQTYArray(ExtraOptionsID)%></option>
+  
+  		<% end if 
+  		 x = 0
+  			 while x < (ExtraOptionsQTYAvailable + 1) %>
+  				<option value="<%=x%>"><%=x%></option>
+  		<% x = x + 1
+		wend %>
+	</select>
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event Registration"> 
+
+    </td>
+
+	<td class = "body" align = "right">	
+	<% if len(ExtraOptionsPrice) > 0 then %>	
+		<%=formatcurrency(ExtraOptionsQTYArray(ExtraOptionsID) * ExtraOptionsPrice ) %>
+		<% OrderTotal = OrderTotal + (ExtraOptionsQTYArray(ExtraOptionsID) * ExtraOptionsPrice )   %>
+	<% else %>
+		Free
+	<% end if %>
+		<img src = "/images/px.gif" width = "5" alt = "ExtraOptions Registration">
+    </td>
+</tr>
+
+<% 	
+
+i = 1
+ for i = 1 to TotalExtraOptions
+   if  ExtraOptionID(i) = ExtraOptionsID and ExtraOptionQTY(i) > 0 then
+ %>
+
+	<% if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+			<td class = "body"   align = "Right" colspan = "2" height="20"><small># <%=rs("ExtraOptionsName")%> that comes with sponsorship<% if ExtraOptionQTY(i) > 1 then %>s<%end if %>:</small></td>
+ 			<td class = "body"   align = "right"><%= ExtraOptionQTY(i) %><img src = "images/px.gif"width = "10" height = "1" alt = "<%=rs("ExtraOptionsName")%> Registration"></td>
+  			<td class = "body"   align = "right">N/A <img src = "images/px.gif"width = "10" height = "1" alt = "<%=rs("ExtraOptionsName")%> Registration"></td>
+  		</tr>
+		<tr ><td class = "body" colspan = "4" height = "10" ><img src = "/images/px.gif" width = "1" alt = "<%=EventName%> Event Registration"></td></tr>
+
+ <%  
+   end if 
+ next
+ 		rowcount = rowcount + 1
+		rs.movenext
+	Wend		
+  end if 
+  
+  end if
+
+ 
+'************************************************************
+'  DINNER TICKETS FEE
+'************************************************************
+if ShowDinner= "True"  then
+
+sql = "select * from Services, ServiceTypeLookup where Services.ServiceTypeLookupID = ServiceTypeLookup.ServiceTypeLookupID and ServiceType = 'Dinner' and EventID =  " & EventID & " Order by ServicesID Desc"
+Set rs = Server.CreateObject("ADODB.Recordset")
+rs.Open sql, conn, 3, 3   
+If Not rs.eof Then	
+
+	ServicesID = rs("ServicesID")
+	Title = rs("Title")
+	VegitarianOption = rs("VegitarianOption")
+
+	ServiceEndDateMonth  = rs("ServiceEndDateMonth")
+	ServiceEndDateDay  = rs("ServiceEndDateDay")
+	ServiceEndDateYear  = rs("ServiceEndDateYear")
+
+	if len(Title) > 1 then
+	else
+	  Title = "Dinner"
+	end if
+
+	DinnerFee = rs("Price")
+	MaxQTY =  rs("ServiceMaxQuantity")
+	MaxQTY2 =  rs("ServiceMaxQuantity2")
+
+	if len(MaxQTY2) > 0 then
+	else
+		MaxQTY2 = 100
+	end if
+	
+End If 
+
+
+if len(ServiceEndDateMonth) > 0 then
+  else
+  ServiceEndDateMonth = ""
+end if 
+
+if len(ServiceEndDateday) > 0 then
+  else
+  ServiceEndDateday = ""
+end if 
+
+if len(ServiceEndDateYear) > 0 then
+  else
+  ServiceEndDateYear = ""
+end if 
+
+if len(ServiceStartDateMonth) > 0 and len(ServiceStartDateDay) > 0 and len(ServiceStartDateYear) > 0 then
+	ServiceStartDate = cstr(ServiceStartDateMonth) & "/" & cstr(ServiceStartDateDay) & "/" & cstr(ServiceStartDateYear)
+else
+   ServiceStartDate = ""
+end if
+
+if len(ServiceEndDateMonth) > 0 and len(ServiceEndDateDay) > 0 and len(ServiceEndDateYear) > 0 then
+	ServiceEndDate = cstr(ServiceEndDateMonth) & "/" & cstr(ServiceEndDateDay) & "/" & cstr(ServiceEndDateYear)
+	else
+   ServiceEndDate = ""
+
+end if
+
+
+OfferDinnerTickets = True
+
+
+if len(ServiceEndDateMonth) < 1 or len(ServiceEndDateDay) < 1 then
+OfferDinnerTickets = True
+else
+	if DateDiff("d", ServiceEndDate, now()) > 1 then
+		OfferDinnerTickets = False
+	end if
+end if
+
+	if len(DinnerFee) > 0 then
+	else
+		OfferDinnerTickets = False
+	end if
+
+
+if OfferDinnerTickets = True then
+	
+	
+	DinnerQTY = request.form("DinnerQTY")
+
+if DinnerQTY < 1 and OldDinnerTicketQTY > 0 and NOT(Update = "True") then
+	DinnerQTY = OldDinnerTicketQTY
+end if
+
+ showdiscount = False
+ 
+ %>
+<% if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+  <td class = "body">
+<br>
+  <img src = "images/px.gif" width = "4" height = "1" alt = "Livestock Event Registration"><%=Title %>
+  
+  <% if len(ServiceEndDate) > 6 then %>
+  <br>
+  <img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"><small>Registration ends <%=ServiceEndDate %>.</small>
+  <% end if %>
+  
+  
+ </td>
+  <td class = "body" align = "right">
+      <input type = "hidden" value = "<%= DinnerFee %>" name = "DinnerFee">
+  <%=formatcurrency(DinnerFee,2)%>
+ 
+
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"> </td>
+  <td class = "body" align = "right">
+ <% Maxnumstallmats = cint(AnimalStallQTY) + cint(CurrentNumDisplayStallQTY) + 1%>
+
+   
+ <select size="1" name="DinnerQTY" onchange="submit();" width="50" style="width: 50px" >
+  
+ 
+  	<% if (DinnerQTY) > 0 then %>
+  	<option value="<%=DinnerQTY%>"><%= DinnerQTY%></option>
+  
+  	<% end if %>
+  	<% x = 0
+  	 while x < MaxQTY2 + 1 %>
+  		<option value="<%=x%>"><%=x%></option>
+  		<% x = x + 1
+	wend 
+	
+ %>
+	</select><img src = "/images/px.gif" width = "10" height = "1" alt = "Livestock Event registration">
+ </td>
+  <td class = "body" align = "right">  
+ 	 <%=formatcurrency((DinnerFee * DinnerQTY),2)%>
+ 	 <% OrderTotal = OrderTotal + (DinnerFee * DinnerQTY) %>
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"> </td>
+</tr> 
+
+
+<% 
+end if ' if OfferDinnerTickets = True 
+
+
+ if TotalFreeDinnerTicketsQTY > 0 then %>
+<tr bgcolor = "#F6F6F6" height = "20">
+<td class = "body" align = "right" colspan = "2">
+   <small># tickets from sponsorship<% if TotalFreeDinnerTicketsQTY > 1 then %>s<%end if %>:</small>
+</td>
+<td class = "body" align = "right">
+	<%=TotalFreeDinnerTicketsQTY%><img src = "images/px.gif" width = "20" height = "1" alt = "Event Registration">
+</td>
+<td class = "body" align = "right">
+N/A<img src = "images/px.gif" width = "20" height = "1" alt = "Event Registration">
+</td>
+</tr>
+ <tr ><td class = "body" colspan = "4" height = "10" ><img src = "/images/px.gif" width = "1" alt = "Sponsorship Registration"></td></tr>
+<% end if 
+
+
+if VegitarianOption = "True" and DinnerQTY > 0 then
+	DinnerVegQTY = request.form("DinnerVegQTY")
+	if DinnerVegQTY < 1 and OldVegitarianQTY > 0 and NOT(Update = "True") then
+		DinnerVegQTY = OldVegitarianQTY
+	end if
+
+ if order = "Even" then
+     order = "Odd"
+    %>
+     <tr>
+  <% else 
+  order = "Even"%>
+  <tr bgcolor = "<%=StripeColor%>">
+  <% end if %>
+  <td class = "body">
+  <img src = "images/px.gif" width = "4" height = "1" alt = "Livestock Event Registration">Vegetarian Meals
+   <br><img src = "images/px.gif" width = "4" height = "1" alt = "Livestock Event Registration"><small>How many of your meals should be vegetarian?</small>
+
+ </td>
+  <td class = "body" align = "right">
+		N/A
+ <img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"> </td>
+  <td class = "body" align = "right">
+  
+ <select size="1" name="DinnerVegQTY" onchange="submit();" width="50" style="width: 50px" >
+   
+  	<% if (DinnerVegQTY) > 0 then %>
+  	<option value="<%=DinnerVegQTY%>"><%= DinnerVegQTY%></option>
+  
+  	<% end if %>
+  	<% x = 0
+  	 while x < DinnerQTY + 1 %>
+  		<option value="<%=x%>"><%=x%></option>
+  		<% x = x + 1
+	wend 
+ %>
+	</select><img src = "/images/px.gif" width = "10" alt = "Livestock Event registration">
+
+ </td>
+  <td class = "body" align = "right">  
+ 	 N/A
+<img src = "/images/px.gif" width = "5" alt = "Livestock Event registration"> </td>
+</tr> 
+<% 
+end if ' if vegitary Option = True %>
+
+
+<% end if ' if ShowDinner  = true %>
+ 
+<% If FirstGroup = True then
+   FirstGroup = False
+else
+ %>
+ <tr ><td class = "body" colspan = "4" height = "5" ></td></tr>
+ <tr ><td class = "body" colspan = "4" height = "1" bgcolor = "#abacab"></td></tr>
+ <% end if  %>  
+
+	<tr ><td class = "body" colspan = "3" height = "30" align = "right" valign = "top"><h3><div align = "right">Total:</div></h3><img src = "/images/px.gif" width = "5" alt = "<%=EventName%> Event Registration"></td>
+		<td class = "body" colspan = "1" height = "30" align = "right" valign = "top"><h3><%=formatcurrency(OrderTotal,2) %><img src = "/images/px.gif" width = "10" alt = "<%=EventName%> Event Registration"></h3>
+		
+		</td>
+	</tr>	
+	<tr ><td class = "body" colspan = "4" height = "5" ></td></tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td  height = "15"></td></tr>
+</table></form>
+<table  border="0"  cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" width = "800" align = "center">	
+<tr>
+  <td class = "body" align = "right"  height = "39">
+<form action= "FiberManiaEventRegisterPayment.asp?EventID=<%=EventID%>&EventName=<%=EventName%>&OrderTotal=<%=OrderTotal%>&PeopleID=<%=PeopleID%>" name="OrderForm" method = "post">
+<div align = "right">
+<% if OrderTotal < 1 then %>
+ <input type=submit value="Proceed to Make Payment" disabled="disabled" class = "regsubmit2" >
+<% else %>
+ <input type=submit value="Proceed to Make Payment"  class = "regsubmit2" >
+<% end if %>
+</div>
+ <img src = "images/px.gif" height = "1" width = "10" alt = "<%= EventName %> at Andresen Events - Event Registration">
+</form>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><br />
+	
+
+
+
+
+<% end if ' REGISTRATION IS OPEN %>
+ 
+ 
+ 
+ <% end if  %>
+
+
+
+
+
+
+
+ <!--#Include file="FibermaniaFooter.asp"--> 
+ <!--#Include file="sojaaFooter.asp"--> </td></tr></table>
+</body>
+</html>
+

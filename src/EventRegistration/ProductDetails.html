@@ -1,0 +1,475 @@
+<html>
+
+<head>
+<!--#Include file="GlobalVariables.asp"-->
+
+
+<%
+	ProdID= Request.QueryString("ProdID") 
+
+	If Len(ProdID) < 1 then
+		ProdID=request.form("ProdID") 
+	End If
+
+	If Len(ProdID) < 1 then
+		Session("ProdID") = ProdID
+	End If
+'response.write("ProdID=")
+'response.write(ProdID)
+If Len(ProdID) < 1 then
+   'response.redirect("EditAd.asp?Message=NoID")
+End If 
+
+
+conn = "Provider=Microsoft.Jet.OLEDB.4.0;" & _
+					"Data Source=" & server.mappath(databasepath) & ";" & _
+					"User Id=;Password=;" 
+
+Set rsA = Server.CreateObject("ADODB.Recordset")
+	sql = "select * from sfProducts where prodID='" & prodID & "'"
+	'response.write(sql)
+	rsA.Open sql, conn, 3, 3 
+	
+	           If Len(rsA("prodImage1")) < 2 And Len(rsA("prodImage2"))< 2  And Len(rsA("prodImage3")) < 2  And Len(rsA("prodImage4")) < 2  And Len(rsA("prodImage5")) < 2 And Len(rsA("prodImage6")) < 2  And Len(rsA("prodImage7")) < 2  And Len(rsA("prodImage8")) < 2 then 
+				click = "<img width=""260"" src=""/Uploads/ImageNotAvailable.jpg""> "
+				noimage = True
+				  ' response.write("found")
+				Else 
+						noimage = false
+
+		End If
+	
+	
+	Dim buttonimages(100) 
+	Dim	buttontitle(100)
+	
+	if not rsA.eof then 
+
+	pcounter = 0
+	counter = 0
+	counttotal = 8
+	While counter < counttotal
+		'response.write("counter=")
+		'response.write(counter)
+
+		counter = counter +1
+
+		Photonum = "prodImage" & counter
+		If Len(rsA(Photonum)) < 30 then
+			image = "/uploads/" & rsA(Photonum)
+		Else
+				image =  rsA(Photonum)
+		End If 
+		'response.write("x=" & image)
+	
+		If Len(image)> 2 Then
+		pcounter = pcounter +1
+		buttonimages(pcounter) =   image
+		buttontitle(pcounter) = Caption
+		'response.write(buttonimages(counter))
+%>
+<script language="JavaScript">
+               if (document.images) version = "n3";
+               else version = "n2";
+               if (version == "n3") {
+				but<%=pcounter%>on = new Image(85, 115);
+				but<%=pcounter%>on.src = "<%=image%>";
+			   }
+	
+
+       function img<%=pcounter%>(imgName) {
+               if (version == "n3") {
+               imgOn = eval("but<%=pcounter%>on.src");
+               document [imgName].src = imgOn;               }       }
+      
+      
+</script>
+
+<% 
+   End if
+	wend
+%>
+
+<% end if 
+
+iSubject=request.form("Subject") 
+If Len(iSubject) < 3 then
+	iSubject= Request.QueryString("Subject") 
+End If
+
+iState=request.form("State") 
+iZip= Request.form("Zip") 
+iRegion=request.form("Region") 
+
+
+'response.write(iSubject)
+
+
+
+
+	CatID=request.form("CatID") 
+	If Len(CatID) < 3 then
+		CatID= Request.QueryString("CatID") 
+	End If
+
+
+If Len(CatID) < 1 then
+   CatID = 0
+
+
+End If 
+'response.write("CatID=")
+'Response.write(CatID)
+'Response.write("<br>")
+%>
+
+
+<% 
+
+Dim sSize(200)
+Dim sExtraCost(200)
+Dim cColor(200)
+Dim Description
+%>
+
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+<title><%= WebSiteName %> Store</title>
+<META name="description" content="<%= WebSiteName %> Store">
+<META name="keywords" content="<%= WebSiteName %> Store">
+<meta name="author" content="WebArtists.biz">
+<link rel="stylesheet" type="text/css" href="<%=Style%>">
+
+</head>
+<BODY border="0"  cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"   >
+<a name="top"></a>
+			
+				
+<!--#Include file="Header.asp"-->
+  <br><br>
+<%
+		conn = "Provider=Microsoft.Jet.OLEDB.4.0;" & _
+					"Data Source=" & server.mappath(databasepath) & ";" & _
+					"User Id=;Password=;"
+					
+		sql = "select * from sfProducts where prodID='" & prodID & "' ;"
+
+			'response.write(sql)
+		Set rs = Server.CreateObject("ADODB.Recordset")
+		rs.Open sql, conn, 3, 3 
+
+
+ProdPrice= FormatCurrency(rs("ProdPrice"),2)
+		ShortDescription = rs("prodShortDescription") 
+		Description = rs("prodDescription")
+		
+		str1 = Description
+		str2 = vblf
+		If InStr(str1,str2) > 0 Then
+			Description= Replace(str1, str2 , "</br>")
+		End If  
+
+		str1 = Description
+		str2 = vbtab
+		If InStr(str1,str2) > 0 Then
+			Description= Replace(str1, str2 , "&nbsp;&nbsp;&nbsp;&nbsp;")
+		End If  
+
+		str1 = ShortDescription
+		str2 = vblf
+		If InStr(str1,str2) > 0 Then
+			ShortDescription= Replace(str1, str2 , "</br>")
+		End If  
+
+		str1 = ShortDescription
+		str2 = vbtab
+		If InStr(str1,str2) > 0 Then
+			ShortDescription= Replace(str1, str2 , "&nbsp;&nbsp;&nbsp;&nbsp;")
+		End If  
+
+
+		If Len(Description) > 5 Then
+
+		else
+		   Description = ShortDescription  
+
+		End If 
+	
+%>
+ 
+
+<%
+	 CurrentImage = "/uploads/" & rs("ProdImage1")
+	imageone =  CurrentImage
+	'response.write(imageone)
+
+	ButtoncounterStart  = Buttoncounter
+	counttotal =rs.recordcount
+	While counter < counttotal
+		Buttoncounter = Buttoncounter + 1
+		counter = counter +1
+		CurrentImage = "/uploads/" & rs("ProdImage1")
+		buttonimages(counter) = CurrentImage
+
+		'response.write(CurrentImage)
+%>
+<script language="JavaScript">
+               if (document.images) version = "n3";
+               else version = "n2";
+               if (version == "n3") {
+				but<%=Buttoncounter%>on = new Image(85, 115);
+				but<%=Buttoncounter%>on.src = "<%=CurrentImage%>";
+			   }
+	
+
+       function img<%=Buttoncounter%>(imgName) {
+               if (version == "n3") {
+               imgOn = eval("but<%=Buttoncounter%>on.src");
+               document [imgName].src = imgOn;               }       }
+      
+      
+</script>
+
+<% 
+	
+	Wend
+ Buttoncounter = ButtoncounterStart 
+%>
+
+
+
+
+ 	<table  border="1" cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"    valign = "top" width = "770" align = "center">
+				  <tr>
+				  <td >
+					<%
+					
+					if Len(CurrentImage) < 18 Then
+					     %>
+							<table border = "0"   leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"  cellpadding=0 cellspacing=0 width = "600" >
+							<tr>
+								<td>
+								     <img src = "/uploads/ImageNotAvailable.jpg" width = "590">
+								</td>
+							</tr>
+						</table>
+						<% else  %>
+							<table border = "0"   leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"  cellpadding=0 cellspacing=0 width = "600" >
+							<tr>
+								<td>
+									<IMG alt="main image" border=0  name="but<%=ProductID%>" src="<%=buttonimages(1)%>" align = "center" width = "590">
+								</td>
+						</tr>
+			</table>
+						<% end if%>
+
+<%
+
+	if Not rs.eof then
+	rs.movefirst
+	counter = 0
+	counttotal = 0
+	
+	While counter < counttotal
+	
+		%>
+
+		<table border="0" cellspacing="0" align = "center" valign = "top" >
+			<tr>
+		<% for x= 1 to 3
+		   	Buttoncounter= Buttoncounter +1
+			 if counter = counttotal then
+					exit for
+             end if 
+			bcounter =bcounter +1
+			counter = counter +1
+
+			%>
+			<td valign = "top" align = "center">
+			<font 
+			onMouseOver="img<%=Buttoncounter%>('but<%=ProductID%>'), this.style.cursor = 'hand'" 
+			onMouseOut="img<%=Buttoncounter%>('but<%=ProductID%>')"  class = "menu">
+			<img src="<%=buttonimages(counter)%>" height = "50" alt = "<%=buttontitle(counter)%>" border = "0"></font>
+			</td>
+
+		<%
+
+
+	
+				next
+		%>
+			</tr>
+			</table>
+		<% 
+	wend
+	end if
+%>
+
+
+				  </td>
+				  <td width = "8">&nbsp;</td>
+					<td class= "body"  valign = "top" colspan = "3" width = "200" align = "center">
+						<table  border="0" cellspacing="0" cellpadding="0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"    valign = "top" width = "180">
+						     <tr>
+								<td class = "body" colspan = "2" height = "25" valign = "top">
+									<big><b><%=Trim(rs("ProdName"))%></b></big>
+								</td>
+							  <tr>
+							  <tr>
+								<td class= "body"  valign = "top"  width = "180">
+								
+										<% If Len(rs("ProdPrice")) > 1 Then %>
+											Price: <b><%=FormatCurrency(rs("Prodprice"))%></b>
+										  <br>
+										<% end if %>
+										
+										<% Prodweight = rs("ProdWeight")
+											if Prodweight > 0 Then
+													ShippingCost = valBaseRate + (Prodweight-1) * valAddedRate
+											Else
+											ShippingCost =valdefaultRate
+											End If 
+										%>
+	
+
+
+
+
+									
+										<% if len(rs("Materials")) > 2 then%>
+											<%=rs("Materials")%><br><br>
+										<% end if %>
+										
+										<% ProdQuantityAvailable = rs("ProdQuantityAvailable")
+											If Len(ProdQuantityAvailable) > 1  Then %>
+												Quantity Available: <%=ProdQuantityAvailable%><br>
+											<% End If	%>
+											<% ProdSize = rs("ProdSize")
+											If Len(ProdSize) > 1  Then %>
+												Size: <%=ProdSize%><br>
+											<% End If	%>
+											
+											
+								</td>
+							 </tr>
+							 <tr>
+								<td class = "body" >
+									<%=Description %><br>
+									<br>
+						
+								</td>
+								</tr>
+								<tr>
+								<td class = "body" >
+									<% ProdSellStore = rs("ProdSellStore")
+									ProdCustID = rs("CustID")
+									If ProdSellStore = false  Then %>
+												<br>Please contact the seller for more information.<br>
+												
+
+												<% 
+									conn = "Provider=Microsoft.Jet.OLEDB.4.0;" & _
+									"Data Source=" & server.mappath(DatabasePath) & ";" & _
+									"User Id=;Password=;" '& _ 
+									 sql = "select * from sfCustomers where custID =  " & ProdCustID
+
+									'response.write (sql)
+									  Set rs2 = Server.CreateObject("ADODB.Recordset")
+									  rs2.Open sql, conn, 3, 3   
+									  If not rs2.eof then
+											custFirstName = rs2("custFirstName")
+											custLastname = rs2("custLastName")
+											custCity = rs2("custCity")
+											custState = rs2("custState")
+											custPhone = rs2("custPhone")
+											custEmail = rs2("custEmail")
+											%>
+											Seller:<br>
+											&nbsp;&nbsp;<%=custFirstName%>&nbsp;<%=custLastName%><br>
+											<% If Len(custCity) > 1 Then %>
+											&nbsp;&nbsp;<%=custCity%>
+											<% End If %>
+											<% If Len(custState) > 1 Then %>
+												, &nbsp;<%=custState%><br>
+											<% End If %>
+											<% If Len(custPhone) > 1 Then %>
+											&nbsp;&nbsp;Phone: <%=custPhone%><br>
+											<% End If %>
+											&nbsp;&nbsp;Email: <a href = "mailto:<%=custEmail%>" class = "body"><%=custEmail%></a>
+								      <% 	End If %>
+								<% Else%>
+								
+								<form target="_paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+		
+	<input type="hidden" name="add" value="1">
+Quantity: <input type="text" name="Quantity" size ="2">
+<input type="hidden" name="cmd" value="_cart">
+<input type="hidden" name="business" value="jhartwig@clearwire.net">
+<input type="hidden" name="item_name" value="<%=Trim(rs("ProdName"))%>">
+<input type="hidden" name="amount" value="<%=FormatCurrency(rs("Prodprice"))%> ">
+<input type="hidden" name="shipping" value="<%=ShippingCost%>">
+<input type="hidden" name="no_note" value="1">
+<input type="hidden" name="currency_code" value="USD">
+<input type="hidden" name="lc" value="US">
+<input type="hidden" name="bn" value="PP-ShopCartBF">
+<input type="hidden" name="return" value="http://www.ArtisanBarn.org/completion.asp">
+<input type="hidden" name="cancel_return" value="http://www.ArtisanBarn.org/BarnStore.asp">
+<br>
+
+<input type=submit   border="0" name="submit"  Value = "Add to Cart" >&nbsp;&nbsp;
+
+</form> 
+
+
+					 <form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+										<input type="hidden" name="cmd" value="_cart">
+										<input type="hidden" name="business" value="jhartwig@clearwire.net">
+									
+										<input type="hidden" name="display" value="1">
+										<input type=submit   border="0" name="submit"  Value = "View Cart" >&nbsp;&nbsp;
+									</form>
+					 </font>
+
+
+							
+
+		      </td>
+		    </tr>
+		  </table>
+
+									
+
+									
+									
+		<% End If	%>
+
+								</td>
+								</tr>
+							</table>
+					<table border = "1">
+					   <tr>
+					      <td class = "body">
+						  <!--#Include file="smallimages.asp"-->
+							</td>
+						</tr>
+					</table>
+								
+								
+												
+
+										
+						<% ccounter = 1
+
+					
+
+					ProductCounter = 1
+
+				
+					%>
+					<br>
+		<center><a href="javascript:history.back()" class = "body">Return to the Previous Page</a></center>
+
+					<br><br>
+					<!--#Include file="Footer.asp"-->
+ </BODY>
+</HTML>
